@@ -20,7 +20,7 @@ export default function Page() {
       <div className="p-4">
         <Link href="/customers/create" className="mt-4 pt-4" prefetch={false}>
           <button className="btn btn-neutral w-full border-0 bg-blue-200 text-black hover:text-white">
-            Create
+            NameCard_Create
           </button>
         </Link>
       </div>
