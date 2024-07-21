@@ -34,14 +34,14 @@ export default function Page() {
       <div className="p-4">
         <Link href="/todos" className="mt-4 pt-4" prefetch={false}>
           <button className="btn btn-neutral w-full border-0 bg-blue-200 text-black hover:text-white">
-            ToDo_List
+            Supabase_test_data
           </button>
         </Link>
       </div>
       <div className="p-4">
         <Link href="/lib" className="mt-4 pt-4" prefetch={false}>
           <button className="btn btn-neutral w-full border-0 bg-blue-200 text-black hover:text-white">
-            Supabase
+            Supabase_Table_data
           </button>
         </Link>
       </div>
