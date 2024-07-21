@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "./supabaseClient";
+import BackButton from "../components/back_button";
 
 const Home = () => {
   const [items, setItems] = useState([]);
@@ -35,11 +36,43 @@ const Home = () => {
     <div>
       <h1>Todo List</h1>
       {error && <p style={{ color: "red" }}>{error}</p>}
-      <ul>
-        {items.map((item, index) => (
-          <li key={index}>{item.title}</li> // 正しいフィールド名を使用
-        ))}
-      </ul>
+      <table style={{ borderCollapse: "collapse", width: "100%" }}>
+        <thead>
+          <tr>
+            <th style={{ border: "1px solid black", padding: "8px" }}>Title</th>
+            <th style={{ border: "1px solid black", padding: "8px" }}>
+              Contents
+            </th>
+            <th style={{ border: "1px solid black", padding: "8px" }}>
+              Start Date
+            </th>
+            <th style={{ border: "1px solid black", padding: "8px" }}>
+              End Date
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((item, index) => (
+            <tr key={index}>
+              <td style={{ border: "1px solid black", padding: "8px" }}>
+                {item.title}
+              </td>
+              <td style={{ border: "1px solid black", padding: "8px" }}>
+                {item.contents}
+              </td>
+              <td style={{ border: "1px solid black", padding: "8px" }}>
+                {item.start_date}
+              </td>
+              <td style={{ border: "1px solid black", padding: "8px" }}>
+                {item.end_date}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div>
+        <BackButton>戻る</BackButton>
+      </div>
     </div>
   );
 };
