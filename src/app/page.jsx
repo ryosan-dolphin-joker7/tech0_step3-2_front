@@ -32,7 +32,7 @@ export default function Page() {
         </Link>
       </div>
       <div className="p-4">
-        <Link href="/todos" className="mt-4 pt-4" prefetch={false}>
+        <Link href="/test" className="mt-4 pt-4" prefetch={false}>
           <button className="btn btn-neutral w-full border-0 bg-blue-200 text-black hover:text-white">
             Supabase_test_data
           </button>

@@ -2,7 +2,7 @@
 "use client"; // クライアント側で動作するコードであることを指定しています。
 
 import { useEffect, useState } from "react";
-import { supabase } from "./supabaseClient";
+import { supabase } from "../supabaseClient";
 import BackButton from "../components/back_button";
 
 const Home = () => {
