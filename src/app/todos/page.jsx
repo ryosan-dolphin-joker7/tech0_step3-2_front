@@ -1,5 +1,5 @@
-// src/app/page.jsx
-"use client";
+// src/app/todos/page.jsx
+"use client"; // クライアント側で動作するコードであることを指定しています。
 
 import { Suspense } from "react";
 import PostsView from "../components/posts.jsx";

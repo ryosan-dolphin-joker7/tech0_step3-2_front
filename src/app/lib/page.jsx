@@ -1,4 +1,4 @@
-// src/app/page.jsx
+// src/app/lib/page.jsx
 "use client"; // クライアント側で動作するコードであることを指定しています。
 
 import { useEffect, useState } from "react";
