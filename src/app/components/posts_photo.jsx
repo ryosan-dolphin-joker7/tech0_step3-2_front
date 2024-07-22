@@ -11,6 +11,9 @@ const PostsPhoto = () => {
     error: null,
   });
 
+  // 新たに追加されたステート変数
+  const [images, setImages] = useState([]);
+
   // 全ての画像をリストする関数を定義
   const listAllImage = async () => {
     try {
@@ -34,6 +37,31 @@ const PostsPhoto = () => {
       if (error) {
         throw error;
       }
+
+      // 画像の公開URLを取得
+      const imageUrls = await Promise.all(
+        data.map(async (file) => {
+          const { publicURL, error } = supabase.storage
+            .from("one_push_photo")
+            .getPublicUrl(`img/${file.name}`);
+
+          if (error) {
+            console.error("Error generating public URL:", error);
+            return null;
+          }
+
+          console.log(`Generated public URL: ${publicURL}`);
+          return publicURL;
+        })
+      );
+
+      // imagesステートを更新
+      setImages(imageUrls.filter((url) => url !== null));
+
+      const { data2, error2 } = await supabase.storage.getBucket(
+        "one_push_photo"
+      );
+      console.log({ data2, error2 });
 
       // 取得したデータから、特定のプレースホルダー以外のファイル名をリストに追加
       const tempUrlList = data
@@ -74,7 +102,7 @@ const PostsPhoto = () => {
         throw error;
       }
 
-      setState((prevState) => ({ ...prevState, imageUrl: data.publicUrl }));
+      setState((prevState) => ({ ...prevState, imageUrl: data.publicURL }));
     } catch (error) {
       console.error("Error fetching public URL:", error);
       setState((prevState) => ({ ...prevState, error: error.message }));
@@ -103,25 +131,41 @@ const PostsPhoto = () => {
           alt="Directly specified dolphin"
         />
       </div>
-      <ul className="flex flex-wrap w-full">
-        {urlList.length === 0 && <li>画像が見つかりませんでした</li>}
-        {urlList.map((item, index) => (
-          <li className="w-1/4 h-auto p-1" key={index}>
-            <a
-              className="hover:opacity-50"
-              href={`${imageUrl}${item}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+      <div>
+        <ul className="flex flex-wrap w-full">
+          {urlList.length === 0 && <li>画像が見つかりませんでした</li>}
+          {urlList.map((item, index) => (
+            <li className="w-auto h-auto p-1" key={index}>
+              <a
+                className="hover:opacity-50"
+                href={`${imageUrl}${item}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  className="object-cover max-h-32 w-full"
+                  src={`${imageUrl}${item}`}
+                  alt={item}
+                />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <h1>画像ギャラリー</h1>
+        <div style={{ display: "flex", flexWrap: "wrap" }}>
+          {images.map((url, index) => (
+            <div key={index} style={{ margin: "10px" }}>
               <img
-                className="object-cover max-h-32 w-full"
-                src={`${imageUrl}${item}`}
-                alt={item}
+                src={url}
+                alt={`Image ${index + 1}`}
+                style={{ width: "200px", height: "200px", objectFit: "cover" }}
               />
-            </a>
-          </li>
-        ))}
-      </ul>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
