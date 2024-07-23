@@ -52,6 +52,13 @@ export default function Page() {
           </button>
         </Link>
       </div>
+      <div className="p-4">
+        <Link href="/todo" className="mt-4 pt-4" prefetch={false}>
+          <button className="btn btn-neutral w-full border-0 bg-blue-200 text-black hover:text-white">
+            Supabase_todo_data
+          </button>
+        </Link>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {customerInfos.map((customerInfo, index) => (
           <div

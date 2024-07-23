@@ -1,4 +1,4 @@
-// src/app/todos/page.jsx
+// src/app/photo/page.jsx
 "use client"; // クライアント側で動作するコードであることを指定しています。
 
 import { Suspense } from "react";
