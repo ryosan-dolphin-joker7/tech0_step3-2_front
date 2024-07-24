@@ -2,7 +2,7 @@ export default function OneTaskInfoCard({
   task_id,
   task_name,
   task_content,
-  crated_at,
+  date,
 }) {
   return (
     <>
@@ -10,8 +10,8 @@ export default function OneTaskInfoCard({
         <div className="card-body">
           <h2 className="card-title">{task_name}</h2>
           <p>Task ID: {task_id}</p>
-          <p>Task name: {task_content}</p>
-          <p>Date: {crated_at}</p>
+          <p>Task Content: {task_content}</p>
+          <p>Date: {date}</p>
         </div>
       </div>
     </>

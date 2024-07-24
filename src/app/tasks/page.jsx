@@ -10,6 +10,7 @@ export default function Page() {
   const [items, setItems] = useState([]);
   const [error, setError] = useState(null);
   const [taskName, setTaskName] = useState("");
+  const [taskContent, setTaskContent] = useState("");
   const [taskDate, setTaskDate] = useState("");
 
   const formRef = useRef();
@@ -41,6 +42,7 @@ export default function Page() {
         setItems([...items, data[0]]);
       }
       setTaskName("");
+      setTaskContent("");
       setTaskDate("");
       router.push("/tasks");
     } catch (error) {
@@ -69,9 +71,20 @@ export default function Page() {
                 <input
                   type="text"
                   name="task_name"
-                  placeholder="何をする？"
+                  placeholder="何のタスク？"
                   className="input input-bordered"
                   value={taskName}
+                  onChange={handleTaskNameChange}
+                />
+              </p>
+              <p>
+                Task Content:
+                <input
+                  type="text"
+                  name="task_content"
+                  placeholder="何をする？"
+                  className="input input-bordered"
+                  value={taskContent}
                   onChange={handleTaskNameChange}
                 />
               </p>
