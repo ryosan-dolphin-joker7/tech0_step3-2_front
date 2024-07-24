@@ -36,7 +36,9 @@ export default function Page() {
       console.log("Submitting:", { taskName, taskDate }); // デバッグ用ログ
       const { data, error } = await supabase
         .from("tasks")
-        .insert([{ task_name: taskName, date: taskDate }]);
+        .insert([
+          { task_name: taskName, task_content: taskContent, date: taskDate },
+        ]);
       if (error) throw error;
       if (data && data.length > 0) {
         setItems([...items, data[0]]);
@@ -52,6 +54,9 @@ export default function Page() {
 
   const handleTaskNameChange = (event) => {
     setTaskName(event.target.value);
+  };
+  const handleTaskContentChange = (event) => {
+    setTaskContent(event.target.value);
   };
 
   const handleDateChange = (event) => {
@@ -85,7 +90,7 @@ export default function Page() {
                   placeholder="何をする？"
                   className="input input-bordered"
                   value={taskContent}
-                  onChange={handleTaskNameChange}
+                  onChange={handleTaskContentChange}
                 />
               </p>
               <p>
