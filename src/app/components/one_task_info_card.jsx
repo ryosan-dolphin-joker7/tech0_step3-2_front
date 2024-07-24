@@ -6,7 +6,7 @@ export default function OneTaskInfoCard({
 }) {
   return (
     <>
-      <div className="m-4 card bordered bg-blue-200 duration-200 hover:border-r-red">
+      <div className="m-4 card bordered bg-blue-100 duration-200 hover:border-r-red">
         <div className="card-body">
           <h2 className="card-title">{task_name}</h2>
           <p>Task ID: {task_id}</p>
