@@ -3,6 +3,7 @@ export default function OneTaskInfoCard({
   task_name,
   task_content,
   date,
+  photo_url,
 }) {
   return (
     <>
@@ -12,6 +13,7 @@ export default function OneTaskInfoCard({
           <p>Task ID: {task_id}</p>
           <p>Task Content: {task_content}</p>
           <p>Date: {date}</p>
+          <img src={photo_url} alt={task_name} />
         </div>
       </div>
     </>

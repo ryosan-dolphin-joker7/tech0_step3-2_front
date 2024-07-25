@@ -1,9 +1,9 @@
-// src/app/lib/page.jsx
+// src/app/table/page.jsx
 "use client"; // クライアント側で動作するコードであることを指定しています。
 
 import { useEffect, useState } from "react";
-import { supabase } from "../supabaseClient";
-import BackButton from "../components/back_button";
+import { supabase } from "@/supabaseClient";
+import BackButton from "@/components/back_button";
 
 const Home = () => {
   const [items, setItems] = useState([]);

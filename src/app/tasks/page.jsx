@@ -1,10 +1,11 @@
 // src/app/tasks/page.jsx
 "use client";
-import OneCustomerInfoCard from "../components/one_task_info_card.jsx";
+
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
-import { supabase } from "../supabaseClient";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/supabaseClient";
+import OneCustomerInfoCard from "@/components/one_task_info_card.jsx";
 
 export default function Page() {
   const [items, setItems] = useState([]);

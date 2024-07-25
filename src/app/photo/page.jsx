@@ -3,8 +3,8 @@
 
 import { Suspense } from "react";
 // import PostsView from "../components/posts.jsx";
-import PostsPhoto from "../components/posts_photo.jsx";
-import BackButton from "../components/back_button.jsx";
+import PostsPhoto from "@/components/posts_photo.jsx";
+import BackButton from "@/components/back_button.jsx";
 
 export default function HomePage() {
   return (
