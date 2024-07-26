@@ -6,6 +6,8 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/supabaseClient";
 import OneCustomerInfoCard from "@/components/one_task_info_card.jsx";
+import Header from "@/components/Header"; // ヘッダーコンポーネントをインポートしています。
+import Footer from "@/components/Footer"; // フッターコンポーネントをインポートしています。
 
 export default function Page() {
   const [items, setItems] = useState([]);
@@ -66,6 +68,7 @@ export default function Page() {
 
   return (
     <>
+      <Header theme={theme} toggleTheme={toggleTheme} />
       <h1>Supabaseのデータベースにタスクを登録する画面</h1>
       {error && <div className="alert alert-error">{error}</div>}
       <div className="card bordered bg-white border-blue-200 border-2 max-w-md m-4">
@@ -150,6 +153,7 @@ export default function Page() {
           <button className="btn btn-primary m-4 text-2xl">戻る</button>
         </Link>
       </div>
+      <Footer theme={theme} />
     </>
   );
 }

@@ -3,9 +3,8 @@ import Link from "next/link"; // ページ間リンクを作成するための�
 import { useEffect, useState } from "react"; // Reactのフック（useEffectとuseState）をインポートしています。
 import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートしています。
 import OnePostInfoCard from "@/components/one_post_info_card.jsx"; // カスタマー情報カードコンポーネントをインポートしています。
-import { Button, ButtonGroup } from "@mui/material"; // Material-UIのボタンコンポーネントをインポートしています。
-import DarkModeIcon from "@mui/icons-material/DarkMode"; // ダークモードアイコンをインポートしています。
-import LightModeIcon from "@mui/icons-material/LightMode"; // ライトモードアイコンをインポートしています。
+import Header from "@/components/Header"; // ヘッダーコンポーネントをインポートしています。
+import Footer from "@/components/Footer"; // フッターコンポーネントをインポートしています。
 
 // 顧客情報を表示するページコンポーネントを定義しています。
 export default function Page() {
@@ -42,34 +41,9 @@ export default function Page() {
   // 顧客情報を表示するコンポーネントをレンダリングしています。
   return (
     <>
-      {/* ヘッダーを固定するためのスタイルを適用したdiv */}
-      <div
-        style={{
-          position: "fixed",
-          top: 0,
-          width: "100%",
-          zIndex: 1000,
-          backgroundColor: theme === "light" ? "#fff" : "#333",
-        }}
-      >
-        <ButtonGroup variant="outlined" aria-label="Basic button group">
-          <Button>メニューアイコン</Button>
-          <Button>アラーム</Button>
-          <Button>設定</Button>
-          <Button>アカウント</Button>
-          <Button
-            variant="outlined"
-            aria-label="toggle theme"
-            onClick={toggleTheme}
-            startIcon={theme === "light" ? <DarkModeIcon /> : <LightModeIcon />}
-          >
-            {theme === "light" ? "" : ""}
-          </Button>
-        </ButtonGroup>
-      </div>
-
+      <Header theme={theme} toggleTheme={toggleTheme} />
       {/* コンテンツ領域。ヘッダーとフッターのスペースを確保するためのパディングを追加 */}
-      <div style={{ paddingTop: "10px", paddingBottom: "60px" }}>
+      <div style={{ paddingTop: "60px", paddingBottom: "60px" }}>
         <h1>ここに投稿カードを表示する</h1>
 
         {/* 顧客情報カードをグリッドレイアウトで表示 */}
@@ -114,32 +88,7 @@ export default function Page() {
           </Link>
         </div>
       </div>
-
-      {/* フッターを固定するためのスタイルを適用したdiv */}
-      <div
-        style={{
-          position: "fixed",
-          bottom: 0,
-          width: "100%",
-          zIndex: 1000,
-          backgroundColor: theme === "light" ? "#fff" : "#333",
-        }}
-      >
-        {" "}
-        <div>
-          <Link href="/">
-            <button className="btn btn-primary m-2 text-2xl">WanPush</button>
-          </Link>
-        </div>
-        <ButtonGroup variant="outlined" aria-label="Basic button group">
-          <Button>Home</Button>
-          <Button>検索</Button>
-          <Button>日程</Button>
-          <Link href="/tasks" prefetch={false}>
-            <Button>タスク</Button>
-          </Link>
-        </ButtonGroup>
-      </div>
+      <Footer theme={theme} />
     </>
   );
 }
