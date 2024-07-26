@@ -15,6 +15,7 @@ export default function Page() {
   const [taskName, setTaskName] = useState("");
   const [taskContent, setTaskContent] = useState("");
   const [taskDate, setTaskDate] = useState("");
+  const [theme, setTheme] = useState("light"); // 現在のテーマ（ライトモードまたはダークモード）を保持するためのstateを定義しています。
 
   const formRef = useRef();
   const router = useRouter();
