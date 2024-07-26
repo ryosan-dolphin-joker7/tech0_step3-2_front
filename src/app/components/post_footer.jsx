@@ -33,9 +33,9 @@ export default function Post_Footer({ theme }) {
       }}
     >
       <div>
-        <Button className="btn btn-primary m-2 text-2xl" onClick={openModal}>
+        <button className="btn btn-primary m-2 text-2xl" onClick={openModal}>
           WanPush
-        </Button>
+        </button>
       </div>
       <UploadImageModal
         open={modalOpen}
