@@ -69,7 +69,7 @@ export default function Page() {
 
   return (
     <>
-      <Header theme={theme} toggleTheme={toggleTheme} />
+      <Header theme={theme} />
       <h1>Supabaseのデータベースにタスクを登録する画面</h1>
       {error && <div className="alert alert-error">{error}</div>}
       <div className="card bordered bg-white border-blue-200 border-2 max-w-md m-4">
