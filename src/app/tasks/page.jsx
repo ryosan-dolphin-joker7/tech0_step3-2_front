@@ -6,8 +6,8 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/supabaseClient";
 import OneCustomerInfoCard from "@/components/one_task_info_card.jsx";
-import Header from "@/components/Header"; // ヘッダーコンポーネントをインポートしています。
-import Footer from "@/components/Footer"; // フッターコンポーネントをインポートしています。
+import Header from "@/components/header.jsx"; // ヘッダーコンポーネントをインポートしています。
+import Footer from "@/components/footer.jsx"; // フッターコンポーネントをインポートしています。
 
 export default function Page() {
   const [items, setItems] = useState([]);
