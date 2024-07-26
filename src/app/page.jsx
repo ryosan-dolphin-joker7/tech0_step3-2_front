@@ -3,9 +3,9 @@ import Link from "next/link"; // ページ間リンクを作成するための�
 import { useEffect, useState } from "react"; // Reactのフック（useEffectとuseState）をインポートしています。
 import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートしています。
 import OnePostInfoCard from "@/components/one_post_info_card.jsx"; // カスタマー情報カードコンポーネントをインポートしています。
-import Header from "@/components/header"; // ヘッダーコンポーネントをインポートしています。
-import Footer from "@/components/footer"; // フッターコンポーネントをインポートしています。
-import Post_Footer from "@/components/post_footer"; // フッターコンポーネントをインポートしています。
+import Header from "@/components/header.jsx"; // ヘッダーコンポーネントをインポートしています。
+import Footer from "@/components/footer.jsx"; // フッターコンポーネントをインポートしています。
+import Post_Footer from "@/components/post_footer.jsx"; // フッターコンポーネントをインポートしています。
 import { Button } from "@mui/material"; // Material-UIのボタンコンポーネントをインポートしています。
 
 // 顧客情報を表示するページコンポーネントを定義しています。
