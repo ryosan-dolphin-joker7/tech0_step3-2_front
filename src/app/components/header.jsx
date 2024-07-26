@@ -1,4 +1,5 @@
 "use client"; // クライアント側で動作するコードであることを指定しています。
+import Link from "next/link"; // ページ間リンクを作成するためのコンポーネントをインポートしています。
 import { Button, ButtonGroup } from "@mui/material"; // Material-UIのボタンコンポーネントをインポートしています。
 import DarkModeIcon from "@mui/icons-material/DarkMode"; // ダークモードアイコンをインポートしています。
 import LightModeIcon from "@mui/icons-material/LightMode"; // ライトモードアイコンをインポートしています。
@@ -15,10 +16,12 @@ export default function Header({ theme, toggleTheme }) {
       }}
     >
       <ButtonGroup variant="outlined" aria-label="Basic button group">
-        <Button>メニューアイコン</Button>
+        <Button>メニュー</Button>
         <Button>アラーム</Button>
         <Button>設定</Button>
-        <Button>アカウント</Button>
+        <Link href="/supabase_component" prefetch={false}>
+          <Button>アカウント</Button>
+        </Link>
         <Button
           variant="outlined"
           aria-label="toggle theme"

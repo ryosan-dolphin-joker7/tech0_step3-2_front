@@ -4,6 +4,11 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/supabaseClient";
 import BackButton from "@/components/back_button";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import Typography from "@mui/material/Typography";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const Home = () => {
   const [items, setItems] = useState([]);
@@ -70,6 +75,35 @@ const Home = () => {
           ))}
         </tbody>
       </table>
+      <div>
+        <h1>Todo List</h1>
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        {items.map((item, index) => (
+          <Accordion key={index}>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls={`panel${index}-content`}
+              id={`panel${index}-header`}
+            >
+              <Typography>{item.title}</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>
+                <strong>Title:</strong> {item.title}
+              </Typography>
+              <Typography>
+                <strong>Contents:</strong> {item.contents}
+              </Typography>
+              <Typography>
+                <strong>Start Date:</strong> {item.start_date}
+              </Typography>
+              <Typography>
+                <strong>End Date:</strong> {item.end_date}
+              </Typography>
+            </AccordionDetails>
+          </Accordion>
+        ))}
+      </div>
       <div>
         <BackButton>戻る</BackButton>
       </div>

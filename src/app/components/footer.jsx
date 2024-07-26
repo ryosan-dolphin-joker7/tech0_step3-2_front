@@ -18,7 +18,11 @@ export default function Footer({ theme }) {
           <Button>Home</Button>
         </Link>
         <Button>検索</Button>
-        <Button>日程</Button>
+
+        <Link href="/table" prefetch={false}>
+          <Button>日程</Button>
+        </Link>
+
         <Link href="/tasks" prefetch={false}>
           <Button>タスク</Button>
         </Link>
