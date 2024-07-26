@@ -3,15 +3,26 @@ import Link from "next/link"; // ページ間リンクを作成するための�
 import { useEffect, useState, useRef } from "react"; // Reactのフック（useEffectとuseState）をインポートしています。
 import { supabase } from "@/supabaseClient";
 import OneCustomerInfoCard from "@/components/one_task_info_card.jsx";
+import { Button, IconButton, ButtonGroup } from "@mui/material";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
+import LightModeTwoToneIcon from "@mui/icons-material/LightModeTwoTone";
+import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
 
 // 顧客情報を表示するページコンポーネントを定義しています。
 export default function Page() {
   const [items, setItems] = useState([]);
   const [error, setError] = useState(null);
+  const [theme, setTheme] = useState("light");
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [theme]);
 
   const fetchData = async () => {
     try {
@@ -22,24 +33,28 @@ export default function Page() {
       setError("データの取得に失敗しました: " + error.message);
     }
   };
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
+  };
 
   // 顧客情報を表示するコンポーネントをレンダリングしています。
   return (
     <>
       <div>
         <h1>ここにヘッダーを入れる</h1>
-        <button className="btn btn-primary m-1 text-1xl hover:text-white">
-          メニューアイコン
-        </button>
-        <button className="btn btn-primary m-1 text-1x1 hover:text-white">
-          設定
-        </button>
-        <button className="btn btn-primary m-1 text-1x1 hover:text-white">
-          アラーム
-        </button>
-        <button className="btn btn-primary m-1 text-1x1 hover:text-white">
-          アカウント
-        </button>
+        <ButtonGroup variant="outlined" aria-label="Basic button group">
+          <Button>メニューアイコン</Button>
+          <Button>アラーム</Button>
+          <Button>設定</Button>
+          <Button>アカウント</Button>
+          <IconButton aria-label="toggle theme" onClick={toggleTheme}>
+            {theme === "light" ? (
+              <DarkModeIcon className="icon" />
+            ) : (
+              <LightModeIcon className="icon" />
+            )}
+          </IconButton>
+        </ButtonGroup>
       </div>
 
       <h1>ここに投稿カードを表示する</h1>
