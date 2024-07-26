@@ -1,47 +1,57 @@
 "use client"; // クライアント側で動作するコードであることを指定しています。
 import Link from "next/link"; // ページ間リンクを作成するためのコンポーネントをインポートしています。
-import { useEffect, useState, useRef } from "react"; // Reactのフック（useEffectとuseState）をインポートしています。
-import { supabase } from "@/supabaseClient";
-import OneCustomerInfoCard from "@/components/one_task_info_card.jsx";
-import { Button, IconButton, ButtonGroup } from "@mui/material";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-import LightModeIcon from "@mui/icons-material/LightMode";
-import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
-import LightModeTwoToneIcon from "@mui/icons-material/LightModeTwoTone";
-import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
+import { useEffect, useState } from "react"; // Reactのフック（useEffectとuseState）をインポートしています。
+import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートしています。
+import OneCustomerInfoCard from "@/components/one_task_info_card.jsx"; // カスタマー情報カードコンポーネントをインポートしています。
+import { Button, ButtonGroup } from "@mui/material"; // Material-UIのボタンコンポーネントをインポートしています。
+import DarkModeIcon from "@mui/icons-material/DarkMode"; // ダークモードアイコンをインポートしています。
+import LightModeIcon from "@mui/icons-material/LightMode"; // ライトモードアイコンをインポートしています。
 
 // 顧客情報を表示するページコンポーネントを定義しています。
 export default function Page() {
-  const [items, setItems] = useState([]);
-  const [error, setError] = useState(null);
-  const [theme, setTheme] = useState("light");
+  const [items, setItems] = useState([]); // 顧客情報のリストを保持するためのstateを定義しています。
+  const [error, setError] = useState(null); // エラーメッセージを保持するためのstateを定義しています。
+  const [theme, setTheme] = useState("light"); // 現在のテーマ（ライトモードまたはダークモード）を保持するためのstateを定義しています。
 
+  // コンポーネントがマウントされたときにデータを取得するためのuseEffectフック
   useEffect(() => {
     fetchData();
   }, []);
 
+  // テーマが変更されたときに、HTML要素にテーマを設定するためのuseEffectフック
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
 
+  // Supabaseから顧客情報を取得する非同期関数
   const fetchData = async () => {
     try {
-      const { data, error } = await supabase.from("tasks").select("*");
-      if (error) throw error;
-      setItems(data || []); // データがnullの場合に空配列を設定
+      const { data, error } = await supabase.from("tasks").select("*"); // Supabaseからデータを取得します。
+      if (error) throw error; // エラーが発生した場合、エラーをスローします。
+      setItems(data || []); // データがnullの場合に空配列を設定し、stateを更新します。
     } catch (error) {
-      setError("データの取得に失敗しました: " + error.message);
+      setError("データの取得に失敗しました: " + error.message); // エラーメッセージをstateに設定します。
     }
   };
+
+  // テーマを切り替える関数
   const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
+    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light")); // 現在のテーマに応じてテーマを切り替えます。
   };
 
   // 顧客情報を表示するコンポーネントをレンダリングしています。
   return (
     <>
-      <div>
-        <h1>ここにヘッダーを入れる</h1>
+      {/* ヘッダーを固定するためのスタイルを適用したdiv */}
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          width: "100%",
+          zIndex: 1000,
+          backgroundColor: theme === "light" ? "#fff" : "#333",
+        }}
+      >
         <ButtonGroup variant="outlined" aria-label="Basic button group">
           <Button>メニューアイコン</Button>
           <Button>アラーム</Button>
@@ -53,65 +63,82 @@ export default function Page() {
             onClick={toggleTheme}
             startIcon={theme === "light" ? <DarkModeIcon /> : <LightModeIcon />}
           >
-            {theme === "light" ? "" : ""}
+            {theme === "light" ? "Dark Mode" : "Light Mode"}
           </Button>
         </ButtonGroup>
       </div>
 
-      <h1>ここに投稿カードを表示する</h1>
+      {/* コンテンツ領域。ヘッダーとフッターのスペースを確保するためのパディングを追加 */}
+      <div style={{ paddingTop: "100px", paddingBottom: "60px" }}>
+        <h1>ここに投稿カードを表示する</h1>
 
-      <div
-        className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ${
-          theme === "light" ? "bg-white" : "bg-gray-800"
-        }`}
-      >
-        {items.map((taskInfo) => (
-          <div
-            key={taskInfo.task_id}
-            className={`card bordered border-blue-200 border-2 flex flex-row max-w-sm m-4 ${
-              theme === "light" ? "bg-white" : "bg-gray-200"
-            }`}
+        {/* 顧客情報カードをグリッドレイアウトで表示 */}
+        <div
+          className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ${
+            theme === "light" ? "bg-white" : "bg-gray-800"
+          }`}
+        >
+          {items.map((taskInfo) => (
+            <div
+              key={taskInfo.task_id}
+              className={`card bordered border-blue-200 border-2 flex flex-row max-w-sm m-4 ${
+                theme === "light" ? "bg-white" : "bg-gray-200"
+              }`}
+            >
+              <OneCustomerInfoCard {...taskInfo} />
+            </div>
+          ))}
+        </div>
+        <div>
+          <Link href="/">
+            <button className="btn btn-primary m-2 text-2xl">WanPush</button>
+          </Link>
+        </div>
+        <h1>ここから下はテスト用に作っているコンポーネントの表示画面へ</h1>
+        <div className="p-4">
+          <Link
+            href="/supabase_component"
+            className="mt-4 pt-4"
+            prefetch={false}
           >
-            <OneCustomerInfoCard {...taskInfo} />
-          </div>
-        ))}
-      </div>
-      <div>
-        <Link href="/">
-          <button className="btn btn-primary m-2 text-2xl">WanPush</button>
-        </Link>
-      </div>
-
-      <div>
-        <h1>ここにフッターを入れる</h1>
-        <button className="btn btn-primary m-1 text-1xl hover:text-white">
-          Home
-        </button>
-        <button className="btn btn-primary m-1 text-1x1 hover:text-white">
-          検索
-        </button>
-        <button className="btn btn-primary m-1 text-1x1 hover:text-white">
-          日程
-        </button>
-        <button className="btn btn-primary m-1 text-1x1 hover:text-white">
-          タスク
-        </button>
+            <button className="btn btn-neutral w-full border-0 bg-blue-200 text-black hover:text-white">
+              Supabase_Component
+            </button>
+          </Link>
+        </div>
+        <div className="p-4">
+          <Link href="/test_component" className="mt-4 pt-4" prefetch={false}>
+            <button className="btn btn-neutral w-full border-0 bg-blue-200 text-black hover:text-white">
+              Test_Component
+            </button>
+          </Link>
+        </div>
       </div>
 
-      <h1>ここから下はテスト用に作っているコンポーネントの表示画面へ</h1>
-      <div className="p-4">
-        <Link href="/supabase_component" className="mt-4 pt-4" prefetch={false}>
-          <button className="btn btn-neutral w-full border-0 bg-blue-200 text-black hover:text-white">
-            Supabase_Component
-          </button>
-        </Link>
-      </div>
-      <div className="p-4">
-        <Link href="/test_component" className="mt-4 pt-4" prefetch={false}>
-          <button className="btn btn-neutral w-full border-0 bg-blue-200 text-black hover:text-white">
-            Test_Component
-          </button>
-        </Link>
+      {/* フッターを固定するためのスタイルを適用したdiv */}
+      <div
+        style={{
+          position: "fixed",
+          bottom: 0,
+          width: "100%",
+          zIndex: 1000,
+          backgroundColor: theme === "light" ? "#fff" : "#333",
+        }}
+      >
+        {" "}
+        <div>
+          <Link href="/">
+            <button className="btn btn-primary m-2 text-2xl">WanPush</button>
+          </Link>
+        </div>
+        <ButtonGroup variant="outlined" aria-label="Basic button group">
+          <Button>Home</Button>
+          <Button>検索</Button>
+          <Button>日程</Button>
+          <Link href="/tasks" prefetch={false}>
+            <Button>タスク</Button>
+          </Link>
+        </ButtonGroup>
       </div>
     </>
   );
