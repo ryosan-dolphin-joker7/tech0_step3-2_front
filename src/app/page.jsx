@@ -2,7 +2,7 @@
 import Link from "next/link"; // ページ間リンクを作成するためのコンポーネントをインポートしています。
 import { useEffect, useState } from "react"; // Reactのフック（useEffectとuseState）をインポートしています。
 import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートしています。
-import OneCustomerInfoCard from "@/components/one_task_info_card.jsx"; // カスタマー情報カードコンポーネントをインポートしています。
+import OnePostInfoCard from "@/components/one_post_info_card.jsx"; // カスタマー情報カードコンポーネントをインポートしています。
 import { Button, ButtonGroup } from "@mui/material"; // Material-UIのボタンコンポーネントをインポートしています。
 import DarkModeIcon from "@mui/icons-material/DarkMode"; // ダークモードアイコンをインポートしています。
 import LightModeIcon from "@mui/icons-material/LightMode"; // ライトモードアイコンをインポートしています。
@@ -63,13 +63,13 @@ export default function Page() {
             onClick={toggleTheme}
             startIcon={theme === "light" ? <DarkModeIcon /> : <LightModeIcon />}
           >
-            {theme === "light" ? "Dark Mode" : "Light Mode"}
+            {theme === "light" ? "" : ""}
           </Button>
         </ButtonGroup>
       </div>
 
       {/* コンテンツ領域。ヘッダーとフッターのスペースを確保するためのパディングを追加 */}
-      <div style={{ paddingTop: "100px", paddingBottom: "60px" }}>
+      <div style={{ paddingTop: "10px", paddingBottom: "60px" }}>
         <h1>ここに投稿カードを表示する</h1>
 
         {/* 顧客情報カードをグリッドレイアウトで表示 */}
@@ -85,7 +85,7 @@ export default function Page() {
                 theme === "light" ? "bg-white" : "bg-gray-200"
               }`}
             >
-              <OneCustomerInfoCard {...taskInfo} />
+              <OnePostInfoCard {...taskInfo} />
             </div>
           ))}
         </div>
