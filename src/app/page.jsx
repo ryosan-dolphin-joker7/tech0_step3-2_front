@@ -5,6 +5,8 @@ import { supabase } from "@/supabaseClient"; // Supabaseクライアントをイ
 import OnePostInfoCard from "@/components/one_post_info_card.jsx"; // カスタマー情報カードコンポーネントをインポートしています。
 import Header from "@/components/Header"; // ヘッダーコンポーネントをインポートしています。
 import Footer from "@/components/Footer"; // フッターコンポーネントをインポートしています。
+import Post_Footer from "@/components/post_footer"; // フッターコンポーネントをインポートしています。
+import { Button } from "@mui/material"; // Material-UIのボタンコンポーネントをインポートしています。
 
 // 顧客情報を表示するページコンポーネントを定義しています。
 export default function Page() {
@@ -63,11 +65,7 @@ export default function Page() {
             </div>
           ))}
         </div>
-        <div>
-          <Link href="/">
-            <button className="btn btn-primary m-2 text-2xl">WanPush</button>
-          </Link>
-        </div>
+
         <h1>ここから下はテスト用に作っているコンポーネントの表示画面へ</h1>
         <div className="p-4">
           <Link
@@ -88,6 +86,7 @@ export default function Page() {
           </Link>
         </div>
       </div>
+      <Post_Footer theme={theme} />
       <Footer theme={theme} />
     </>
   );

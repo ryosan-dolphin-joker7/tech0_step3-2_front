@@ -12,11 +12,6 @@ export default function Footer({ theme }) {
         backgroundColor: theme === "light" ? "#fff" : "#333",
       }}
     >
-      <div>
-        <Link href="/">
-          <button className="btn btn-primary m-2 text-2xl">WanPush</button>
-        </Link>
-      </div>
       <ButtonGroup variant="outlined" aria-label="Basic button group">
         <Link href="/" prefetch={false}>
           <Button>Home</Button>
