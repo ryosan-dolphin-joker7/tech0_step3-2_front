@@ -46,8 +46,6 @@ export default function Page() {
       <Header theme={theme} toggleTheme={toggleTheme} />
       {/* コンテンツ領域。ヘッダーとフッターのスペースを確保するためのパディングを追加 */}
       <div style={{ paddingTop: "60px", paddingBottom: "60px" }}>
-        <h1>ここに投稿カードを表示する</h1>
-
         {/* 顧客情報カードをグリッドレイアウトで表示 */}
         <div
           className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ${
