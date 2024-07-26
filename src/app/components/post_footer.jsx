@@ -1,3 +1,4 @@
+"use client"; // クライアント側で動作するコードであることを指定しています。
 import React, { useState } from "react";
 import { Button } from "@mui/material"; // Material-UIのボタンコンポーネントをインポートしています。
 import UploadImageModal from "@/components/Modal"; // モーダルコンポーネントをインポートしています。

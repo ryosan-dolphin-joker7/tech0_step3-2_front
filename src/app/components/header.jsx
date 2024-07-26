@@ -1,3 +1,4 @@
+"use client"; // クライアント側で動作するコードであることを指定しています。
 import { Button, ButtonGroup } from "@mui/material"; // Material-UIのボタンコンポーネントをインポートしています。
 import DarkModeIcon from "@mui/icons-material/DarkMode"; // ダークモードアイコンをインポートしています。
 import LightModeIcon from "@mui/icons-material/LightMode"; // ライトモードアイコンをインポートしています。

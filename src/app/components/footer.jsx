@@ -1,3 +1,4 @@
+"use client"; // クライアント側で動作するコードであることを指定しています。
 import { Button, ButtonGroup } from "@mui/material"; // Material-UIのボタンコンポーネントをインポートしています。
 import Link from "next/link"; // ページ間リンクを作成するためのコンポーネントをインポートしています。
 

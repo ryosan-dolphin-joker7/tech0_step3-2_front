@@ -1,3 +1,4 @@
+"use client"; // クライアント側で動作するコードであることを指定しています。
 import React from "react";
 import {
   Dialog,
