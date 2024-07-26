@@ -47,23 +47,30 @@ export default function Page() {
           <Button>アラーム</Button>
           <Button>設定</Button>
           <Button>アカウント</Button>
-          <IconButton aria-label="toggle theme" onClick={toggleTheme}>
-            {theme === "light" ? (
-              <DarkModeIcon className="icon" />
-            ) : (
-              <LightModeIcon className="icon" />
-            )}
-          </IconButton>
+          <Button
+            variant="outlined"
+            aria-label="toggle theme"
+            onClick={toggleTheme}
+            startIcon={theme === "light" ? <DarkModeIcon /> : <LightModeIcon />}
+          >
+            {theme === "light" ? "" : ""}
+          </Button>
         </ButtonGroup>
       </div>
 
       <h1>ここに投稿カードを表示する</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div
+        className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ${
+          theme === "light" ? "bg-white" : "bg-gray-800"
+        }`}
+      >
         {items.map((taskInfo) => (
           <div
             key={taskInfo.task_id}
-            className="card bordered bg-white border-blue-200 border-2 flex flex-row max-w-sm m-4"
+            className={`card bordered border-blue-200 border-2 flex flex-row max-w-sm m-4 ${
+              theme === "light" ? "bg-white" : "bg-gray-200"
+            }`}
           >
             <OneCustomerInfoCard {...taskInfo} />
           </div>
