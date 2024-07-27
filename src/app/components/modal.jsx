@@ -30,7 +30,6 @@ export default function UploadImageModal({ open, handleClose, handleUpload }) {
         <input type="file" accept="image/*" onChange={handleImageChange} />
         {image && (
           <>
-            <p>{image.name}</p>
             <img
               src={URL.createObjectURL(image)}
               alt="Preview"
