@@ -5,7 +5,7 @@ import { supabase } from "@/supabaseClient"; // Supabaseクライアントをイ
 import OnePostInfoCard from "@/components/one_post_info_card.jsx"; // カスタマー情報カードコンポーネントをインポートしています。
 import Header from "@/components/header.jsx"; // ヘッダーコンポーネントをインポートしています。
 import Footer from "@/components/footer.jsx"; // フッターコンポーネントをインポートしています。
-import Post_Footer from "@/components/post_footer.jsx"; // フッターコンポーネントをインポートしています。
+import Footer_Post from "@/components/footer_post.jsx"; // フッターコンポーネントをインポートしています。
 import { Button } from "@mui/material"; // Material-UIのボタンコンポーネントをインポートしています。
 
 // 顧客情報を表示するページコンポーネントを定義しています。
@@ -84,7 +84,7 @@ export default function Page() {
           </Link>
         </div>
       </div>
-      <Post_Footer theme={theme} />
+      <Footer_Post theme={theme} />
       <Footer theme={theme} />
     </>
   );
