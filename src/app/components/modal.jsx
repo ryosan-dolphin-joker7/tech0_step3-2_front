@@ -1,7 +1,7 @@
 "use client"; // クライアント側で動作するコードであることを指定しています。
 
 import React from "react";
-import { supabase, supabaseUrl } from "@/supabaseClient"; // Supabaseクライアントをインポートしています。
+import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートしています。
 import {
   Dialog,
   DialogActions,
@@ -34,9 +34,10 @@ export default function UploadImageModal({ open, handleClose, handleUpload }) {
         return;
       }
 
+      // 公開URLを取得
       const { publicURL, error: publicUrlError } = supabase.storage
         .from("one_push_photo")
-        .getPublicUrl(fileName); // 公開URLを取得します。
+        .getPublicUrl(fileName);
 
       if (publicUrlError) {
         console.error("Error getting public URL:", publicUrlError);
