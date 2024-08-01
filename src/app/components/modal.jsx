@@ -1,33 +1,74 @@
 "use client"; // クライアント側で動作するコードであることを指定しています。
+
 import React from "react";
+import { supabase, supabaseUrl } from "@/supabaseClient"; // Supabaseクライアントをインポートしています。
 import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Button,
   TextField,
 } from "@mui/material";
 
+// このコンポーネントは画像をアップロードするためのモーダルダイアログを表現しています。
 export default function UploadImageModal({ open, handleClose, handleUpload }) {
-  const [image, setImage] = React.useState(null);
+  const [image, setImage] = React.useState(null); // 画像ファイルを保持するためのステートを定義しています。
+  const [description, setDescription] = React.useState(""); // 投稿内容のテキストを保持するためのステートを定義しています。
 
+  // 画像が選択されたときに呼び出される関数です。
   const handleImageChange = (event) => {
-    setImage(event.target.files[0]);
+    setImage(event.target.files[0]); // 選択されたファイルをステートに保存します。
   };
 
-  const handleSubmit = () => {
-    handleUpload(image);
-    handleClose();
+  // 投稿ボタンが押されたときに呼び出される関数です。
+  const handleSubmit = async () => {
+    if (image && description) {
+      const fileName = `${Date.now()}_${image.name}`; // ファイル名を現在のタイムスタンプと選択されたファイル名を組み合わせて生成します。
+      const { data, error } = await supabase.storage
+        .from("one_push_photo")
+        .upload(fileName, image); // 画像をSupabaseストレージにアップロードします。
+
+      if (error) {
+        console.error("Error uploading image:", error);
+        return;
+      }
+
+      const imageUrl = `${supabaseUrl}/storage/v1/object/public/one_push_photo/${data.path}`; // アップロードされた画像のURLを取得します。
+      console.log("Image URL:", imageUrl);
+
+      const { data: insertData, error: insertError } = await supabase
+        .from("tasks")
+        .insert([
+          {
+            image_url: imageUrl,
+            description: description,
+            created_at: new Date().toISOString(), // 現在の日付をISOフォーマットで保存します。
+          },
+        ]); // 画像URL、説明テキスト、現在の日付をデータベースに挿入します。
+
+      if (insertError) {
+        console.error("Error inserting data:", insertError);
+        return;
+      }
+
+      handleUpload(image); // 画像アップロードハンドラを呼び出します。
+      handleClose(); // モーダルを閉じます。
+    }
   };
 
+  // コンポーネントのレンダリング内容を定義しています。
   return (
+    // Dialogコンポーネントはモーダルダイアログを表現します。
     <Dialog open={open} onClose={handleClose}>
+      {/* ダイアログのタイトルを表示します。 */}
       <DialogTitle>今日の出来事を投稿する</DialogTitle>
 
+      {/* ダイアログのコンテンツを表示します。 */}
       <DialogContent>
+        {/* 画像ファイルを選択するための入力フィールドを表示します。 */}
         <input type="file" accept="image/*" onChange={handleImageChange} />
+        {/* 画像が選択されている場合、そのプレビューを表示します。 */}
         {image && (
           <>
             <img
@@ -37,6 +78,7 @@ export default function UploadImageModal({ open, handleClose, handleUpload }) {
             />
           </>
         )}
+        {/* テキスト入力フィールドを表示します。 */}
         <TextField
           autoFocus
           required
@@ -44,13 +86,17 @@ export default function UploadImageModal({ open, handleClose, handleUpload }) {
           label="今日の出来事は？"
           fullWidth
           variant="outlined"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)} // テキスト入力の値をステートに保存します。
         />
       </DialogContent>
 
+      {/* ダイアログのアクションボタンを表示します。 */}
       <DialogActions>
-        <Button onClick={handleClose}>キャンセル</Button>
+        <Button onClick={handleClose}>キャンセル</Button>{" "}
+        {/* キャンセルボタン */}
         <Button onClick={handleSubmit} color="primary">
-          投稿
+          投稿 {/* 投稿ボタン */}
         </Button>
       </DialogActions>
     </Dialog>
