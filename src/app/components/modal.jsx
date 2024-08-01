@@ -34,16 +34,25 @@ export default function UploadImageModal({ open, handleClose, handleUpload }) {
         return;
       }
 
-      const imageUrl = `${supabaseUrl}/storage/v1/object/public/one_push_photo/${data.path}`; // アップロードされた画像のURLを取得します。
+      const { publicURL, error: publicUrlError } = supabase.storage
+        .from("one_push_photo")
+        .getPublicUrl(fileName); // 公開URLを取得します。
+
+      if (publicUrlError) {
+        console.error("Error getting public URL:", publicUrlError);
+        return;
+      }
+
+      const imageUrl = publicURL; // アップロードされた画像の公開URLを取得します。
       console.log("Image URL:", imageUrl);
 
       const { data: insertData, error: insertError } = await supabase
         .from("tasks")
         .insert([
           {
-            image_url: imageUrl,
-            description: description,
-            created_at: new Date().toISOString(), // 現在の日付をISOフォーマットで保存します。
+            photo_url: imageUrl,
+            task_name: description,
+            date: new Date().toISOString(), // 現在の日付をISOフォーマットで保存します。
           },
         ]); // 画像URL、説明テキスト、現在の日付をデータベースに挿入します。
 
