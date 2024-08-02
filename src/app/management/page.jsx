@@ -3,14 +3,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link"; // ページ間リンクを作成するためのコンポーネントをインポートしています。
 import Header from "@/components/header.jsx"; // ヘッダーコンポーネントをインポートしています。
 import Footer from "@/components/footer.jsx"; // フッターコンポーネントをインポートしています。
-import {
-  Box,
-  Typography,
-  Button,
-  List,
-  ListItem,
-  Divider,
-} from "@mui/material";
+import { Box, Typography, Button, Divider } from "@mui/material";
 
 export default function UserManagementPage() {
   const [theme, setTheme] = useState("light"); // 現在のテーマ（ライトモードまたはダークモード）を保持するためのstateを定義しています。
@@ -19,13 +12,6 @@ export default function UserManagementPage() {
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light")); // 現在のテーマに応じてテーマを切り替えます。
   };
-
-  const users = [
-    { name: "越智 梨子" },
-    { name: "越智 太郎" },
-    { name: "越智 舞依" },
-    { name: "越智 太志" },
-  ];
 
   return (
     <>
@@ -40,41 +26,71 @@ export default function UserManagementPage() {
           maxWidth: "400px",
           margin: "0 auto",
           padding: "16px",
-          backgroundColor: "#f9f9f9",
           borderRadius: "8px",
           boxShadow: "0 0 10px rgba(0,0,0,0.1)",
         }}
       >
         <Typography variant="h6" gutterBottom>
-          ユーザ管理
+          管理画面
         </Typography>
         <Divider sx={{ width: "100%", marginBottom: "16px" }} />
 
-        <List sx={{ width: "100%" }}>
-          {users.map((user, index) => (
-            <ListItem
-              key={index}
+        <Box sx={{ width: "100%", padding: "16px" }}>
+          <Link href="/management/users" passHref>
+            <Button
               sx={{
-                padding: "12px",
-                backgroundColor: index % 2 === 0 ? "#fff" : "#f9f9f9",
-                borderRadius: "4px",
-                marginBottom: "8px",
-                boxShadow: "0 0 5px rgba(0,0,0,0.1)",
+                width: "100%",
+                border: "0",
+                backgroundColor: "skyblue",
+                ":hover": { color: "white" },
               }}
             >
-              {user.name}
-            </ListItem>
-          ))}
-        </List>
-        <Link href="/users/user" passHref>
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{ marginTop: "16px", width: "100%" }}
-          >
-            + 新規登録
-          </Button>
-        </Link>
+              ユーザー管理
+            </Button>
+          </Link>
+        </Box>
+        <Box sx={{ width: "100%", padding: "16px" }}>
+          <Link href="/users" passHref>
+            <Button
+              sx={{
+                width: "100%",
+                border: "0",
+                backgroundColor: "skyblue",
+                ":hover": { color: "white" },
+              }}
+            >
+              ペット管理
+            </Button>
+          </Link>
+        </Box>
+        <Box sx={{ width: "100%", padding: "16px" }}>
+          <Link href="/users" passHref>
+            <Button
+              sx={{
+                width: "100%",
+                border: "0",
+                backgroundColor: "skyblue",
+                ":hover": { color: "white" },
+              }}
+            >
+              ペット用品管理
+            </Button>
+          </Link>
+        </Box>
+        <Box sx={{ width: "100%", padding: "16px" }}>
+          <Link href="/users" passHref>
+            <Button
+              sx={{
+                width: "100%",
+                border: "0",
+                backgroundColor: "skyblue",
+                ":hover": { color: "white" },
+              }}
+            >
+              サービスレベル
+            </Button>
+          </Link>
+        </Box>
       </Box>
       <Footer theme={theme} />
     </>

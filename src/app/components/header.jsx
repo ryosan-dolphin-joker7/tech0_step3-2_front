@@ -42,7 +42,7 @@ export default function Header({ theme, toggleTheme }) {
             <TestIcon />
           </Button>
         </Link>
-        <Link href="/users" prefetch={false}>
+        <Link href="/management" prefetch={false}>
           <Button variant="outlined" style={iconButtonStyle}>
             <AccountCircleIcon />
           </Button>
