@@ -42,7 +42,7 @@ export default function Header({ theme, toggleTheme }) {
             <TestIcon />
           </Button>
         </Link>
-        <Link href="/supabase_component" prefetch={false}>
+        <Link href="/users" prefetch={false}>
           <Button variant="outlined" style={iconButtonStyle}>
             <AccountCircleIcon />
           </Button>

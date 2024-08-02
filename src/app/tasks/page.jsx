@@ -75,8 +75,12 @@ export default function Page() {
   return (
     <>
       <Header theme={theme} toggleTheme={toggleTheme} />
+
+      {/* コンテンツ領域。ヘッダーとフッターのスペースを確保するためのパディングを追加 */}
+      <div style={{ paddingTop: "10px", paddingBottom: "30px" }}></div>
       <h1>Supabaseのデータベースにタスクを登録する画面</h1>
       {error && <div className="alert alert-error">{error}</div>}
+
       <div className="card bordered bg-white border-blue-200 border-2 max-w-md m-4">
         <div className="m-4 card bordered bg-blue-200 duration-200 hover:border-r-red">
           <form ref={formRef} onSubmit={handleSubmit}>
@@ -127,6 +131,7 @@ export default function Page() {
           </form>
         </div>
       </div>
+      <h1>登録されたタスク一覧</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {items.map((taskInfo) => (
           <div
