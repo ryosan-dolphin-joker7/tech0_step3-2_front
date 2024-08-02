@@ -6,7 +6,6 @@ import OnePostInfoCard from "@/components/one_post_info_card.jsx"; // カスタ�
 import Header from "@/components/header.jsx"; // ヘッダーコンポーネントをインポートしています。
 import Footer from "@/components/footer.jsx"; // フッターコンポーネントをインポートしています。
 import Footer_Post from "@/components/footer_post.jsx"; // フッターコンポーネントをインポートしています。
-import { Button } from "@mui/material"; // Material-UIのボタンコンポーネントをインポートしています。
 
 // 顧客情報を表示するページコンポーネントを定義しています。
 export default function Page() {
@@ -65,17 +64,6 @@ export default function Page() {
         </div>
 
         <h1>ここから下はテスト用に作っているコンポーネントの表示画面へ</h1>
-        <div className="p-4">
-          <Link
-            href="/supabase_component"
-            className="mt-4 pt-4"
-            prefetch={false}
-          >
-            <button className="btn btn-neutral w-full border-0 bg-blue-200 text-black hover:text-white">
-              Supabase_Component
-            </button>
-          </Link>
-        </div>
         <div className="p-4">
           <Link href="/test_component" className="mt-4 pt-4" prefetch={false}>
             <button className="btn btn-neutral w-full border-0 bg-blue-200 text-black hover:text-white">

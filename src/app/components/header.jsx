@@ -3,8 +3,23 @@ import Link from "next/link"; // ページ間リンクを作成するための�
 import { Button, ButtonGroup } from "@mui/material"; // Material-UIのボタンコンポーネントをインポートしています。
 import DarkModeIcon from "@mui/icons-material/DarkMode"; // ダークモードアイコンをインポートしています。
 import LightModeIcon from "@mui/icons-material/LightMode"; // ライトモードアイコンをインポートしています。
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import MenuIcon from "@mui/icons-material/Menu";
+import AlarmIcon from "@mui/icons-material/Alarm";
+import TestIcon from "@mui/icons-material/Build"; // テスト用の適当なアイコンをインポートしています
 
 export default function Header({ theme, toggleTheme }) {
+  const iconButtonStyle = {
+    minWidth: "40px",
+    height: "36px", // ボタンの高さを36pxに設定
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "0 16px", // 横のパディングを調整
+    lineHeight: "1", // lineHeightを設定して中央揃えを確実に
+    textAlign: "center", // テキストの中央揃え
+  };
+
   return (
     <div
       style={{
@@ -16,19 +31,29 @@ export default function Header({ theme, toggleTheme }) {
       }}
     >
       <ButtonGroup variant="outlined" aria-label="Basic button group">
-        <Button>メニュー</Button>
-        <Button>アラーム</Button>
-        <Button>設定</Button>
+        <Button variant="outlined" style={iconButtonStyle}>
+          <MenuIcon />
+        </Button>
+        <Button variant="outlined" style={iconButtonStyle}>
+          <AlarmIcon />
+        </Button>
         <Link href="/supabase_component" prefetch={false}>
-          <Button>アカウント</Button>
+          <Button variant="outlined" style={iconButtonStyle}>
+            <TestIcon />
+          </Button>
+        </Link>
+        <Link href="/supabase_component" prefetch={false}>
+          <Button variant="outlined" style={iconButtonStyle}>
+            <AccountCircleIcon />
+          </Button>
         </Link>
         <Button
           variant="outlined"
           aria-label="toggle theme"
           onClick={toggleTheme}
-          startIcon={theme === "light" ? <DarkModeIcon /> : <LightModeIcon />}
+          style={iconButtonStyle}
         >
-          {theme === "light" ? "" : ""}
+          {theme === "light" ? <DarkModeIcon /> : <LightModeIcon />}
         </Button>
       </ButtonGroup>
     </div>
