@@ -3,7 +3,14 @@ import { useEffect, useState } from "react";
 import Link from "next/link"; // ページ間リンクを作成するためのコンポーネントをインポートしています。
 import Header from "@/components/header.jsx"; // ヘッダーコンポーネントをインポートしています。
 import Footer from "@/components/footer.jsx"; // フッターコンポーネントをインポートしています。
-import { Box, Typography, Button, Divider } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  List,
+  ListItem,
+  Divider,
+} from "@mui/material";
 
 export default function UserManagementPage() {
   const [theme, setTheme] = useState("light"); // 現在のテーマ（ライトモードまたはダークモード）を保持するためのstateを定義しています。
@@ -12,6 +19,12 @@ export default function UserManagementPage() {
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light")); // 現在のテーマに応じてテーマを切り替えます。
   };
+
+  const users = [
+    { name: "ワンコ 甲号" },
+    { name: "ワンコ 乙号" },
+    { name: "ワンコ 丙号" },
+  ];
 
   return (
     <>
@@ -26,71 +39,50 @@ export default function UserManagementPage() {
           maxWidth: "400px",
           margin: "0 auto",
           padding: "16px",
+          backgroundColor: "#f9f9f9",
           borderRadius: "8px",
           boxShadow: "0 0 10px rgba(0,0,0,0.1)",
         }}
       >
         <Typography variant="h6" gutterBottom>
-          管理画面
+          ペット管理
         </Typography>
         <Divider sx={{ width: "100%", marginBottom: "16px" }} />
 
-        <Box sx={{ width: "100%", padding: "16px" }}>
-          <Link href="/management/users" passHref>
-            <Button
+        <List sx={{ width: "100%" }}>
+          {users.map((user, index) => (
+            <ListItem
+              key={index}
               sx={{
-                width: "100%",
-                border: "0",
-                backgroundColor: "skyblue",
-                ":hover": { color: "white" },
+                padding: "12px",
+                backgroundColor: index % 2 === 0 ? "#fff" : "#f9f9f9",
+                borderRadius: "4px",
+                marginBottom: "8px",
+                boxShadow: "0 0 5px rgba(0,0,0,0.1)",
               }}
             >
-              ユーザー管理
-            </Button>
-          </Link>
-        </Box>
-        <Box sx={{ width: "100%", padding: "16px" }}>
-          <Link href="/management/pets" passHref>
-            <Button
-              sx={{
-                width: "100%",
-                border: "0",
-                backgroundColor: "skyblue",
-                ":hover": { color: "white" },
-              }}
-            >
-              ペット管理
-            </Button>
-          </Link>
-        </Box>
-        <Box sx={{ width: "100%", padding: "16px" }}>
-          <Link href="/management/pets" passHref>
-            <Button
-              sx={{
-                width: "100%",
-                border: "0",
-                backgroundColor: "skyblue",
-                ":hover": { color: "white" },
-              }}
-            >
-              ペット用品管理
-            </Button>
-          </Link>
-        </Box>
-        <Box sx={{ width: "100%", padding: "16px" }}>
-          <Link href="/users" passHref>
-            <Button
-              sx={{
-                width: "100%",
-                border: "0",
-                backgroundColor: "skyblue",
-                ":hover": { color: "white" },
-              }}
-            >
-              サービスレベル
-            </Button>
-          </Link>
-        </Box>
+              {user.name}
+            </ListItem>
+          ))}
+        </List>
+        <Link href="/management/pets/pet" passHref>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ marginTop: "16px", width: "100%" }}
+          >
+            + 新規登録
+          </Button>
+        </Link>
+        <Link href="/management" passHref>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ marginTop: "16px", width: "100%" }}
+          >
+            戻る
+          </Button>
+        </Link>
       </Box>
       <Footer theme={theme} />
     </>
