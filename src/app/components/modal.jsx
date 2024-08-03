@@ -9,61 +9,67 @@ import {
   DialogTitle,
   Button,
   TextField,
+  CircularProgress,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 
 // このコンポーネントは画像をアップロードするためのモーダルダイアログを表現しています。
 export default function UploadImageModal({ open, handleClose, handleUpload }) {
   const [image, setImage] = React.useState(null); // 画像ファイルを保持するためのステートを定義しています。
   const [description, setDescription] = React.useState(""); // 投稿内容のテキストを保持するためのステートを定義しています。
+  const [loading, setLoading] = React.useState(false); // ローディング状態を管理するステートを定義しています。
+  const [error, setError] = React.useState(null); // エラーメッセージを保持するためのステートを定義しています。
 
   // 画像が選択されたときに呼び出される関数です。
   const handleImageChange = (event) => {
-    setImage(event.target.files[0]); // 選択されたファイルをステートに保存します。
+    const file = event.target.files[0]; // 選択されたファイルを取得します。
+    if (file && file.type.startsWith("image/")) {
+      // ファイルが画像ファイルであるかチェックします。
+      setImage(file); // 選択されたファイルをステートに保存します。
+    } else {
+      setError("画像ファイルを選択してください"); // 無効なファイル形式の場合、エラーメッセージを設定します。
+    }
   };
 
   // 投稿ボタンが押されたときに呼び出される関数です。
   const handleSubmit = async () => {
     if (image && description) {
-      const fileName = `${Date.now()}_${image.name}`; // ファイル名を現在のタイムスタンプと選択されたファイル名を組み合わせて生成します。
-      const { data, error } = await supabase.storage
-        .from("one_push_photo")
-        .upload(fileName, image); // 画像をSupabaseストレージにアップロードします。
+      // 画像と説明が両方とも存在するかチェックします。
+      setLoading(true); // ローディング状態を開始します。
+      setError(null); // エラーメッセージをクリアします。
 
-      if (error) {
-        console.error("Error uploading image:", error);
-        return;
-      }
+      try {
+        const fileName = `img/${Date.now()}_${encodeURIComponent(image.name)}`; // ファイル名を「img」フォルダ内に生成します。
+        const { data, error: uploadError } = await supabase.storage
+          .from("one_push_photo")
+          .upload(fileName, image); // 画像をSupabaseストレージの「img」フォルダにアップロードします。
 
-      // 公開URLを取得
-      const { publicURL, error: publicUrlError } = supabase.storage
-        .from("one_push_photo")
-        .getPublicUrl(fileName);
+        if (uploadError) throw new Error(uploadError.message); // アップロードエラーが発生した場合、例外をスローします。
 
-      if (publicUrlError) {
-        console.error("Error getting public URL:", publicUrlError);
-        return;
-      }
+        const { publicUrl } = supabase.storage
+          .from("one_push_photo")
+          .getPublicUrl(fileName).data; // 公開URLを取得します。
 
-      const imageUrl = publicURL; // アップロードされた画像の公開URLを取得します。
-      console.log("Image URL:", imageUrl);
+        if (!publicUrl) throw new Error("公開URLの取得に失敗しました"); // 公開URLの取得に失敗した場合、例外をスローします。
 
-      const { data: insertData, error: insertError } = await supabase
-        .from("tasks")
-        .insert([
+        const { error: insertError } = await supabase.from("tasks").insert([
           {
-            photo_url: imageUrl,
+            photo_url: publicUrl,
             task_name: description,
             date: new Date().toISOString(), // 現在の日付をISOフォーマットで保存します。
           },
         ]); // 画像URL、説明テキスト、現在の日付をデータベースに挿入します。
 
-      if (insertError) {
-        console.error("Error inserting data:", insertError);
-        return;
-      }
+        if (insertError) throw new Error(insertError.message); // データ挿入エラーが発生した場合、例外をスローします。
 
-      handleUpload(image); // 画像アップロードハンドラを呼び出します。
-      handleClose(); // モーダルを閉じます。
+        handleUpload(image); // 画像アップロードハンドラを呼び出します。
+        handleClose(); // モーダルを閉じます。
+      } catch (err) {
+        setError(err.message); // エラーメッセージを設定します。
+      } finally {
+        setLoading(false); // ローディング状態を終了します。
+      }
     }
   };
 
@@ -105,10 +111,24 @@ export default function UploadImageModal({ open, handleClose, handleUpload }) {
       <DialogActions>
         <Button onClick={handleClose}>キャンセル</Button>{" "}
         {/* キャンセルボタン */}
-        <Button onClick={handleSubmit} color="primary">
-          投稿 {/* 投稿ボタン */}
+        <Button onClick={handleSubmit} color="primary" disabled={loading}>
+          {loading ? <CircularProgress size={24} /> : "投稿"}{" "}
+          {/* ローディング中はインディケーターを表示 */}
         </Button>
       </DialogActions>
+
+      {/* エラーメッセージを表示します。 */}
+      {error && (
+        <Snackbar
+          open={!!error}
+          autoHideDuration={6000}
+          onClose={() => setError(null)}
+        >
+          <Alert onClose={() => setError(null)} severity="error">
+            {error}
+          </Alert>
+        </Snackbar>
+      )}
     </Dialog>
   );
 }
