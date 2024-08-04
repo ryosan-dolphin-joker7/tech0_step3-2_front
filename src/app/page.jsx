@@ -27,14 +27,14 @@ export default function Page() {
   const fetchData = async () => {
     try {
       const { data, error } = await supabase.from("tasks").select("*"); // Supabaseからデータを取得します。
-      if (error) throw error; // エラーが発生した場合、エラーをスローします。
+      if (error) throw error; // エラーが発生した場合、エラーを返します。
       setItems(data || []); // データがnullの場合に空配列を設定し、stateを更新します。
     } catch (error) {
       setError("データの取得に失敗しました: " + error.message); // エラーメッセージをstateに設定します。
     }
   };
 
-  // テーマを切り替える関数
+  // UIのテーマを切り替える関数
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light")); // 現在のテーマに応じてテーマを切り替えます。
   };

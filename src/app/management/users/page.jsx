@@ -1,5 +1,6 @@
 "use client"; // クライアント側で動作するコードであることを指定しています。
 import { useEffect, useState } from "react";
+import { supabase } from "@/supabaseClient";
 import Link from "next/link"; // ページ間リンクを作成するためのコンポーネントをインポートしています。
 import Header from "@/components/header.jsx"; // ヘッダーコンポーネントをインポートしています。
 import Footer from "@/components/footer.jsx"; // フッターコンポーネントをインポートしています。
@@ -14,6 +15,9 @@ import {
 
 export default function UserManagementPage() {
   const [theme, setTheme] = useState("light"); // 現在のテーマ（ライトモードまたはダークモード）を保持するためのstateを定義しています。
+  // アイテムデータとエラーメッセージを保持するためのステートを定義します。
+  const [items, setItems] = useState([]);
+  const [error, setError] = useState(null);
 
   // テーマを切り替える関数
   const toggleTheme = () => {
@@ -26,6 +30,36 @@ export default function UserManagementPage() {
     { name: "越智 舞依" },
     { name: "越智 太志" },
   ];
+
+  // コンポーネントがマウントされたときにデータを取得するための副作用フックを設定します。
+  useEffect(() => {
+    const fetchData = async () => {
+      console.log("Fetching data from Supabase..."); // データ取得開始のログを出力します。
+
+      try {
+        // Supabaseから"todos"テーブルのデータを取得します。
+        const { data, error } = await supabase
+          .from("userinformation")
+          .select("*");
+
+        if (error) {
+          // データ取得中にエラーが発生した場合の処理
+          console.error("Error fetching data: ", error); // エラーログを出力します。
+          setError("データの取得に失敗しました"); // エラーメッセージをステートに設定します。
+        } else {
+          // データ取得が成功した場合の処理
+          console.log("Data fetched successfully:", data); // 取得したデータのログを出力します。
+          setItems(data); // 取得したデータをステートに設定します。
+        }
+      } catch (fetchError) {
+        // データ取得中に予期しないエラーが発生した場合の処理
+        console.error("Fetch error: ", fetchError); // エラーログを出力します。
+        setError("データの取得中にエラーが発生しました"); // エラーメッセージをステートに設定します。
+      }
+    };
+
+    fetchData(); // データ取得関数を実行します。
+  }, []); // 空の依存配列により、コンポーネントがマウントされたときにのみ実行されます。
 
   return (
     <>
@@ -66,6 +100,46 @@ export default function UserManagementPage() {
             </ListItem>
           ))}
         </List>
+
+        <h1>Supabase User List</h1>
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        <table style={{ borderCollapse: "collapse", width: "100%" }}>
+          <thead>
+            <tr>
+              <th style={{ border: "1px solid black", padding: "8px" }}>
+                UserName
+              </th>
+              <th style={{ border: "1px solid black", padding: "8px" }}>
+                Birthdate
+              </th>
+              <th style={{ border: "1px solid black", padding: "8px" }}>
+                Password
+              </th>
+              <th style={{ border: "1px solid black", padding: "8px" }}>
+                ServiceLevel
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.map((item, index) => (
+              <tr key={index}>
+                <td style={{ border: "1px solid black", padding: "8px" }}>
+                  {item.username}
+                </td>
+                <td style={{ border: "1px solid black", padding: "8px" }}>
+                  {item.birthdate}
+                </td>
+                <td style={{ border: "1px solid black", padding: "8px" }}>
+                  {item.password}
+                </td>
+                <td style={{ border: "1px solid black", padding: "8px" }}>
+                  {item.servicelevel}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
         <Link href="/management/users/user" passHref>
           <Button
             variant="contained"
@@ -85,6 +159,7 @@ export default function UserManagementPage() {
           </Button>
         </Link>
       </Box>
+
       <Footer theme={theme} />
     </>
   );
