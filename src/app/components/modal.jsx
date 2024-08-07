@@ -40,7 +40,13 @@ export default function UploadImageModal({ open, handleClose, handleUpload }) {
       setError(null); // エラーメッセージをクリアします。
 
       try {
-        const fileName = `img/${Date.now()}_${encodeURIComponent(image.name)}`; // ファイル名を「img」フォルダ内に生成します。
+        // encodeURIComponentを使用してファイル名を正しくエンコードします。
+        const encodedFileName = encodeURIComponent(image.name).replace(
+          /%20/g,
+          "_"
+        );
+        const fileName = `img/${Date.now()}_${encodedFileName}`; // ファイル名を「img」フォルダ内に生成します。
+
         const { data, error: uploadError } = await supabase.storage
           .from("one_push_photo")
           .upload(fileName, image); // 画像をSupabaseストレージの「img」フォルダにアップロードします。
