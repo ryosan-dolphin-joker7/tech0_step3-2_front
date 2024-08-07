@@ -11,6 +11,7 @@ import {
   List,
   ListItem,
   Divider,
+  TextField,
 } from "@mui/material";
 
 export default function UserManagementPage() {
@@ -18,6 +19,13 @@ export default function UserManagementPage() {
   // アイテムデータとエラーメッセージを保持するためのステートを定義します。
   const [items, setItems] = useState([]);
   const [error, setError] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null); // 選択されたユーザーの情報を保持するステートを定義
+  const [updateData, setUpdateData] = useState({
+    username: "",
+    birthdate: "",
+    password: "",
+    servicelevel: "",
+  }); // 更新フォームのデータを保持するステートを定義
 
   // テーマを切り替える関数
   const toggleTheme = () => {
@@ -37,7 +45,7 @@ export default function UserManagementPage() {
       console.log("Fetching data from Supabase..."); // データ取得開始のログを出力します。
 
       try {
-        // Supabaseから"todos"テーブルのデータを取得します。
+        // Supabaseから"userinformation"テーブルのデータを取得します。
         const { data, error } = await supabase
           .from("userinformation")
           .select("*");
@@ -61,6 +69,41 @@ export default function UserManagementPage() {
     fetchData(); // データ取得関数を実行します。
   }, []); // 空の依存配列により、コンポーネントがマウントされたときにのみ実行されます。
 
+  // ユーザー情報を更新する関数
+  const handleUpdateUser = async (e) => {
+    e.preventDefault();
+    try {
+      const { data, error } = await supabase
+        .from("userinformation")
+        .update(updateData)
+        .eq("userid", selectedUser.userid); // 適切な主キーを使用
+
+      if (error) {
+        console.error("Error updating data: ", error);
+        setError("データの更新に失敗しました");
+      } else {
+        console.log("Data updated successfully:", data);
+        // 更新後のデータを再取得
+        const updatedItems = items.map((item) =>
+          item.userid === selectedUser.userid
+            ? { ...item, ...updateData }
+            : item
+        );
+        setItems(updatedItems);
+        setSelectedUser(null); // 選択状態をリセット
+        setUpdateData({
+          username: "",
+          birthdate: "",
+          password: "",
+          servicelevel: "",
+        }); // フォームをリセット
+      }
+    } catch (updateError) {
+      console.error("Update error: ", updateError);
+      setError("データの更新中にエラーが発生しました");
+    }
+  };
+
   return (
     <>
       <Header theme={theme} toggleTheme={toggleTheme} />
@@ -71,7 +114,7 @@ export default function UserManagementPage() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          maxWidth: "400px",
+          maxWidth: "600px", // フォームのスペースを確保
           margin: "0 auto",
           padding: "16px",
           backgroundColor: "#f9f9f9",
@@ -118,6 +161,9 @@ export default function UserManagementPage() {
               <th style={{ border: "1px solid black", padding: "8px" }}>
                 ServiceLevel
               </th>
+              <th style={{ border: "1px solid black", padding: "8px" }}>
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -135,10 +181,82 @@ export default function UserManagementPage() {
                 <td style={{ border: "1px solid black", padding: "8px" }}>
                   {item.servicelevel}
                 </td>
+                <td style={{ border: "1px solid black", padding: "8px" }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                      setSelectedUser(item);
+                      setUpdateData({
+                        username: item.username,
+                        birthdate: item.birthdate,
+                        password: item.password,
+                        servicelevel: item.servicelevel,
+                      });
+                    }}
+                  >
+                    編集
+                  </Button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
+
+        {selectedUser && (
+          <Box
+            component="form"
+            onSubmit={handleUpdateUser}
+            sx={{
+              marginTop: "16px",
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              gap: "16px",
+            }}
+          >
+            <TextField
+              label="UserName"
+              value={updateData.username}
+              onChange={(e) =>
+                setUpdateData({ ...updateData, username: e.target.value })
+              }
+              fullWidth
+            />
+            <TextField
+              label="Birthdate"
+              value={updateData.birthdate}
+              onChange={(e) =>
+                setUpdateData({ ...updateData, birthdate: e.target.value })
+              }
+              fullWidth
+            />
+            <TextField
+              label="Password"
+              value={updateData.password}
+              onChange={(e) =>
+                setUpdateData({ ...updateData, password: e.target.value })
+              }
+              fullWidth
+            />
+            <TextField
+              label="ServiceLevel"
+              value={updateData.servicelevel}
+              onChange={(e) =>
+                setUpdateData({ ...updateData, servicelevel: e.target.value })
+              }
+              fullWidth
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{ marginTop: "16px" }}
+            >
+              更新
+            </Button>
+          </Box>
+        )}
 
         <Link href="/management/users/user" passHref>
           <Button
