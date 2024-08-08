@@ -6,35 +6,41 @@ import {
   DialogContent,
   DialogTitle,
   Button,
-  TextField,
 } from "@mui/material";
 
 export default function UploadImageModal({ open, handleClose, handleUpload }) {
   const [dogImage, setDogImage] = useState(null);
+  const [comment, setComment] = useState(""); // コメントの状態を追加
 
-  // 犬の画像をAPIから取得する関数
-  const getDogImage = async () => {
+  // 犬の画像とコメントをAPIから取得する関数
+  const fetchData = async () => {
     try {
-      const response = await fetch("https://dog.ceo/api/breeds/image/random");
-      const data = await response.json();
-      setDogImage(data.message);
+      const dogResponse = await fetch(
+        "https://dog.ceo/api/breeds/image/random"
+      );
+      const dogData = await dogResponse.json();
+      setDogImage(dogData.message);
+
+      const commentResponse = await fetch("https://api.adviceslip.com/advice");
+      const commentData = await commentResponse.json();
+      setComment(commentData.slip.advice);
     } catch (error) {
-      console.error("Error fetching dog image:", error);
+      console.error("Error fetching data:", error);
     }
   };
 
-  // モーダルが開いた時に犬の画像を取得
+  // モーダルが開いた時にデータを取得
   useEffect(() => {
     if (open) {
-      getDogImage();
+      fetchData();
     }
   }, [open]);
 
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>今日のわんこ！！</DialogTitle>
-
       <DialogContent>
+        {comment && <p>{comment}</p>}
         {dogImage && (
           <>
             <img
@@ -45,10 +51,9 @@ export default function UploadImageModal({ open, handleClose, handleUpload }) {
           </>
         )}
       </DialogContent>
-
       <DialogActions>
         <Button onClick={handleClose}>閉じる</Button>
-        <Button onClick={getDogImage}>もう一回</Button>
+        <Button onClick={fetchData}>もう一回</Button>
       </DialogActions>
     </Dialog>
   );
