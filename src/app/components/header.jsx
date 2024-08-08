@@ -7,6 +7,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
 import AlarmIcon from "@mui/icons-material/Alarm";
 import TestIcon from "@mui/icons-material/Build"; // テスト用の適当なアイコンをインポートしています
+import { Pets } from "@mui/icons-material";
 
 export default function Header({ theme, toggleTheme }) {
   const iconButtonStyle = {
@@ -34,9 +35,11 @@ export default function Header({ theme, toggleTheme }) {
         <Button variant="outlined" style={iconButtonStyle}>
           <MenuIcon />
         </Button>
-        <Button variant="outlined" style={iconButtonStyle}>
-          <AlarmIcon />
-        </Button>
+        <Link href="/get_dog_image" prefetch={false}>
+          <Button variant="outlined" style={iconButtonStyle}>
+            <Pets />
+          </Button>
+        </Link>
         <Link href="/supabase_component" prefetch={false}>
           <Button variant="outlined" style={iconButtonStyle}>
             <TestIcon />
