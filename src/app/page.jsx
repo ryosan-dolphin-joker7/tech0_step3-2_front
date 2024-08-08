@@ -10,6 +10,7 @@ import Footer_Post from "@/components/footer_post.jsx"; // フッターコンポ
 // 顧客情報を表示するページコンポーネントを定義しています。
 export default function Page() {
   const [items, setItems] = useState([]); // 顧客情報のリストを保持するためのstateを定義しています。
+  const [talks, setTalks] = useState([]); // talks情報のリストを保持するためのstateを定義しています。
   const [error, setError] = useState(null); // エラーメッセージを保持するためのstateを定義しています。
   const [theme, setTheme] = useState("light"); // 現在のテーマ（ライトモードまたはダークモード）を保持するためのstateを定義しています。
 
@@ -23,20 +24,29 @@ export default function Page() {
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
 
-  // Supabaseから顧客情報を取得する非同期関数
+  // Supabaseから顧客情報とtalksを取得する非同期関数
   const fetchData = async () => {
     try {
-      const { data, error } = await supabase.from("tasks").select("*"); // Supabaseからデータを取得します。
-      if (error) throw error; // エラーが発生した場合、エラーを返します。
-      setItems(data || []); // データがnullの場合に空配列を設定し、stateを更新します。
+      const { data: tasksData, error: tasksError } = await supabase
+        .from("tasks")
+        .select("*");
+      if (tasksError) throw tasksError;
+
+      const { data: talksData, error: talksError } = await supabase
+        .from("talks")
+        .select("*");
+      if (talksError) throw talksError;
+
+      setItems(tasksData || []);
+      setTalks(talksData || []);
     } catch (error) {
-      setError("データの取得に失敗しました: " + error.message); // エラーメッセージをstateに設定します。
+      setError("データの取得に失敗しました: " + error.message);
     }
   };
 
   // UIのテーマを切り替える関数
   const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light")); // 現在のテーマに応じてテーマを切り替えます。
+    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
   };
 
   // 顧客情報を表示するコンポーネントをレンダリングしています。
@@ -52,16 +62,21 @@ export default function Page() {
             theme === "light" ? "bg-white" : "bg-gray-800"
           }`}
         >
-          {items.map((taskInfo) => (
-            <div
-              key={taskInfo.task_id}
-              className={`card bordered border-blue-200 border-2 flex flex-row max-w-sm m-4 ${
-                theme === "light" ? "bg-white" : "bg-gray-200"
-              }`}
-            >
-              <OnePostInfoCard {...taskInfo} />
-            </div>
-          ))}
+          {items.map((taskInfo) => {
+            const relatedTalks = talks.filter(
+              (talk) => talk.task_id === taskInfo.task_id
+            );
+            return (
+              <div
+                key={taskInfo.task_id}
+                className={`card bordered border-blue-200 border-2 flex flex-row max-w-sm m-4 ${
+                  theme === "light" ? "bg-white" : "bg-gray-200"
+                }`}
+              >
+                <OnePostInfoCard taskInfo={taskInfo} talks={relatedTalks} />
+              </div>
+            );
+          })}
         </div>
 
         <h1>ここから下はテスト用に作っているコンポーネントの表示画面へ</h1>
