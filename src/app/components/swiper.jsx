@@ -32,12 +32,6 @@ export const SwiperTab = () => {
     if (swiper && typeof swiper.slideTo === "function") {
       swiper.slideTo(value); // タブの選択に応じてスライドを移動
     }
-
-    return () => {
-      if (swiper && typeof swiper.destroy === "function") {
-        swiper.destroy(); // Swiperインスタンスを破棄
-      }
-    };
   }, [swiper, value]);
 
   // タブが変更されたときに呼び出される関数
@@ -55,10 +49,19 @@ export const SwiperTab = () => {
         </Tabs>
       </Box>
 
-      <Swiper onSwiper={setSwiper} spaceBetween={50} slidesPerView={1}>
+      <Swiper
+        onSwiper={setSwiper}
+        onSlideChange={(swiper) => setValue(swiper.activeIndex)}
+        spaceBetween={50}
+        slidesPerView={1}
+      >
         <SwiperSlide>
           {value === 0 && <Slide1 />} {/* タブ1が選択されている場合 */}
+        </SwiperSlide>
+        <SwiperSlide>
           {value === 1 && <Slide2 />} {/* タブ2が選択されている場合 */}
+        </SwiperSlide>
+        <SwiperSlide>
           {value === 2 && <Slide3 />} {/* タブ3が選択されている場合 */}
         </SwiperSlide>
       </Swiper>
