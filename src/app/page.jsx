@@ -14,7 +14,6 @@ import { SwiperTab } from "@/components/swiper";
 export default function Page() {
   const [items, setItems] = useState([]); // 顧客情報のリストを保持するためのstateを定義しています。
   const [talks, setTalks] = useState([]); // talks情報のリストを保持するためのstateを定義しています。
-  const [error, setError] = useState(null); // エラーメッセージを保持するためのstateを定義しています。
   const [theme, setTheme] = useState("light"); // 現在のテーマ（ライトモードまたはダークモード）を保持するためのstateを定義しています。
 
   // コンポーネントがマウントされたときにデータを取得するためのuseEffectフック
@@ -43,7 +42,7 @@ export default function Page() {
       setItems(tasksData || []);
       setTalks(talksData || []);
     } catch (error) {
-      setError("データの取得に失敗しました: " + error.message);
+      console.error("データの取得に失敗しました: " + error.message);
     }
   };
 

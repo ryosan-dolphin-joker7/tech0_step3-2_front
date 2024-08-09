@@ -1,7 +1,7 @@
 // Slider.jsx
 import React from "react";
 import Slider from "react-slick";
-import Slide1 from "./slide1";
+import Slide1 from "./slides/slide1";
 
 function SliderComponent() {
   const settings = {
