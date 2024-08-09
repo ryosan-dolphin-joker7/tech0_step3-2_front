@@ -47,6 +47,14 @@ export const SwiperTab = () => {
 
   return (
     <>
+      <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
+        <Tabs value={value} onChange={tabChange} centered>
+          <Tab label="今日の健康状態" value={0} /> {/* タブ1 */}
+          <Tab label="カレンダー" value={1} /> {/* タブ2 */}
+          <Tab label="ペット管理" value={2} /> {/* タブ3 */}
+        </Tabs>
+      </Box>
+
       <Swiper onSwiper={setSwiper} spaceBetween={50} slidesPerView={1}>
         <SwiperSlide>
           {value === 0 && <Slide1 />} {/* タブ1が選択されている場合 */}
@@ -54,14 +62,6 @@ export const SwiperTab = () => {
           {value === 2 && <Slide3 />} {/* タブ3が選択されている場合 */}
         </SwiperSlide>
       </Swiper>
-
-      <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
-        <Tabs value={value} onChange={tabChange} centered>
-          <Tab label="Item One" value={0} /> {/* タブ1 */}
-          <Tab label="Item Two" value={1} /> {/* タブ2 */}
-          <Tab label="Item Three" value={2} /> {/* タブ3 */}
-        </Tabs>
-      </Box>
     </>
   );
 };

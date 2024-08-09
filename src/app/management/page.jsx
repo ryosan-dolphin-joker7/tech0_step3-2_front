@@ -78,7 +78,7 @@ export default function UserManagementPage() {
           </Link>
         </Box>
         <Box sx={{ width: "100%", padding: "16px" }}>
-          <Link href="/users" passHref>
+          <Link href="/test_component" passHref>
             <Button
               sx={{
                 width: "100%",

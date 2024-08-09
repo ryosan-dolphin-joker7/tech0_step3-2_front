@@ -84,15 +84,6 @@ export default function Page() {
             );
           })}
         </div>
-
-        <h1>ここから下はテスト用に作っているコンポーネントの表示画面へ</h1>
-        <div className="p-4">
-          <Link href="/test_component" className="mt-4 pt-4" prefetch={false}>
-            <button className="btn btn-neutral w-full border-0 bg-blue-200 text-black hover:text-white">
-              Test_Component
-            </button>
-          </Link>
-        </div>
       </div>
       <Footer_Post theme={theme} />
       <Footer theme={theme} />

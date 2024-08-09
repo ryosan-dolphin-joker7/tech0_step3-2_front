@@ -10,9 +10,6 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 export default function Slide2() {
   return (
     <div>
-      <Typography variant="h5" gutterBottom>
-        カレンダー
-      </Typography>
       <Grid container spacing={2} justifyContent="center">
         <Grid item xs={12} sm={10} md={8} lg={6}>
           <FullCalendar
