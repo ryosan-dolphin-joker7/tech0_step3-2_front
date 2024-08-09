@@ -3,9 +3,6 @@ import Link from "next/link"; // ページ間リンクを作成するための�
 import { useEffect, useState } from "react"; // Reactのフック（useEffectとuseState）をインポートしています。
 import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートしています。
 import OnePostInfoCard from "@/components/one_post_info_card.jsx"; // カスタマー情報カードコンポーネントをインポートしています。
-import Header from "@/components/header.jsx"; // ヘッダーコンポーネントをインポートしています。
-import Footer from "@/components/footer.jsx"; // フッターコンポーネントをインポートしています。
-import Footer_Post from "@/components/footer_post.jsx"; // フッターコンポーネントをインポートしています。
 
 // スワイパーを表示するコンポーネントをインポートしています。
 import { SwiperTab } from "@/components/swiper";
@@ -54,17 +51,33 @@ export default function Page() {
   // 顧客情報を表示するコンポーネントをレンダリングしています。
   return (
     <>
-      <Header theme={theme} toggleTheme={toggleTheme} />
-
       {/* コンテンツ領域。ヘッダーとフッターのスペースを確保するためのパディングを追加 */}
-      <div style={{ paddingTop: "30px", paddingBottom: "60px" }}>
+      <div>
         {/* スワイパーコンポーネントを表示 */}
-        <div>
-          <SwiperTab />
+
+        {/* 顧客情報カードをグリッドレイアウトで表示 */}
+        <div
+          className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ${
+            theme === "light" ? "bg-white" : "bg-gray-800"
+          }`}
+        >
+          {items.map((taskInfo) => {
+            const relatedTalks = talks.filter(
+              (talk) => talk.task_id === taskInfo.task_id
+            );
+            return (
+              <div
+                key={taskInfo.task_id}
+                className={`card bordered border-blue-200 border-2 flex flex-row max-w-sm m-4 ${
+                  theme === "light" ? "bg-white" : "bg-gray-200"
+                }`}
+              >
+                <OnePostInfoCard taskInfo={taskInfo} talks={relatedTalks} />
+              </div>
+            );
+          })}
         </div>
       </div>
-      <Footer_Post theme={theme} />
-      <Footer theme={theme} />
     </>
   );
 }

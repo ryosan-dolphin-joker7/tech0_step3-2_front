@@ -11,6 +11,7 @@ import Tab from "@mui/material/Tab"; // MUIからTabコンポーネントをイ�
 import Slide1 from "@/components/slides/slide1";
 import Slide2 from "@/components/slides/slide2";
 import Slide3 from "@/components/slides/slide3";
+import Slide4 from "@/components/slides/slide4";
 
 // SwiperTabコンポーネントの定義
 export const SwiperTab = () => {
@@ -43,9 +44,10 @@ export const SwiperTab = () => {
     <>
       <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
         <Tabs value={value} onChange={tabChange} centered>
-          <Tab label="今日の健康状態" value={0} /> {/* タブ1 */}
+          <Tab label="あなたの家族" value={0} /> {/* タブ1 */}
           <Tab label="カレンダー" value={1} /> {/* タブ2 */}
-          <Tab label="ペット管理" value={2} /> {/* タブ3 */}
+          <Tab label="今日の出来事" value={3} /> {/* タブ3 */}
+          <Tab label="ペット管理" value={2} /> {/* タブ4 */}
         </Tabs>
       </Box>
 
@@ -63,6 +65,9 @@ export const SwiperTab = () => {
         </SwiperSlide>
         <SwiperSlide>
           {value === 2 && <Slide3 />} {/* タブ3が選択されている場合 */}
+        </SwiperSlide>
+        <SwiperSlide>
+          {value === 3 && <Slide4 />} {/* タブ3が選択されている場合 */}
         </SwiperSlide>
       </Swiper>
     </>
