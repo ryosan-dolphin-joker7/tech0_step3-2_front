@@ -25,11 +25,19 @@ export default function Slide2() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 100); // 遅延を追加
+
+    return () => clearTimeout(timer);
   }, []);
 
   if (!mounted) {
-    return null; // マウント前は何も表示しない
+    return (
+      <div style={{ textAlign: "center", padding: "20px" }}>
+        Loading calendar...
+      </div>
+    );
   }
 
   return (
