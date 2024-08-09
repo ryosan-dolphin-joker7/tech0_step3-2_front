@@ -7,8 +7,8 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 
 // Slideコンポーネントをインポート
-import Slide1 from "@/components/Slide1";
-import Slide2 from "@/components/Slide2";
+import Slide1 from "@/components/slide1";
+import Slide2 from "@/components/slide2";
 import Slide3 from "@/management/pets/page";
 
 export const SwiperTab = () => {
