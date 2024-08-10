@@ -1,24 +1,24 @@
-"use client"; // クライアント側で動作するコードであることを指定しています。
-import Link from "next/link"; // ページ間リンクを作成するためのコンポーネントをインポートしています。
-import { Button, ButtonGroup } from "@mui/material"; // Material-UIのボタンコンポーネントをインポートしています。
-import DarkModeIcon from "@mui/icons-material/DarkMode"; // ダークモードアイコンをインポートしています。
-import LightModeIcon from "@mui/icons-material/LightMode"; // ライトモードアイコンをインポートしています。
+"use client";
+import Link from "next/link";
+import { Button, ButtonGroup } from "@mui/material";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
-import AlarmIcon from "@mui/icons-material/Alarm";
-import TestIcon from "@mui/icons-material/Build"; // テスト用の適当なアイコンをインポートしています
+import TestIcon from "@mui/icons-material/Build";
 import { Pets } from "@mui/icons-material";
 
 export default function Header({ theme, toggleTheme }) {
   const iconButtonStyle = {
     minWidth: "40px",
-    height: "36px", // ボタンの高さを36pxに設定
+    height: "36px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    padding: "0 16px", // 横のパディングを調整
-    lineHeight: "1", // lineHeightを設定して中央揃えを確実に
-    textAlign: "center", // テキストの中央揃え
+    padding: "0 16px",
+    lineHeight: "1",
+    textAlign: "center",
+    color: "var(--icon-color)", // アイコンの色をCSS変数で制御
   };
 
   return (
@@ -28,7 +28,7 @@ export default function Header({ theme, toggleTheme }) {
         top: 0,
         width: "100%",
         zIndex: 1000,
-        backgroundColor: theme === "light" ? "#fff" : "#333",
+        backgroundColor: "var(--bg-color)", // 背景色をCSS変数で制御
       }}
     >
       <ButtonGroup variant="outlined" aria-label="Basic button group">

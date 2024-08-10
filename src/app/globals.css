@@ -15,10 +15,9 @@
 }
 
 body {
-  background-color: var(--bg-color);
-  color: var(--text-color);
+  @apply bg-[var(--bg-color)] text-[var(--text-color)];
 }
 
 .icon {
-  color: var(--icon-color);
+  @apply text-[var(--icon-color)];
 }

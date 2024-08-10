@@ -64,7 +64,6 @@ export default function Page() {
         </div>
       </div>
       <Footer_Post theme={theme} />
-      <Footer theme={theme} />
     </>
   );
 }

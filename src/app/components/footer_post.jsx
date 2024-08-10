@@ -39,7 +39,7 @@ export default function Post_Footer({ theme }) {
     <div
       style={{
         position: "fixed",
-        bottom: 30,
+        bottom: 50,
         width: "100%",
         zIndex: 1000,
         backgroundColor: theme === "light" ? "#fff" : "#333",
@@ -47,12 +47,12 @@ export default function Post_Footer({ theme }) {
       }}
     >
       <div>
-        <button className="btn btn-primary m-2 text-2xl" onClick={openModal}>
+        <button className="btn btn-primary m-2 text-1xl" onClick={openModal}>
           WanPush
         </button>
 
         <button
-          className="btn btn-primary m-2 text-2xl"
+          className="btn btn-primary m-2 text-1xl"
           onClick={openModal_today_dog}
         >
           今日のわんこ！！
