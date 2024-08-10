@@ -1,65 +1,62 @@
-"use client"; // クライアント側で動作するコードであることを指定しています。
-import Link from "next/link"; // ページ間リンクを作成するためのコンポーネントをインポートしています。
-import { useEffect, useState } from "react"; // Reactのフック（useEffectとuseState）をインポートしています。
-import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートしています。
-import Header from "@/components/header.jsx"; // ヘッダーコンポーネントをインポートしています。
-import "@/components/LoadingScreen.module.css"; // CSSをインポートしています。
-import ".//globals.css"; // CSSをインポートしています。
-
-import LoadingScreen from "@/components/LoadingScreen"; // ローディング画面のコンポーネントをインポート
-import { SwiperTab } from "@/components/swiper"; // スワイパーを表示するコンポーネントをインポートしています。
+"use client"; // クライアント側で動作するコードであることを指定します。
+import Link from "next/link"; // ページ間のリンクを作成するためのコンポーネントをインポート。
+import { useEffect, useState } from "react"; // Reactのフック（useEffectとuseState）をインポート。
+import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポート。
+import LoadingScreen from "@/components/LoadingScreen"; // ローディング画面のコンポーネントをインポート。
+import { SwiperTab } from "@/components/swiper"; // スワイパータブを表示するコンポーネントをインポート。
+import "@/components/LoadingScreen.module.css"; // ローディング画面用のCSSをインポート。
+import "./globals.css"; // グローバルスタイルをインポート（Tailwind CSSを含む）。
 
 export default function Page() {
-  const [items, setItems] = useState([]); // 顧客情報のリストを保持するためのstateを定義しています。
-  const [talks, setTalks] = useState([]); // talks情報のリストを保持するためのstateを定義しています。
-  const [theme, setTheme] = useState("light"); // 現在のテーマ（ライトモードまたはダークモード）を保持するためのstateを定義しています。
-  const [isLoading, setIsLoading] = useState(true); // ページのロード状態を管理するstate
-  const [isContentVisible, setIsContentVisible] = useState(false); // コンテンツの表示状態を管理するstate
+  const [items, setItems] = useState([]); // タスクのリストを保持するためのstate。
+  const [talks, setTalks] = useState([]); // トーク情報のリストを保持するためのstate。
+  const [isLoading, setIsLoading] = useState(true); // ローディング状態を管理するstate。
+  const [isContentVisible, setIsContentVisible] = useState(false); // コンテンツの表示状態を管理するstate。
 
-  // コンポーネントがマウントされたときにデータを取得するためのuseEffectフック
+  // コンポーネントがマウントされたときにデータを取得するためのuseEffectフック。
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Supabaseからタスクデータを取得
+        const { data: tasksData, error: tasksError } = await supabase
+          .from("tasks")
+          .select("*");
+        if (tasksError) throw tasksError;
+
+        // Supabaseからトークデータを取得
+        const { data: talksData, error: talksError } = await supabase
+          .from("talks")
+          .select("*");
+        if (talksError) throw talksError;
+
+        // 取得したデータをstateにセット
+        setItems(tasksData || []);
+        setTalks(talksData || []);
+      } catch (error) {
+        // エラーメッセージをコンソールに表示
+        console.error("データの取得に失敗しました: " + error.message);
+      } finally {
+        // ローディング完了後に表示を更新
+        setIsLoading(false);
+        // コンテンツをフェードインで表示
+        setTimeout(() => setIsContentVisible(true), 500);
+      }
+    };
+
     fetchData();
-  }, []);
+  }, []); // 空の依存配列により、コンポーネントの初回マウント時のみ実行。
 
-  const fetchData = async () => {
-    try {
-      const { data: tasksData, error: tasksError } = await supabase
-        .from("tasks")
-        .select("*");
-      if (tasksError) throw tasksError;
-
-      const { data: talksData, error: talksError } = await supabase
-        .from("talks")
-        .select("*");
-      if (talksError) throw talksError;
-
-      setItems(tasksData || []);
-      setTalks(talksData || []);
-    } catch (error) {
-      console.error("データの取得に失敗しました: " + error.message);
-    } finally {
-      setIsLoading(false);
-      setTimeout(() => setIsContentVisible(true), 500); // ローディング完了後にコンテンツをフェードイン
-    }
-  };
-
+  // ローディング状態であれば、ローディング画面を表示。
   if (isLoading) {
-    return <LoadingScreen minimumLoadingTime={10000} />; // ローディング画面を表示
+    return <LoadingScreen minimumLoadingTime={10000} />; // ローディング画面を表示。
   }
 
   return (
     <div className={isContentVisible ? "fade-in" : "hidden"}>
-      <Header
-        theme={theme}
-        toggleTheme={() => setTheme(theme === "light" ? "dark" : "light")}
-      />
-
-      {/* コンテンツ領域。ヘッダーとフッターのスペースを確保するためのパディングを追加 */}
-      <div style={{ paddingTop: "30px", paddingBottom: "60px" }}>
-        {/* スワイパーコンポーネントを表示 */}
-        <div>
-          <SwiperTab />
-        </div>
+      {/* コンテンツの外枠。パディングで上下に余白を確保 */}
+      <div className="pt-8 pb-16">
+        {/* スワイパータブコンポーネントを表示 */}
+        <SwiperTab />
       </div>
     </div>
   );
