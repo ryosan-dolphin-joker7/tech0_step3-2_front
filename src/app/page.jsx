@@ -2,10 +2,7 @@
 import Link from "next/link"; // ページ間リンクを作成するためのコンポーネントをインポートしています。
 import { useEffect, useState } from "react"; // Reactのフック（useEffectとuseState）をインポートしています。
 import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートしています。
-import OnePostInfoCard from "@/components/one_post_info_card.jsx"; // カスタマー情報カードコンポーネントをインポートしています。
 import Header from "@/components/header.jsx"; // ヘッダーコンポーネントをインポートしています。
-import Footer from "@/components/footer.jsx"; // フッターコンポーネントをインポートしています。
-import Footer_Post from "@/components/footer_post.jsx"; // フッターコンポーネントをインポートしています。
 
 // スワイパーを表示するコンポーネントをインポートしています。
 import { SwiperTab } from "@/components/swiper";
@@ -63,7 +60,6 @@ export default function Page() {
           <SwiperTab />
         </div>
       </div>
-      <Footer_Post theme={theme} />
     </>
   );
 }
