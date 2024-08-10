@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --bg-color: white;
+  --bg-color: #fffbff;
   --text-color: black;
   --icon-color: black;
 }
