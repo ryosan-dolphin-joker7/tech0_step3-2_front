@@ -21,3 +21,20 @@ body {
 .icon {
   @apply text-[var(--icon-color)];
 }
+
+.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.fade-in {
+  opacity: 0;
+  visibility: visible;
+  animation: fadeIn 1s forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}

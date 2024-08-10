@@ -19,7 +19,7 @@ export const metadata = {
 // すべてのページコンテンツはこのコンポーネントのchildrenとして渡されます
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="ja">
       <head>
         {/* ページのメタデータを定義します */}
         <meta charSet="UTF-8" />
