@@ -3,8 +3,6 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/supabaseClient";
 import Link from "next/link";
-import Header from "@/components/header.jsx";
-import Footer from "@/components/footer.jsx";
 import { Box, Typography, Button, Divider, TextField } from "@mui/material";
 
 export default function Slide3() {
