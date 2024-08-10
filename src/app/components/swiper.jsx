@@ -56,7 +56,7 @@ export const SwiperTab = () => {
           <Tab label="My Dogs" value={0} /> {/* タブ1 */}
           <Tab label="カレンダー" value={1} /> {/* タブ2 */}
           <Tab label="今日の出来事" value={2} /> {/* タブ3 */}
-          <Tab label="ペット管理" value={3} /> {/* タブ4 */}
+          <Tab label="登録" value={3} /> {/* タブ4 */}
         </Tabs>
       </Box>
 

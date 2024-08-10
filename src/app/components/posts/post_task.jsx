@@ -1,7 +1,7 @@
 "use client"; // クライアント側で動作するコードであることを指定しています。
 import React, { useState } from "react";
 import { Button } from "@mui/material"; // Material-UIのボタンコンポーネントをインポートしています。
-import UploadImageModal from "@/components/modal"; // モーダルコンポーネントをインポートしています。
+import UploadImageModal from "@/components/posts/post_task_modal"; // モーダルコンポーネントをインポートしています。
 
 export default function Post_Footer({ theme }) {
   const [modalOpen, setModalOpen] = useState(false); // モーダルの開閉状態を管理するためのstateを定義しています。
@@ -32,7 +32,7 @@ export default function Post_Footer({ theme }) {
     >
       <div>
         <button className="btn btn-primary m-2 text-1xl" onClick={openModal}>
-          WanPush
+          予定を登録する
         </button>
       </div>
       <UploadImageModal

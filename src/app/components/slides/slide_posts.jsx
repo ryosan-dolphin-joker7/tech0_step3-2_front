@@ -4,9 +4,6 @@ import { useEffect, useState } from "react"; // Reactのフック（useEffectと
 import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートしています。
 import OnePostInfoCard from "@/components/one_post_info_card.jsx"; // カスタマー情報カードコンポーネントをインポートしています。
 
-// スワイパーを表示するコンポーネントをインポートしています。
-import { SwiperTab } from "@/components/swiper";
-
 // 顧客情報を表示するページコンポーネントを定義しています。
 export default function Page() {
   const [items, setItems] = useState([]); // 顧客情報のリストを保持するためのstateを定義しています。

@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import Footer_Mydogs from "@/components/footer_mydogs.jsx"; // フッターコンポーネントをインポートしています。
+import Footer_Mydogs from "@/components/posts/popup_today_dog.jsx"; // フッターコンポーネントをインポートしています。
 
 function Slide_Mydogs() {
   return (
