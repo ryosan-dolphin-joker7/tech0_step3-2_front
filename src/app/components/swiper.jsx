@@ -8,8 +8,8 @@ import Tabs from "@mui/material/Tabs"; // MUIからTabsコンポーネントを�
 import Tab from "@mui/material/Tab"; // MUIからTabコンポーネントをインポート
 
 // カスタムスライドコンポーネントをインポート
-import Slide1 from "@/components/slides/slide1";
-import Slide2 from "@/components/slides/slide2";
+import Slide_Mydogs from "@/components/slides/slide_mydogs";
+import Slide_Calendar from "@/components/slides/slide_calendar";
 import Slide3 from "@/components/slides/slide4";
 import Slide4 from "@/components/slides/slide3";
 
@@ -44,7 +44,7 @@ export const SwiperTab = () => {
     <>
       <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
         <Tabs value={value} onChange={tabChange} centered>
-          <Tab label="あなたの家族" value={0} /> {/* タブ1 */}
+          <Tab label="My Dogs" value={0} /> {/* タブ1 */}
           <Tab label="カレンダー" value={1} /> {/* タブ2 */}
           <Tab label="今日の出来事" value={2} /> {/* タブ4 */}
           <Tab label="ペット管理" value={3} /> {/* タブ3 */}
@@ -58,10 +58,10 @@ export const SwiperTab = () => {
         slidesPerView={1}
       >
         <SwiperSlide>
-          {value === 0 && <Slide1 />} {/* タブ1が選択されている場合 */}
+          {value === 0 && <Slide_Mydogs />} {/* タブ1が選択されている場合 */}
         </SwiperSlide>
         <SwiperSlide>
-          {value === 1 && <Slide2 />} {/* タブ2が選択されている場合 */}
+          {value === 1 && <Slide_Calendar />} {/* タブ2が選択されている場合 */}
         </SwiperSlide>
         <SwiperSlide>
           {value === 2 && <Slide3 />} {/* タブ3が選択されている場合 */}

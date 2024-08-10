@@ -6,8 +6,9 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
+import Footer_Post_Task from "@/components/footer_post_task"; // フッターコンポーネントをインポートしています。
 
-export default function Slide2() {
+export default function Slide_Calendar() {
   return (
     <div>
       <Grid container spacing={2} justifyContent="center">
@@ -26,6 +27,9 @@ export default function Slide2() {
           />
         </Grid>
       </Grid>
+      <div style={{ textAlign: "center" }}>
+        <Footer_Post_Task />
+      </div>
     </div>
   );
 }
