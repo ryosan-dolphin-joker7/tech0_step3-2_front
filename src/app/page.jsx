@@ -3,27 +3,24 @@ import Link from "next/link"; // ページ間リンクを作成するための�
 import { useEffect, useState } from "react"; // Reactのフック（useEffectとuseState）をインポートしています。
 import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートしています。
 import Header from "@/components/header.jsx"; // ヘッダーコンポーネントをインポートしています。
+import "@/components/LoadingScreen.module.css"; // CSSをインポートしています。
+import ".//globals.css"; // CSSをインポートしています。
 
-// スワイパーを表示するコンポーネントをインポートしています。
-import { SwiperTab } from "@/components/swiper";
+import LoadingScreen from "@/components/LoadingScreen"; // ローディング画面のコンポーネントをインポート
+import { SwiperTab } from "@/components/swiper"; // スワイパーを表示するコンポーネントをインポートしています。
 
-// 顧客情報を表示するページコンポーネントを定義しています。
 export default function Page() {
   const [items, setItems] = useState([]); // 顧客情報のリストを保持するためのstateを定義しています。
   const [talks, setTalks] = useState([]); // talks情報のリストを保持するためのstateを定義しています。
   const [theme, setTheme] = useState("light"); // 現在のテーマ（ライトモードまたはダークモード）を保持するためのstateを定義しています。
+  const [isLoading, setIsLoading] = useState(true); // ページのロード状態を管理するstate
+  const [isContentVisible, setIsContentVisible] = useState(false); // コンテンツの表示状態を管理するstate
 
   // コンポーネントがマウントされたときにデータを取得するためのuseEffectフック
   useEffect(() => {
     fetchData();
   }, []);
 
-  // テーマが変更されたときに、HTML要素にテーマを設定するためのuseEffectフック
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-  }, [theme]);
-
-  // Supabaseから顧客情報とtalksを取得する非同期関数
   const fetchData = async () => {
     try {
       const { data: tasksData, error: tasksError } = await supabase
@@ -40,18 +37,22 @@ export default function Page() {
       setTalks(talksData || []);
     } catch (error) {
       console.error("データの取得に失敗しました: " + error.message);
+    } finally {
+      setIsLoading(false);
+      setTimeout(() => setIsContentVisible(true), 500); // ローディング完了後にコンテンツをフェードイン
     }
   };
 
-  // UIのテーマを切り替える関数
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
-  };
+  if (isLoading) {
+    return <LoadingScreen minimumLoadingTime={10000} />; // ローディング画面を表示
+  }
 
-  // 顧客情報を表示するコンポーネントをレンダリングしています。
   return (
-    <>
-      <Header theme={theme} toggleTheme={toggleTheme} />
+    <div className={isContentVisible ? "fade-in" : "hidden"}>
+      <Header
+        theme={theme}
+        toggleTheme={() => setTheme(theme === "light" ? "dark" : "light")}
+      />
 
       {/* コンテンツ領域。ヘッダーとフッターのスペースを確保するためのパディングを追加 */}
       <div style={{ paddingTop: "30px", paddingBottom: "60px" }}>
@@ -60,6 +61,6 @@ export default function Page() {
           <SwiperTab />
         </div>
       </div>
-    </>
+    </div>
   );
 }
