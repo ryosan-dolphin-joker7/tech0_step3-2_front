@@ -1,12 +1,12 @@
-"use client";
-import Link from "next/link";
-import { IconButton, Box, Typography } from "@mui/material";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
-import LightModeIcon from "@mui/icons-material/LightMode";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import MenuIcon from "@mui/icons-material/Menu";
-import TestIcon from "@mui/icons-material/Build";
-import { Pets } from "@mui/icons-material";
+"use client"; // クライアントサイドで動作するコードであることを指定。
+import Link from "next/link"; // ページリンクを作成するためのコンポーネントをインポート。
+import { IconButton, Box, Typography } from "@mui/material"; // MUIのコンポーネントをインポート。
+import DarkModeIcon from "@mui/icons-material/DarkMode"; // ダークモードアイコンをインポート。
+import LightModeIcon from "@mui/icons-material/LightMode"; // ライトモードアイコンをインポート。
+import AccountCircleIcon from "@mui/icons-material/AccountCircle"; // アカウントアイコンをインポート。
+import MenuIcon from "@mui/icons-material/Menu"; // メニューアイコンをインポート。
+import TestIcon from "@mui/icons-material/Build"; // テストアイコンをインポート。
+import { Pets } from "@mui/icons-material"; // ペットアイコンをインポート。
 
 export default function Header({ theme, toggleTheme }) {
   // アイコンボタンのスタイルを定義
@@ -22,9 +22,8 @@ export default function Header({ theme, toggleTheme }) {
     color: "var(--icon-color)", // アイコンの色をCSS変数で制御
   };
 
-  // 今日の日付を取得し、フォーマットする
-  const today = new Date();
-  const formattedDate = today.toISOString().split("T")[0]; // YYYY-MM-DD形式にフォーマット
+  // 今日の日付を取得し、YYYY-MM-DD形式にフォーマットする
+  const today = new Date().toISOString().split("T")[0];
 
   return (
     <Box
@@ -41,36 +40,37 @@ export default function Header({ theme, toggleTheme }) {
       }}
     >
       {/* 左側（メニューアイコン） */}
-      <IconButton style={iconButtonStyle}>
+      <IconButton sx={iconButtonStyle}>
         <MenuIcon />
       </IconButton>
 
       {/* 中央に今日の日付を表示 */}
       <Typography variant="body1" color="textPrimary">
-        {formattedDate}
+        {today}
       </Typography>
 
       {/* 右側（通知アイコン、アカウントアイコン、テーマ切り替えアイコン） */}
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <Link href="/get_dog_image" prefetch={false}>
-          <IconButton style={iconButtonStyle}>
+          <IconButton sx={iconButtonStyle}>
             <Pets />
           </IconButton>
         </Link>
         <Link href="/supabase_component" prefetch={false}>
-          <IconButton style={iconButtonStyle}>
+          <IconButton sx={iconButtonStyle}>
             <TestIcon />
           </IconButton>
         </Link>
         <Link href="/management" prefetch={false}>
-          <IconButton style={iconButtonStyle}>
+          <IconButton sx={iconButtonStyle}>
             <AccountCircleIcon />
           </IconButton>
         </Link>
+        {/* テーマ切り替えボタン */}
         <IconButton
-          style={iconButtonStyle}
-          onClick={toggleTheme} // テーマ切り替えボタンがクリックされたときにテーマを変更
-          aria-label="toggle theme" // ボタンに説明的なラベルを付与
+          sx={iconButtonStyle}
+          onClick={toggleTheme} // テーマを切り替える関数を呼び出す
+          aria-label="toggle theme" // アクセシビリティのためのラベル
         >
           {/* 現在のテーマに応じて、ダークモードとライトモードのアイコンを切り替える */}
           {theme === "light" ? <DarkModeIcon /> : <LightModeIcon />}

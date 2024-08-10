@@ -6,14 +6,27 @@ import React, { useEffect, useState } from "react";
 export default function ThemeProvider({ children }) {
   const [theme, setTheme] = useState("light");
 
-  // クライアントサイドでのみテーマの適用を行うためにuseEffectを使用します
+  // 初期テーマをローカルストレージから取得して適用する
   useEffect(() => {
-    // ユーザーのテーマ設定がローカルストレージに保存されているか確認し、それを適用します
     const storedTheme = window.localStorage.getItem("theme") || "light";
     setTheme(storedTheme);
-    // クライアントサイドでhtml要素にdata-theme属性を追加してテーマを設定します
     document.documentElement.setAttribute("data-theme", storedTheme);
-  }, []); // 空の依存配列を指定することで、コンポーネントのマウント時にのみ実行されます
+  }, []);
 
-  return <>{children}</>; // children（レイアウトやページコンテンツ）をそのままレンダリング
+  // テーマを切り替える関数を定義
+  const toggleTheme = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    document.documentElement.setAttribute("data-theme", newTheme);
+    window.localStorage.setItem("theme", newTheme); // 新しいテーマをローカルストレージに保存
+  };
+
+  return (
+    <>
+      {/* 子コンポーネントにテーマとテーマ切り替え関数を渡す */}
+      {React.Children.map(children, (child) =>
+        React.cloneElement(child, { theme, toggleTheme })
+      )}
+    </>
+  );
 }
