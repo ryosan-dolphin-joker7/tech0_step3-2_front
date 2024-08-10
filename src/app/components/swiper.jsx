@@ -10,8 +10,8 @@ import Tab from "@mui/material/Tab"; // MUIからTabコンポーネントをイ�
 // カスタムスライドコンポーネントをインポート
 import Slide_Mydogs from "@/components/slides/slide_mydogs";
 import Slide_Calendar from "@/components/slides/slide_calendar";
-import Slide3 from "@/components/slides/slide3";
-import Slide4 from "@/components/slides/slide4";
+import Slide_Posts from "@/components/slides/slide_posts";
+import Slide_Pets from "@/components/slides/slide_pets";
 
 // SwiperTabコンポーネントの定義
 export const SwiperTab = () => {
@@ -73,10 +73,10 @@ export const SwiperTab = () => {
           <Slide_Calendar /> {/* タブ2のスライド */}
         </SwiperSlide>
         <SwiperSlide>
-          <Slide3 /> {/* タブ3のスライド */}
+          <Slide_Posts /> {/* タブ3のスライド */}
         </SwiperSlide>
         <SwiperSlide>
-          <Slide4 /> {/* タブ4のスライド */}
+          <Slide_Pets /> {/* タブ4のスライド */}
         </SwiperSlide>
       </Swiper>
     </>
