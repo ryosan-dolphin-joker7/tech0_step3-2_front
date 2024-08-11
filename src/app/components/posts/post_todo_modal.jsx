@@ -14,27 +14,29 @@ import {
   Alert,
 } from "@mui/material";
 
-// このコンポーネントは画像をアップロードするためのモーダルダイアログを表現しています。
-export default function UploadImageModal({ open, handleClose, handleUpload }) {
-  const [image, setImage] = React.useState(null); // 画像ファイルを保持するためのステートを定義しています。
-  const [description, setDescription] = React.useState(""); // 投稿内容のテキストを保持するためのステートを定義しています。
+// このコンポーネントはTodoを登録するためのモーダルダイアログを表現しています。
+export default function UploadTodoModal({ open, handleClose }) {
+  const [title, setTitle] = React.useState(""); // タイトルを保持するためのステートを定義しています。
+  const [contents, setContents] = React.useState(""); // 内容を保持するためのステートを定義しています。
+  const [endDate, setEndDate] = React.useState(""); // 終了日を保持するためのステートを定義しています。
   const [loading, setLoading] = React.useState(false); // ローディング状態を管理するステートを定義しています。
   const [error, setError] = React.useState(null); // エラーメッセージを保持するためのステートを定義しています。
 
   // 投稿ボタンが押されたときに呼び出される関数です。
   const handleSubmit = async () => {
-    if (description) {
-      // 画像と説明が両方とも存在するかチェックします。
+    if (title && contents && endDate) {
       setLoading(true); // ローディング状態を開始します。
       setError(null); // エラーメッセージをクリアします。
 
       try {
-        const { error: insertError } = await supabase.from("todo").insert([
+        const { error: insertError } = await supabase.from("todos").insert([
           {
-            task_name: description,
-            date: new Date().toISOString(), // 現在の日付をISOフォーマットで保存します。
+            title: title, // 入力されたタイトルを登録します。
+            contents: contents, // 入力された内容を登録します。
+            start_date: new Date().toISOString(), // 今日の日付をstart_dateとして登録します。
+            end_date: endDate, // 入力された終了日を登録します。
           },
-        ]); // 画像URL、説明テキスト、現在の日付をデータベースに挿入します。
+        ]);
 
         if (insertError) throw new Error(insertError.message); // データ挿入エラーが発生した場合、例外をスローします。
 
@@ -44,42 +46,61 @@ export default function UploadImageModal({ open, handleClose, handleUpload }) {
       } finally {
         setLoading(false); // ローディング状態を終了します。
       }
+    } else {
+      setError("すべてのフィールドを入力してください"); // フィールドが未入力の場合はエラーメッセージを設定します。
     }
   };
 
   // コンポーネントのレンダリング内容を定義しています。
   return (
-    // Dialogコンポーネントはモーダルダイアログを表現します。
     <Dialog open={open} onClose={handleClose}>
-      {/* ダイアログのタイトルを表示します。 */}
       <DialogTitle>Todoを登録する</DialogTitle>
 
-      {/* ダイアログのコンテンツを表示します。 */}
       <DialogContent>
-        {/* テキスト入力フィールドを表示します。 */}
+        {/* タイトル入力フィールド */}
         <TextField
           autoFocus
           required
           margin="dense"
-          label="今日の出来事は？"
+          label="タイトル"
           fullWidth
           variant="outlined"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)} // テキスト入力の値をステートに保存します。
+          value={title}
+          onChange={(e) => setTitle(e.target.value)} // タイトルの値をステートに保存します。
+        />
+        {/* 内容入力フィールド */}
+        <TextField
+          required
+          margin="dense"
+          label="内容"
+          fullWidth
+          variant="outlined"
+          value={contents}
+          onChange={(e) => setContents(e.target.value)} // 内容の値をステートに保存します。
+        />
+        {/* 終了日入力フィールド */}
+        <TextField
+          required
+          margin="dense"
+          label="終了日"
+          type="date"
+          fullWidth
+          variant="outlined"
+          InputLabelProps={{
+            shrink: true,
+          }}
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)} // 終了日の値をステートに保存します。
         />
       </DialogContent>
 
-      {/* ダイアログのアクションボタンを表示します。 */}
       <DialogActions>
-        <Button onClick={handleClose}>キャンセル</Button>{" "}
-        {/* キャンセルボタン */}
+        <Button onClick={handleClose}>キャンセル</Button>
         <Button onClick={handleSubmit} color="primary" disabled={loading}>
-          {loading ? <CircularProgress size={24} /> : "投稿"}{" "}
-          {/* ローディング中はインディケーターを表示 */}
+          {loading ? <CircularProgress size={24} /> : "投稿"}
         </Button>
       </DialogActions>
 
-      {/* エラーメッセージを表示します。 */}
       {error && (
         <Snackbar
           open={!!error}

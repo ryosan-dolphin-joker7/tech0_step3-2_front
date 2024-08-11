@@ -1,35 +1,26 @@
 // src/app/table/page.jsx
 "use client"; // クライアント側で動作するコードであることを指定しています。
 
-// 必要なモジュールやコンポーネントをインポートします。
 import { useEffect, useState } from "react"; // Reactのフックをインポートします。
 import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートします。
 
 const Home = () => {
-  // アイテムデータとエラーメッセージを保持するためのステートを定義します。
-  const [items, setItems] = useState([]);
-  const [error, setError] = useState(null);
+  const [items, setItems] = useState([]); // Todoアイテムのリストを保持するためのステートを定義します。
+  const [error, setError] = useState(null); // エラーメッセージを保持するためのステートを定義します。
 
   // コンポーネントがマウントされたときにデータを取得するための副作用フックを設定します。
   useEffect(() => {
     const fetchData = async () => {
-      console.log("Fetching data from Supabase..."); // データ取得開始のログを出力します。
-
       try {
-        // Supabaseから"todos"テーブルのデータを取得します。
-        const { data, error } = await supabase.from("todos").select("*");
+        const { data, error } = await supabase.from("todos").select("*"); // Supabaseから"todos"テーブルのデータを取得します。
 
         if (error) {
-          // データ取得中にエラーが発生した場合の処理
           console.error("Error fetching data: ", error); // エラーログを出力します。
           setError("データの取得に失敗しました"); // エラーメッセージをステートに設定します。
         } else {
-          // データ取得が成功した場合の処理
-          console.log("Data fetched successfully:", data); // 取得したデータのログを出力します。
           setItems(data); // 取得したデータをステートに設定します。
         }
       } catch (fetchError) {
-        // データ取得中に予期しないエラーが発生した場合の処理
         console.error("Fetch error: ", fetchError); // エラーログを出力します。
         setError("データの取得中にエラーが発生しました"); // エラーメッセージをステートに設定します。
       }
@@ -38,12 +29,37 @@ const Home = () => {
     fetchData(); // データ取得関数を実行します。
   }, []); // 空の依存配列により、コンポーネントがマウントされたときにのみ実行されます。
 
+  // タスクを完了/未完了としてマークするための関数を定義します。
+  const toggleTaskState = async (id, currentState) => {
+    try {
+      const newState = !currentState; // 現在の状態を反転させます（true -> false, false -> true）
+      const { error } = await supabase
+        .from("todos")
+        .update({ state: newState }) // `state`を新しい値に更新します。
+        .eq("id", id); // `id`が一致するレコードのみを更新します。
+
+      if (error) {
+        console.error("Error updating task state: ", error); // エラーログを出力します。
+        setError("タスクの状態更新に失敗しました"); // エラーメッセージをステートに設定します。
+      } else {
+        // 成功時には、ローカルのステートも更新して、UIに反映します。
+        setItems((prevItems) =>
+          prevItems.map((item) =>
+            item.id === id ? { ...item, state: newState } : item
+          )
+        );
+      }
+    } catch (updateError) {
+      console.error("Update error: ", updateError); // エラーログを出力します。
+      setError("タスクの状態更新中にエラーが発生しました"); // エラーメッセージをステートに設定します。
+    }
+  };
+
   return (
     <div>
       <h1>スケジュール</h1> {/* 見出しを表示します */}
       {error && <p style={{ color: "red" }}>{error}</p>}{" "}
       {/* エラーが発生した場合にエラーメッセージを表示します */}
-      {/* テーブル形式でデータを表示します */}
       <table style={{ borderCollapse: "collapse", width: "100%" }}>
         <thead>
           <tr>
@@ -54,11 +70,12 @@ const Home = () => {
             <th style={{ border: "1px solid black", padding: "8px" }}>
               いつまでにやるか
             </th>
+            <th style={{ border: "1px solid black", padding: "8px" }}>完了</th>
           </tr>
         </thead>
         <tbody>
-          {items.map((item, index) => (
-            <tr key={index}>
+          {items.map((item) => (
+            <tr key={item.id}>
               <td style={{ border: "1px solid black", padding: "8px" }}>
                 {item.title}
               </td>
@@ -67,6 +84,20 @@ const Home = () => {
               </td>
               <td style={{ border: "1px solid black", padding: "8px" }}>
                 {item.end_date}
+              </td>
+              <td
+                style={{
+                  border: "1px solid black",
+                  padding: "8px",
+                  textAlign: "center",
+                }}
+              >
+                {/* チェックボックスを追加し、クリックでタスクの完了状態を切り替えます */}
+                <input
+                  type="checkbox"
+                  checked={item.state} // `state`がtrueの場合はチェックを入れる
+                  onChange={() => toggleTaskState(item.id, item.state)} // チェックボックスの状態が変更されたときに、タスクの完了状態を切り替えます
+                />
               </td>
             </tr>
           ))}

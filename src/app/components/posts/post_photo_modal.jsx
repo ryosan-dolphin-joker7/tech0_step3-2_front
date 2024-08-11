@@ -1,5 +1,4 @@
 "use client"; // クライアント側で動作するコードであることを指定しています。
-
 import React from "react";
 import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートしています。
 import {
@@ -16,17 +15,17 @@ import {
 
 // このコンポーネントは画像をアップロードするためのモーダルダイアログを表現しています。
 export default function UploadImageModal({ open, handleClose, handleUpload }) {
-  const [image, setImage] = React.useState(null); // 画像ファイルを保持するためのステートを定義しています。
-  const [description, setDescription] = React.useState(""); // 投稿内容のテキストを保持するためのステートを定義しています。
-  const [loading, setLoading] = React.useState(false); // ローディング状態を管理するステートを定義しています。
-  const [error, setError] = React.useState(null); // エラーメッセージを保持するためのステートを定義しています。
+  const [image, setImage] = React.useState(null); // 画像ファイルを保持するためのstateを初期化します。
+  const [description, setDescription] = React.useState(""); // 投稿内容のテキストを保持するためのstateを初期化します。
+  const [loading, setLoading] = React.useState(false); // ローディング状態を管理するstateを初期化します。
+  const [error, setError] = React.useState(null); // エラーメッセージを保持するためのstateを初期化します。
 
   // 画像が選択されたときに呼び出される関数です。
   const handleImageChange = (event) => {
     const file = event.target.files[0]; // 選択されたファイルを取得します。
     if (file && file.type.startsWith("image/")) {
       // ファイルが画像ファイルであるかチェックします。
-      setImage(file); // 選択されたファイルをステートに保存します。
+      setImage(file); // 選択されたファイルをstateに保存します。
     } else {
       setError("画像ファイルを選択してください"); // 無効なファイル形式の場合、エラーメッセージを設定します。
     }
@@ -40,36 +39,39 @@ export default function UploadImageModal({ open, handleClose, handleUpload }) {
       setError(null); // エラーメッセージをクリアします。
 
       try {
-        // encodeURIComponentを使用してファイル名を正しくエンコードします。
+        // ファイル名を正しくエンコードして処理します。
         const encodedFileName = encodeURIComponent(image.name).replace(
           /%20/g,
           "_"
         );
-        const fileName = `img/${Date.now()}_${encodedFileName}`; // ファイル名を「img」フォルダ内に生成します。
+        const fileName = `img/${Date.now()}_${encodedFileName}`; // ユニークなファイル名を生成します。
 
+        // 画像をSupabaseストレージにアップロードします。
         const { data, error: uploadError } = await supabase.storage
           .from("one_push_photo")
-          .upload(fileName, image); // 画像をSupabaseストレージの「img」フォルダにアップロードします。
+          .upload(fileName, image);
 
         if (uploadError) throw new Error(uploadError.message); // アップロードエラーが発生した場合、例外をスローします。
 
+        // アップロードされた画像の公開URLを取得します。
         const { publicUrl } = supabase.storage
           .from("one_push_photo")
-          .getPublicUrl(fileName).data; // 公開URLを取得します。
+          .getPublicUrl(fileName).data;
 
         if (!publicUrl) throw new Error("公開URLの取得に失敗しました"); // 公開URLの取得に失敗した場合、例外をスローします。
 
+        // 画像URLと説明をデータベースに保存します。
         const { error: insertError } = await supabase.from("tasks").insert([
           {
             photo_url: publicUrl,
             task_name: description,
-            date: new Date().toISOString(), // 現在の日付をISOフォーマットで保存します。
+            date: new Date().toISOString(), // 現在の日付をISO形式で保存します。
           },
-        ]); // 画像URL、説明テキスト、現在の日付をデータベースに挿入します。
+        ]);
 
         if (insertError) throw new Error(insertError.message); // データ挿入エラーが発生した場合、例外をスローします。
 
-        handleUpload(image); // 画像アップロードハンドラを呼び出します。
+        handleUpload(image); // 画像アップロード後の処理を実行します。
         handleClose(); // モーダルを閉じます。
       } catch (err) {
         setError(err.message); // エラーメッセージを設定します。
@@ -79,28 +81,19 @@ export default function UploadImageModal({ open, handleClose, handleUpload }) {
     }
   };
 
-  // コンポーネントのレンダリング内容を定義しています。
   return (
-    // Dialogコンポーネントはモーダルダイアログを表現します。
     <Dialog open={open} onClose={handleClose}>
-      {/* ダイアログのタイトルを表示します。 */}
       <DialogTitle>今日の出来事を投稿する</DialogTitle>
 
-      {/* ダイアログのコンテンツを表示します。 */}
       <DialogContent>
-        {/* 画像ファイルを選択するための入力フィールドを表示します。 */}
         <input type="file" accept="image/*" onChange={handleImageChange} />
-        {/* 画像が選択されている場合、そのプレビューを表示します。 */}
         {image && (
-          <>
-            <img
-              src={URL.createObjectURL(image)}
-              alt="Preview"
-              style={{ width: "100%", marginTop: "10px" }}
-            />
-          </>
+          <img
+            src={URL.createObjectURL(image)}
+            alt="Preview"
+            style={{ width: "100%", marginTop: "10px" }}
+          />
         )}
-        {/* テキスト入力フィールドを表示します。 */}
         <TextField
           autoFocus
           required
@@ -109,21 +102,17 @@ export default function UploadImageModal({ open, handleClose, handleUpload }) {
           fullWidth
           variant="outlined"
           value={description}
-          onChange={(e) => setDescription(e.target.value)} // テキスト入力の値をステートに保存します。
+          onChange={(e) => setDescription(e.target.value)}
         />
       </DialogContent>
 
-      {/* ダイアログのアクションボタンを表示します。 */}
       <DialogActions>
-        <Button onClick={handleClose}>キャンセル</Button>{" "}
-        {/* キャンセルボタン */}
+        <Button onClick={handleClose}>キャンセル</Button>
         <Button onClick={handleSubmit} color="primary" disabled={loading}>
-          {loading ? <CircularProgress size={24} /> : "投稿"}{" "}
-          {/* ローディング中はインディケーターを表示 */}
+          {loading ? <CircularProgress size={24} /> : "投稿"}
         </Button>
       </DialogActions>
 
-      {/* エラーメッセージを表示します。 */}
       {error && (
         <Snackbar
           open={!!error}
