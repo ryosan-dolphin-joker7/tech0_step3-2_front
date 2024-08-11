@@ -87,7 +87,21 @@ export default function UserManagementPage() {
                 ":hover": { color: "white" },
               }}
             >
-              サービスレベル
+              開発中（Flaskとの接続）
+            </Button>
+          </Link>
+        </Box>
+        <Box sx={{ width: "100%", padding: "16px" }}>
+          <Link href="/supabase_component" passHref>
+            <Button
+              sx={{
+                width: "100%",
+                border: "0",
+                backgroundColor: "skyblue",
+                ":hover": { color: "white" },
+              }}
+            >
+              開発中（Supabaseとの接続）
             </Button>
           </Link>
         </Box>
