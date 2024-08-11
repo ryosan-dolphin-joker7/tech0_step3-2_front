@@ -1,12 +1,26 @@
 "use client"; // クライアントサイドで動作するコードであることを指定。
 import Link from "next/link"; // ページリンクを作成するためのコンポーネントをインポート。
-import { IconButton, Box, Typography } from "@mui/material"; // MUIのコンポーネントをインポート。
+import { IconButton, Box, Typography, Menu, MenuItem } from "@mui/material"; // MUIのコンポーネントをインポート。
 import DarkModeIcon from "@mui/icons-material/DarkMode"; // ダークモードアイコンをインポート。
 import LightModeIcon from "@mui/icons-material/LightMode"; // ライトモードアイコンをインポート。
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"; // アカウントアイコンをインポート。
 import MenuIcon from "@mui/icons-material/Menu"; // メニューアイコンをインポート
+import { useState } from "react"; // ReactのuseStateフックをインポート
 
 export default function Header({ theme, toggleTheme }) {
+  // メニューのアンカー要素と開閉状態を管理するための状態を定義
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  // メニューを開く処理
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  // メニューを閉じる処理
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   // アイコンボタンのスタイルを定義
   const iconButtonStyle = {
     minWidth: "40px", // ボタンの最小幅を設定
@@ -38,9 +52,36 @@ export default function Header({ theme, toggleTheme }) {
       }}
     >
       {/* 左側（メニューアイコン） */}
-      <IconButton sx={iconButtonStyle}>
+      <IconButton sx={iconButtonStyle} onClick={handleMenuOpen}>
         <MenuIcon />
       </IconButton>
+      {/* プルダウンメニュー */}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+      >
+        <MenuItem onClick={handleMenuClose}>
+          <Link href="/" passHref>
+            Home
+          </Link>
+        </MenuItem>
+        <MenuItem onClick={handleMenuClose}>
+          <Link href="/management/users" passHref>
+            Users
+          </Link>
+        </MenuItem>
+        <MenuItem onClick={handleMenuClose}>
+          <Link href="/management/pets" passHref>
+            MyDogs
+          </Link>
+        </MenuItem>
+        <MenuItem onClick={handleMenuClose}>
+          <Link href="/management/facilities" passHref>
+            Facilities（開発中）
+          </Link>
+        </MenuItem>
+      </Menu>
 
       {/* 中央に今日の日付を表示 */}
       <Typography variant="body1" color="textPrimary">
