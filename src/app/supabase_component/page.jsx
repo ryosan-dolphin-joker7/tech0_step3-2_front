@@ -8,28 +8,44 @@ export default function Page() {
     <>
       <h1>Supabaseを使ったコンポーネントのテスト画面</h1>
       <div className="p-4">
-        <Link href="/photo" className="mt-4 pt-4" prefetch={false}>
+        <Link
+          href="/supabase_component/photo"
+          className="mt-4 pt-4"
+          prefetch={false}
+        >
           <button className="btn btn-neutral w-full border-0 bg-blue-200 text-black hover:text-white">
             Supabase_Photo_data
           </button>
         </Link>
       </div>
       <div className="p-4">
-        <Link href="/table" className="mt-4 pt-4" prefetch={false}>
+        <Link
+          href="/supabase_component/table"
+          className="mt-4 pt-4"
+          prefetch={false}
+        >
           <button className="btn btn-neutral w-full border-0 bg-blue-200 text-black hover:text-white">
             Supabase_Table_data
           </button>
         </Link>
       </div>
       <div className="p-4">
-        <Link href="/tasks" className="mt-4 pt-4" prefetch={false}>
+        <Link
+          href="/supabase_component/tasks"
+          className="mt-4 pt-4"
+          prefetch={false}
+        >
           <button className="btn btn-neutral w-full border-0 bg-blue-200 text-black hover:text-white">
             Supabase_Task_data
           </button>
         </Link>
       </div>
       <div className="p-4">
-        <Link href="/todo" className="mt-4 pt-4" prefetch={false}>
+        <Link
+          href="/supabase_component/todo"
+          className="mt-4 pt-4"
+          prefetch={false}
+        >
           <button className="btn btn-neutral w-full border-0 bg-blue-200 text-black hover:text-white">
             Supabase_todo_data
           </button>

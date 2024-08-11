@@ -1,5 +1,4 @@
 "use client"; // クライアント側で動作するコードであることを指定しています。
-import Link from "next/link"; // ページ間リンクを作成するためのコンポーネントをインポートしています。
 import { useEffect, useState } from "react"; // Reactのフック（useEffectとuseState）をインポートしています。
 import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートしています。
 import OnePostInfoCard from "@/components/one_post_info_card.jsx"; // カスタマー情報カードコンポーネントをインポートしています。
@@ -38,11 +37,6 @@ export default function Page() {
     } catch (error) {
       console.error("データの取得に失敗しました: " + error.message);
     }
-  };
-
-  // UIのテーマを切り替える関数
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
   };
 
   // 顧客情報を表示するコンポーネントをレンダリングしています。

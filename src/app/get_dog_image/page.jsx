@@ -1,7 +1,6 @@
 "use client"; // クライアント側で動作するコードであることを指定しています。
 import Link from "next/link"; // ページ間リンクを作成するためのコンポーネントをインポートしています。
 import { useEffect, useState } from "react";
-import { fetchImages } from "./dog_api";
 import {
   Button,
   Card,
@@ -10,8 +9,17 @@ import {
   Typography,
 } from "@mui/material"; // Material-UIのコンポーネントをインポートしています。
 
+// APIから画像を取得する関数を定義します。
+async function fetchImages(breed) {
+  const response = await fetch(
+    `https://dog.ceo/api/breed/${breed}/images/random/3`
+  );
+  const data = await response.json();
+  return data.message;
+}
+
 // Formコンポーネント
-function Form(props) {
+function Form({ onFormSubmit }) {
   const [breeds, setBreeds] = useState([]);
 
   useEffect(() => {
@@ -32,11 +40,14 @@ function Form(props) {
   function handleSubmit(event) {
     event.preventDefault();
     const { breed } = event.target.elements;
-    props.onFormSubmit(breed.value);
+    onFormSubmit(breed.value);
   }
 
   return (
-    <div>
+    <div style={{ paddingTop: "60px", textAlign: "center" }}>
+      <div style={{ textAlign: "center" }}>
+        <p>犬種を選んでRELOADボタンを押してください</p>
+      </div>
       <form onSubmit={handleSubmit}>
         <div className="field has-addons">
           <div className="control is-expanded">
@@ -64,7 +75,7 @@ function Form(props) {
 // Galleryコンポーネント
 function Gallery({ urls }) {
   if (!urls) {
-    return <p>Loading...</p>;
+    return <p>Click Reload to load images.</p>;
   }
   return (
     <div className="gallery">
@@ -83,19 +94,12 @@ function Gallery({ urls }) {
 }
 
 // Mainコンポーネント
-function Main() {
-  const [urls, setUrls] = useState(null);
-
-  useEffect(() => {
-    fetchImages("shiba").then((urls) => {
-      console.log(urls);
-      setUrls(urls);
-    });
-  }, []);
+export default function GetDogImagePage() {
+  const [urls, setUrls] = useState(null); // 初期値をnullにして最初は画像を表示しない
 
   function reloadImages(breed) {
     fetchImages(breed).then((urls) => {
-      setUrls(urls);
+      setUrls(urls); // RELOADボタンが押されたときに画像を取得
     });
   }
 
@@ -119,6 +123,3 @@ function Main() {
     </main>
   );
 }
-
-// Mainコンポーネントをエクスポート
-export default Main;
