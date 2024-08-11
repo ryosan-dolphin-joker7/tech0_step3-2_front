@@ -44,7 +44,7 @@ export default function Footer() {
           </Link>
         </Grid>
 
-        {/* カレンダーボタン */}
+        {/* アルバムボタン */}
         <Grid item xs={3}>
           <Link href="/photo_album" prefetch={false}>
             <Button

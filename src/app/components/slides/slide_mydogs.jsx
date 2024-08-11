@@ -1,9 +1,9 @@
 "use client"; // クライアント側で動作するコードであることを指定しています。
 import React, { useState, useEffect } from "react";
-import Popup_Today_Dog from "@/components/posts/popup_today_dog.jsx"; // フッターコンポーネントをインポートしています。
+import Popup_Today_Dog from "@/components/posts/popup_today_dog.jsx"; // 「今日の犬」を表示するポップアップコンポーネントをインポートしています。
 import OnePetInfoCard from "@/components/one_pet_info_card.jsx"; // ペット情報カードコンポーネントをインポートしています。
 
-// ペットのデータをシミュレート
+// 3つのペットのデータをシミュレート
 const petData = {
   1: {
     pet_id: 1,
@@ -25,17 +25,36 @@ const petData = {
     favorite_food: "ドッグフード",
     photo_url: "/img/avatar_fall.png", // 別のペットの画像のURL
   },
+  3: {
+    pet_id: 3,
+    pet_name: "ラッキー",
+    birth_date: "2019/07/23",
+    gender: "オス",
+    breed: "ゴールデンレトリバー",
+    weight: "30kg",
+    favorite_food: "チキン",
+    photo_url: "/img/avatar_winter.png", // 新しいペットの画像のURL
+  },
 };
 
-function Slide_Mydogs({ petId }) {
-  const [petInfo, setPetInfo] = useState(null); // ペットの情報を保存するためのstateを初期化します。
+function Slide_Mydogs({ selectedAccount }) {
+  const [petId, setPetId] = useState(1); // 初期のペットIDを1に設定します。
+  const [petInfo, setPetInfo] = useState(petData[1]); // 初期のペット情報を1番目のペットに設定します。
 
-  // useEffectはコンポーネントがマウントされたとき、またはpetIdが変更されたときに実行されます。
+  // selectedAccountが変更されたときに対応するpetIdを設定
   useEffect(() => {
-    // petIdに基づいて適切なペットデータを取得
-    const selectedPet = petData[petId];
-    if (selectedPet) {
-      setPetInfo(selectedPet); // 取得したペットの情報をstateに保存します。
+    if (selectedAccount && petData[selectedAccount]) {
+      setPetId(selectedAccount); // selectedAccountに基づいてpetIdを設定します。
+    }
+  }, [selectedAccount]); // selectedAccountが変更されるたびにこのeffectが実行されます。
+
+  // petIdが変更されたときにペット情報を取得
+  useEffect(() => {
+    if (petId) {
+      const selectedPet = petData[petId];
+      if (selectedPet) {
+        setPetInfo(selectedPet); // 取得したペットの情報をstateに保存します。
+      }
     }
   }, [petId]); // petIdが変更されるたびにこのeffectが実行されます。
 
