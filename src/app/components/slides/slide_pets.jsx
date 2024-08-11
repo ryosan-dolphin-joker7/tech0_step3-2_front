@@ -16,10 +16,6 @@ export default function Slide3() {
     birthdate: "",
   });
 
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
-  };
-
   useEffect(() => {
     const fetchData = async () => {
       console.log("Fetching data from Supabase...");

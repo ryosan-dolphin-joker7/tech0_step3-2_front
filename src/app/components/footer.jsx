@@ -4,6 +4,9 @@ import HomeIcon from "@mui/icons-material/Home"; // ホームアイコンをイ�
 import SearchIcon from "@mui/icons-material/Search"; // 検索アイコンをインポートしています。
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday"; // カレンダーアイコンをインポートしています。
 import TaskIcon from "@mui/icons-material/Task"; // タスクアイコンをインポートしています。
+import BuildIcon from "@mui/icons-material/Build"; // タスクアイコンをインポートしています。
+import PhotoLibraryIcon from "@mui/icons-material/PhotoLibrary";
+
 import Link from "next/link"; // ページ間リンクを作成するためのコンポーネントをインポートしています。
 
 // Footerコンポーネントを定義しています。
@@ -41,27 +44,9 @@ export default function Footer() {
           </Link>
         </Grid>
 
-        {/* 検索ボタン */}
-        <Grid item xs={3}>
-          <Button
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              width: "100%",
-              padding: "0.2rem 0",
-              minHeight: "50px",
-              color: "var(--icon-color)",
-            }}
-          >
-            <SearchIcon className="icon" /> {/* 検索アイコンを表示 */}
-            <div style={{ fontSize: "0.75rem" }}>検索</div>{" "}
-            {/* ボタンラベルを表示 */}
-          </Button>
-        </Grid>
-
         {/* カレンダーボタン */}
         <Grid item xs={3}>
-          <Link href="/table" prefetch={false}>
+          <Link href="/photo" prefetch={false}>
             <Button
               sx={{
                 display: "flex",
@@ -72,9 +57,9 @@ export default function Footer() {
                 color: "var(--icon-color)",
               }}
             >
-              <CalendarTodayIcon className="icon" />{" "}
+              <PhotoLibraryIcon className="icon" />{" "}
               {/* カレンダーアイコンを表示 */}
-              <div style={{ fontSize: "0.75rem" }}>日程</div>{" "}
+              <div style={{ fontSize: "0.75rem" }}>アルバム</div>{" "}
               {/* ボタンラベルを表示 */}
             </Button>
           </Link>
@@ -94,7 +79,26 @@ export default function Footer() {
               }}
             >
               <TaskIcon className="icon" /> {/* タスクアイコンを表示 */}
-              <div style={{ fontSize: "0.75rem" }}>タスク</div>{" "}
+              <div style={{ fontSize: "0.75rem" }}>やること</div>{" "}
+              {/* ボタンラベルを表示 */}
+            </Button>
+          </Link>
+        </Grid>
+        {/* 開発中のボタン */}
+        <Grid item xs={3}>
+          <Link href="/development" prefetch={false}>
+            <Button
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: "100%",
+                padding: "0.2rem 0",
+                minHeight: "50px",
+                color: "var(--icon-color)",
+              }}
+            >
+              <BuildIcon className="icon" /> {/* タスクアイコンを表示 */}
+              <div style={{ fontSize: "0.75rem" }}>開発中</div>{" "}
               {/* ボタンラベルを表示 */}
             </Button>
           </Link>
