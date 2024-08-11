@@ -1,27 +1,14 @@
 "use client"; // クライアント側で動作するコードであることを指定しています。
 import React, { useState } from "react";
 import { Button } from "@mui/material"; // Material-UIのボタンコンポーネントをインポートしています。
-import UploadImageModal from "@/components/modal"; // モーダルコンポーネントをインポートしています。
-import TodayDogImageModal from "@/components/modal_today_dog"; // モーダルコンポーネントをインポートしています。
-import Link from "next/link"; // ページ間リンクを作成するためのコンポーネントをインポートしています。
+import UploadImageModal from "@/components/posts/post_photo_modal"; // モーダルコンポーネントをインポートしています。
 
-export default function Post_Footer({ theme }) {
-  const [modalOpen, setModalOpen] = useState(false); // モーダルの開閉状態を管理するためのstateを定義しています。
-  const [modal_dog_Open, setModal_dog_Open] = useState(false); // モーダルの開閉状態を管理するためのstateを定義しています。
+export default function Footer_Post({ theme }) {
+  const [modalOpen, setModalOpen] = useState(false); // モーダルの開閉状態を管理するためのstateを初期化しています。
 
   // モーダルを開く関数
   const openModal = () => {
     setModalOpen(true);
-  };
-
-  // モーダルを開く関数
-  const openModal_today_dog = () => {
-    setModal_dog_Open(true);
-  };
-
-  // モーダルを閉じる関数
-  const closeModal_today_dog = () => {
-    setModal_dog_Open(false);
   };
 
   // モーダルを閉じる関数
@@ -38,34 +25,27 @@ export default function Post_Footer({ theme }) {
   return (
     <div
       style={{
-        position: "fixed",
+        position: "fixed", // フッターを画面下部に固定
         bottom: 50,
         width: "100%",
         zIndex: 1000,
-        backgroundColor: theme === "light" ? "#fff" : "#333",
+        textAlign: "center",
         color: theme === "light" ? "#000" : "#fff",
       }}
     >
-      <div>
-        <button className="btn btn-primary m-2 text-1xl" onClick={openModal}>
-          WanPush
-        </button>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={openModal} // ボタンがクリックされたときにモーダルを開きます
+        style={{ margin: "8px", fontSize: "1rem" }} // ボタンのスタイルを調整します
+      >
+        WanPush
+      </Button>
 
-        <button
-          className="btn btn-primary m-2 text-1xl"
-          onClick={openModal_today_dog}
-        >
-          今日のわんこ！！
-        </button>
-      </div>
       <UploadImageModal
-        open={modalOpen}
-        handleClose={closeModal}
-        handleUpload={handleUpload}
-      />
-      <TodayDogImageModal
-        open={modal_dog_Open}
-        handleClose={closeModal_today_dog}
+        open={modalOpen} // モーダルの開閉状態を制御
+        handleClose={closeModal} // モーダルを閉じる関数を渡します
+        handleUpload={handleUpload} // 画像アップロード関数を渡します
       />
     </div>
   );
