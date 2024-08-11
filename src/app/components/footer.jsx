@@ -86,7 +86,7 @@ export default function Footer() {
         </Grid>
         {/* 開発中のボタン */}
         <Grid item xs={3}>
-          <Link href="/management" prefetch={false}>
+          <Link href="/development" prefetch={false}>
             <Button
               sx={{
                 display: "flex",

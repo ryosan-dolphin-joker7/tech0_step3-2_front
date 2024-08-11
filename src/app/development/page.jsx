@@ -51,7 +51,7 @@ export default function UserManagementPage() {
         <Divider sx={{ width: "100%", marginBottom: "16px" }} />
 
         <Box sx={{ width: "100%", padding: "16px" }}>
-          <Link href="/management/users" passHref>
+          <Link href="/test_component" passHref>
             <Button
               sx={{
                 width: "100%",
@@ -60,12 +60,12 @@ export default function UserManagementPage() {
                 ":hover": { color: "white" },
               }}
             >
-              ユーザー管理
+              開発中（Flaskとの接続）
             </Button>
           </Link>
         </Box>
         <Box sx={{ width: "100%", padding: "16px" }}>
-          <Link href="/management/pets" passHref>
+          <Link href="/supabase_component" passHref>
             <Button
               sx={{
                 width: "100%",
@@ -74,12 +74,12 @@ export default function UserManagementPage() {
                 ":hover": { color: "white" },
               }}
             >
-              ペット管理
+              開発中（Supabaseとの接続）
             </Button>
           </Link>
         </Box>
         <Box sx={{ width: "100%", padding: "16px" }}>
-          <Link href="/management/pets" passHref>
+          <Link href="/get_dog_image" passHref>
             <Button
               sx={{
                 width: "100%",
@@ -88,8 +88,15 @@ export default function UserManagementPage() {
                 ":hover": { color: "white" },
               }}
             >
-              ペット用品管理
+              開発中（わんこの画像を取得できる機能）
             </Button>
+          </Link>
+        </Box>
+        <Box sx={{ width: "100%", padding: "16px" }}>
+          <Link href="/get_dog_image" prefetch={false}>
+            <IconButton sx={iconButtonStyle}>
+              <Pets />
+            </IconButton>
           </Link>
         </Box>
       </Box>
