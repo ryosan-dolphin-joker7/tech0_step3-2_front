@@ -4,6 +4,7 @@ import HomeIcon from "@mui/icons-material/Home"; // ホームアイコンをイ�
 import SearchIcon from "@mui/icons-material/Search"; // 検索アイコンをインポートしています。
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday"; // カレンダーアイコンをインポートしています。
 import TaskIcon from "@mui/icons-material/Task"; // タスクアイコンをインポートしています。
+import PaymentIcon from "@mui/icons-material/Payment"; // だいじなことアイコンをインポートしています。
 import Link from "next/link"; // ページ間リンクを作成するためのコンポーネントをインポートしています。
 
 // Footerコンポーネントを定義しています。
@@ -96,6 +97,27 @@ export default function Footer() {
               <TaskIcon className="icon" /> {/* タスクアイコンを表示 */}
               <div style={{ fontSize: "0.75rem" }}>タスク</div>{" "}
               {/* ボタンラベルを表示 */}
+            </Button>
+          </Link>
+        </Grid>
+
+        {/* だいじなことボタン */}
+        <Grid item xs={3}>
+          <Link href="/cards" prefetch={false}>
+            <Button
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: "100%",
+                padding: "0.2rem 0",
+                minHeight: "50px",
+                color: "var(--icon-color)",
+              }}
+            >
+              <PaymentIcon className="icon" />{" "}
+              {/* だいじなことアイコンを表示 */}
+              <div style={{ fontSize: "0.75rem" }}>だいじなこと</div>{" "}
+              {/* だいじなことラベルを表示 */}
             </Button>
           </Link>
         </Grid>
