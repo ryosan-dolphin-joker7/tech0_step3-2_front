@@ -6,7 +6,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import Post_Task from "@/components/posts/post_task"; // フッターコンポーネントをインポートしています。
-import Table_Task from "@/components/calendar_table_task"; // フッターコンポーネントをインポートしています。
+import Table_Todo from "@/components/calendar_table_todo"; // フッターコンポーネントをインポートしています。
 
 export default function Slide_Calendar() {
   return (
@@ -39,7 +39,7 @@ export default function Slide_Calendar() {
               overflowY: "auto", // テーブルが高さを超える場合にスクロールバーを表示
             }}
           >
-            <Table_Task />
+            <Table_Todo />
           </div>
         </Grid>
       </Grid>
