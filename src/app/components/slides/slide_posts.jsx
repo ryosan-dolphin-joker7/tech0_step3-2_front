@@ -40,11 +40,6 @@ export default function Page() {
     }
   };
 
-  // UIのテーマを切り替える関数
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
-  };
-
   // 顧客情報を表示するコンポーネントをレンダリングしています。
   return (
     <>

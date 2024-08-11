@@ -67,7 +67,7 @@ export const SwiperTab = () => {
         slidesPerView={1} // 一度に表示するスライド数
       >
         <SwiperSlide>
-          <Slide_Mydogs /> {/* タブ1のスライド */}
+          <Slide_Mydogs petId={1} /> {/* タブ1のスライド */}
         </SwiperSlide>
         <SwiperSlide>
           <Slide_Calendar /> {/* タブ2のスライド */}
