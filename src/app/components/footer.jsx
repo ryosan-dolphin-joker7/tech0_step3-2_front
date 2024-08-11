@@ -46,7 +46,7 @@ export default function Footer() {
 
         {/* カレンダーボタン */}
         <Grid item xs={3}>
-          <Link href="/table" prefetch={false}>
+          <Link href="/photo" prefetch={false}>
             <Button
               sx={{
                 display: "flex",

@@ -4,8 +4,6 @@
 // 必要なモジュールやコンポーネントをインポートします。
 import { useEffect, useState } from "react"; // Reactのフックをインポートします。
 import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートします。
-import BackButton from "@/components/back_button"; // カスタムバックボタンコンポーネントをインポートします。
-import Typography from "@mui/material/Typography"; // テキスト表示用のコンポーネントをインポートします。
 
 const Home = () => {
   // アイテムデータとエラーメッセージを保持するためのステートを定義します。

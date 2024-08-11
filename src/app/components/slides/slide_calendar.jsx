@@ -5,7 +5,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import Post_Task from "@/components/posts/post_task"; // フッターコンポーネントをインポートしています。
+import Post_Todo from "@/components/posts/post_todo"; // フッターコンポーネントをインポートしています。
 import Table_Todo from "@/components/calendar_table_todo"; // テーブルコンポーネントをインポートしています。
 
 export default function Slide_Calendar() {
@@ -51,7 +51,7 @@ export default function Slide_Calendar() {
       <Grid container spacing={2} justifyContent="center">
         <Grid item xs={12} sm={10} md={8} lg={6}>
           <div style={{ textAlign: "center" }}>
-            <Post_Task /> {/* フッターコンポーネントを表示 */}
+            <Post_Todo /> {/* フッターコンポーネントを表示 */}
           </div>
         </Grid>
       </Grid>
