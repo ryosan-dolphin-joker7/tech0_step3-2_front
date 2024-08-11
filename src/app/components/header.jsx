@@ -5,7 +5,6 @@ import DarkModeIcon from "@mui/icons-material/DarkMode"; // ダークモード�
 import LightModeIcon from "@mui/icons-material/LightMode"; // ライトモードアイコンをインポート。
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"; // アカウントアイコンをインポート。
 import MenuIcon from "@mui/icons-material/Menu"; // メニューアイコンをインポート
-import Pets from "@mui/icons-material/Pets"; // ペットアイコンをインポート
 
 export default function Header({ theme, toggleTheme }) {
   // アイコンボタンのスタイルを定義
@@ -49,12 +48,7 @@ export default function Header({ theme, toggleTheme }) {
       </Typography>
 
       {/* 右側（通知アイコン、アカウントアイコン、テーマ切り替えアイコン） */}
-      <Box sx={{ display: "flex", alignItems: "center" }}>
-        <Link href="/get_dog_image" prefetch={false}>
-          <IconButton sx={iconButtonStyle}>
-            <Pets />
-          </IconButton>
-        </Link>
+      <Box sx={{ display: "flex", alignItems: "right" }}>
         <Link href="/management" prefetch={false}>
           <IconButton sx={iconButtonStyle}>
             <AccountCircleIcon />

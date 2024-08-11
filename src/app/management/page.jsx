@@ -3,10 +3,25 @@ import { useEffect, useState } from "react";
 import Link from "next/link"; // ページ間リンクを作成するためのコンポーネントをインポートしています。
 import Header from "@/components/header.jsx"; // ヘッダーコンポーネントをインポートしています。
 import Footer from "@/components/footer.jsx"; // フッターコンポーネントをインポートしています。
-import { Box, Typography, Button, Divider } from "@mui/material";
+import { Button, Divider } from "@mui/material";
+import { IconButton, Box, Typography } from "@mui/material"; // MUIのコンポーネントをインポート。
+import Pets from "@mui/icons-material/Pets"; // ペットアイコンをインポート
 
 export default function UserManagementPage() {
   const [theme, setTheme] = useState("light"); // 現在のテーマ（ライトモードまたはダークモード）を保持するためのstateを定義しています。
+
+  // アイコンボタンのスタイルを定義
+  const iconButtonStyle = {
+    minWidth: "40px", // ボタンの最小幅を設定
+    height: "36px", // ボタンの高さを設定
+    display: "flex", // フレックスボックスを使用して要素を配置
+    alignItems: "center", // ボタン内の要素を中央揃え
+    justifyContent: "center", // ボタン内の要素を中央揃え
+    padding: "0 16px", // ボタンの左右に余白を設定
+    lineHeight: "1", // テキストの行間を設定
+    textAlign: "center", // テキストを中央揃え
+    color: "var(--icon-color)", // アイコンの色をCSS変数で制御
+  };
 
   // テーマを切り替える関数
   const toggleTheme = () => {
@@ -103,6 +118,27 @@ export default function UserManagementPage() {
             >
               開発中（Supabaseとの接続）
             </Button>
+          </Link>
+        </Box>
+        <Box sx={{ width: "100%", padding: "16px" }}>
+          <Link href="/get_dog_image" passHref>
+            <Button
+              sx={{
+                width: "100%",
+                border: "0",
+                backgroundColor: "skyblue",
+                ":hover": { color: "white" },
+              }}
+            >
+              開発中（わんこの画像を取得できる機能）
+            </Button>
+          </Link>
+        </Box>
+        <Box sx={{ width: "100%", padding: "16px" }}>
+          <Link href="/get_dog_image" prefetch={false}>
+            <IconButton sx={iconButtonStyle}>
+              <Pets />
+            </IconButton>
           </Link>
         </Box>
       </Box>
