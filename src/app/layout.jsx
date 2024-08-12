@@ -1,10 +1,11 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { Inter } from "next/font/google";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 import Header from "@/components/header.jsx"; // ヘッダーコンポーネントをインポート。
 import Footer from "@/components/footer.jsx"; // フッターコンポーネントをインポートしています。
 import ThemeProvider from "@/components/ThemeProvider"; // クライアントサイドのテーマ管理用コンポーネントをインポート
 import "./globals.css"; // グローバルスタイル（Tailwind CSSを含む）をインポートしています。
+import loading from "./loading";
 
 // Google Fonts の Inter フォントを読み込み
 const inter = Inter({ subsets: ["latin"] });
@@ -33,8 +34,8 @@ export default function RootLayout({ children }) {
           <Header />
           {/* ページのキャッシュ管理を提供 */}
           <AppRouterCacheProvider>
+            <Suspense fallback={<loading />}>{children}</Suspense>
             {/* ページのコンテンツがここに表示されます */}
-            {children}
           </AppRouterCacheProvider>
           {/* フッターコンポーネントを表示 */}
           <Footer />
