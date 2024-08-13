@@ -7,7 +7,7 @@ import { SwiperTab } from "@/components/swiper"; // スワイパータブを表�
 import "@/components/LoadingScreen.module.css"; // ローディング画面用のCSSをインポート。
 import "./globals.css"; // グローバルスタイルをインポート（Tailwind CSSを含む）。
 
-export default function Page() {
+export default function Page({ selectedAccount }) {
   const [items, setItems] = useState([]); // タスクのリストを保持するためのstate。
   const [talks, setTalks] = useState([]); // トーク情報のリストを保持するためのstate。
   const [isLoading, setIsLoading] = useState(true); // ローディング状態を管理するstate。
@@ -56,7 +56,8 @@ export default function Page() {
       {/* コンテンツの外枠。パディングで上下に余白を確保 */}
       <div className="pt-8 pb-16">
         {/* スワイパータブコンポーネントを表示 */}
-        <SwiperTab />
+        <SwiperTab selectedAccount={selectedAccount} />{" "}
+        {/* selectedAccountをSwiperTabに渡す */}
       </div>
     </div>
   );

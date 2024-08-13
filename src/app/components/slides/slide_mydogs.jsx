@@ -1,9 +1,12 @@
-"use client"; // クライアント側で動作するコードであることを指定しています。
-import React, { useState, useEffect } from "react";
-import Popup_Today_Dog from "@/components/posts/popup_today_dog.jsx"; // 「今日の犬」を表示するポップアップコンポーネントをインポートしています。
-import OnePetInfoCard from "@/components/one_pet_info_card.jsx"; // ペット情報カードコンポーネントをインポートしています。
+"use client"; // このファイルがクライアントサイドで動作することを指定
 
-// 3つのペットのデータをシミュレート
+import React, { useState, useEffect, useContext } from "react";
+import { Box } from "@mui/material";
+import Popup_Today_Dog from "@/components/posts/popup_today_dog.jsx";
+import OnePetInfoCard from "@/components/one_pet_info_card.jsx";
+import { AccountContext } from "@/components/AccountProvider"; // アカウントコンテキストをインポート
+
+// 3つのペットのデータを定義
 const petData = {
   1: {
     pet_id: 1,
@@ -37,53 +40,50 @@ const petData = {
   },
 };
 
-function Slide_Mydogs({ selectedAccount }) {
-  const [petId, setPetId] = useState(1); // 初期のペットIDを1に設定します。
-  const [petInfo, setPetInfo] = useState(petData[1]); // 初期のペット情報を1番目のペットに設定します。
+// Slide_Mydogsコンポーネントを定義
+function Slide_Mydogs() {
+  // AccountContextからselectedAccountを取得
+  const { selectedAccount } = useContext(AccountContext);
 
-  // selectedAccountが変更されたときに対応するpetIdを設定
+  // ペットIDとペット情報を管理するstateを定義（初期値はnull）
+  const [petId, setPetId] = useState(null);
+  const [petInfo, setPetInfo] = useState(null);
+
+  // 初期化時とselectedAccountが変更されたときに対応するpetIdを設定
   useEffect(() => {
     if (selectedAccount && petData[selectedAccount]) {
-      setPetId(selectedAccount); // selectedAccountに基づいてpetIdを設定します。
+      setPetId(selectedAccount);
+      setPetInfo(petData[selectedAccount]);
+    } else {
+      setPetId(1);
+      setPetInfo(petData[2]);
     }
-  }, [selectedAccount]); // selectedAccountが変更されるたびにこのeffectが実行されます。
-
-  // petIdが変更されたときにペット情報を取得
-  useEffect(() => {
-    if (petId) {
-      const selectedPet = petData[petId];
-      if (selectedPet) {
-        setPetInfo(selectedPet); // 取得したペットの情報をstateに保存します。
-      }
-    }
-  }, [petId]); // petIdが変更されるたびにこのeffectが実行されます。
+  }, [selectedAccount]);
 
   return (
-    <div
-      style={{
+    <Box
+      sx={{
         display: "flex",
         flexDirection: "column",
-        alignItems: "center", // 全体のコンテンツをセンター寄せ
-        minHeight: "100vh", // ビューポートの高さ全体を占めるように設定
+        alignItems: "center",
+        minHeight: "100vh",
         textAlign: "center",
       }}
     >
-      {/* カード形式でペットの情報を表示 */}
-      <div
+      <p>選択されたアカウント: {selectedAccount}</p>
+      <Box
         className="card flex flex-row max-w-sm m-4"
-        style={{ margin: "0 auto" }} // カードをセンター寄せにするためのスタイル
+        sx={{ margin: "0 auto" }}
       >
         {petInfo ? (
-          // ペットの情報が利用可能な場合にカードを表示
           <OnePetInfoCard petInfo={petInfo} />
         ) : (
-          <p>Loading...</p> // ペットの情報がロードされていない場合に表示されるメッセージ
+          <p>選択されたペット情報がありません。</p>
         )}
-      </div>
-
-      {/* 他のコンテンツを表示。ここでは「今日の犬」を表示するポップアップ */}
+      </Box>
+      {/* 「今日の犬」を表示するポップアップを追加 */}
       <Popup_Today_Dog />
-    </div>
+    </Box>
   );
 }
 

@@ -1,8 +1,9 @@
 "use client"; // このファイルがクライアントサイドで動作することを指定
 
-import React, { useContext, useState } from "react"; // Reactのフックをインポート
+import React, { useContext, useState, useEffect } from "react"; // Reactのフックをインポート
 import Link from "next/link"; // Next.jsのLinkコンポーネントをインポート
 import { ThemeContext } from "@/components/ThemeProvider"; // テーマの状態を管理するコンテキストをインポート
+import { AccountContext } from "@/components/AccountProvider"; // アカウントの状態を管理するコンテキストをインポート
 import { IconButton, Box, Typography, Menu, MenuItem } from "@mui/material"; // MUI（Material-UI）のコンポーネントをインポート
 import DarkModeIcon from "@mui/icons-material/DarkMode"; // ダークモードアイコンをインポート
 import LightModeIcon from "@mui/icons-material/LightMode"; // ライトモードアイコンをインポート
@@ -10,31 +11,48 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle"; // アカウ�
 import MenuIcon from "@mui/icons-material/Menu"; // メニューアイコンをインポート
 import AccountModal from "@/components/AccountModal"; // モーダルウィンドウを管理するコンポーネントをインポート
 
+// Headerコンポーネントを定義
+// このコンポーネントは、アプリの上部に表示されるナビゲーションバーを作成します
 export default function Header() {
-  const { theme, toggleTheme } = useContext(ThemeContext); // テーマの状態（light/dark）とテーマ切り替え関数をコンテキストから取得
+  // テーマの状態（light/dark）とテーマ切り替え関数を、ThemeProviderから取得
+  const { theme, toggleTheme } = useContext(ThemeContext);
 
-  const [anchorEl, setAnchorEl] = useState(null); // メニューの開閉を管理するためのアンカー要素を保持
-  const [modalOpen, setModalOpen] = useState(false); // モーダルウィンドウの開閉状態を管理
-  const [selectedAccount, setSelectedAccount] = useState(null); // 選択されたアカウントIDを保持する状態
+  // AccountContextからselectedAccountとsetSelectedAccountを取得
+  const { selectedAccount, setSelectedAccount } = useContext(AccountContext);
+
+  // メニューを開くためのアンカー要素と、その状態を管理するためのuseStateフック
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  // モーダルウィンドウの開閉状態を管理するためのuseStateフック
+  const [modalOpen, setModalOpen] = useState(false);
+
+  // 今日の日付を保存するためのuseStateフックを定義（初期値は空文字列）
+  const [today, setToday] = useState("");
+
+  // useEffectフックを使用して、コンポーネントがクライアントサイドで表示されたときに日付を設定
+  useEffect(() => {
+    // クライアントサイドでのみ、現在の日付を取得して設定
+    setToday(new Date().toISOString().split("T")[0]);
+  }, []); // 依存配列が空なので、コンポーネントの最初のレンダリング時にのみ実行されます
 
   // メニューを開くときに呼び出される関数。クリックされた位置をアンカー要素として設定
   const handleMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget); // メニューを開くためにアンカー要素を設定
+    setAnchorEl(event.currentTarget); // メニューを開くためにクリックされた要素をアンカーに設定
   };
 
   // メニューを閉じるときに呼び出される関数
   const handleMenuClose = () => {
-    setAnchorEl(null); // メニューを閉じるときにアンカー要素をリセット
+    setAnchorEl(null); // メニューを閉じるためにアンカー要素をリセット
   };
 
   // モーダルウィンドウを開くときに呼び出される関数
   const handleModalOpen = () => {
-    setModalOpen(true); // モーダルウィンドウを開く
+    setModalOpen(true); // モーダルウィンドウを開くために状態をtrueに設定
   };
 
   // モーダルウィンドウを閉じるときに呼び出される関数
   const handleModalClose = () => {
-    setModalOpen(false); // モーダルウィンドウを閉じる
+    setModalOpen(false); // モーダルウィンドウを閉じるために状態をfalseに設定
   };
 
   // アイコンボタンのスタイルを定義。すべてのアイコンボタンで共通のスタイルを使用
@@ -50,8 +68,6 @@ export default function Header() {
     color: "var(--icon-color)", // アイコンの色をCSS変数で制御
   };
 
-  const today = new Date().toISOString().split("T")[0]; // 今日の日付を取得し、YYYY-MM-DD形式にフォーマット
-
   return (
     <Box
       sx={{
@@ -66,16 +82,17 @@ export default function Header() {
         padding: "0 16px", // ヘッダーの左右に余白を設定
       }}
     >
-      {/* 左側にメニューアイコンを表示 */}
+      {/* 左側にメニューアイコンを表示。クリックでメニューを開く */}
       <IconButton sx={iconButtonStyle} onClick={handleMenuOpen}>
         <MenuIcon />
       </IconButton>
       {/* メニューアイコンがクリックされたときに表示されるプルダウンメニュー */}
       <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
+        anchorEl={anchorEl} // メニューの表示位置を設定
+        open={Boolean(anchorEl)} // メニューが開かれているかどうかを状態に基づいて設定
+        onClose={handleMenuClose} // メニューが閉じられるときに呼び出される関数
       >
+        {/* 各メニューアイテムにリンクを設定 */}
         <MenuItem onClick={handleMenuClose}>
           <Link href="/" passHref>
             Home
@@ -100,11 +117,13 @@ export default function Header() {
 
       {/* 中央に今日の日付を表示 */}
       <Typography variant="body1" color="textPrimary">
-        {today}
+        {/* クライアントサイドで設定された日付を表示。まだ設定されていない場合は "Loading..." を表示 */}
+        {today || "Loading..."}
       </Typography>
 
       {/* 右側にアカウントアイコン、アカウントID、テーマ切り替えアイコンを表示 */}
       <Box sx={{ display: "flex", alignItems: "center" }}>
+        {/* アカウントアイコンを表示。クリックでモーダルを開く */}
         <IconButton sx={iconButtonStyle} onClick={handleModalOpen}>
           <AccountCircleIcon />
         </IconButton>
@@ -120,10 +139,11 @@ export default function Header() {
         )}
         {/* モーダルウィンドウを表示。選択されたアカウントIDを更新する関数を渡す */}
         <AccountModal
-          open={modalOpen}
-          handleClose={handleModalClose}
-          setSelectedAccount={setSelectedAccount}
+          open={modalOpen} // モーダルの開閉状態を制御
+          handleClose={handleModalClose} // モーダルを閉じる関数を渡す
+          setSelectedAccount={setSelectedAccount} // モーダルで選択されたアカウントIDを更新
         />
+        {/* テーマ切り替えアイコンを表示。クリックでテーマを切り替え */}
         <IconButton
           sx={iconButtonStyle}
           onClick={toggleTheme}

@@ -1,11 +1,12 @@
 "use client"; // Next.jsのClient Side Rendering (CSR)を使用するための設定
 
-import React, { useState, useEffect, useCallback } from "react"; // Reactライブラリからフックをインポート
+import React, { useState, useEffect, useCallback, useContext } from "react"; // Reactライブラリからフックをインポート
 import { Swiper, SwiperSlide } from "swiper/react"; // Swiperのコンポーネントとスライドをインポート
 import "swiper/css"; // SwiperのCSSをインポート
 import Box from "@mui/material/Box"; // MUI（Material-UI）からBoxコンポーネントをインポート
 import Tabs from "@mui/material/Tabs"; // MUIからTabsコンポーネントをインポート
 import Tab from "@mui/material/Tab"; // MUIからTabコンポーネントをインポート
+import { AccountContext } from "@/components/AccountProvider"; // アカウントコンテキストをインポート
 
 // カスタムスライドコンポーネントをインポート
 import Slide_Mydogs from "@/components/slides/slide_mydogs";
@@ -15,6 +16,9 @@ import Slide_Pets from "@/components/slides/slide_pets";
 
 // SwiperTabコンポーネントの定義
 export const SwiperTab = () => {
+  // AccountContextからselectedAccountを取得
+  const { selectedAccount } = useContext(AccountContext);
+
   // タブの選択状態を管理するためのstate
   const [value, setValue] = useState(0);
 
@@ -67,7 +71,8 @@ export const SwiperTab = () => {
         slidesPerView={1} // 一度に表示するスライド数
       >
         <SwiperSlide>
-          <Slide_Mydogs petId={1} /> {/* タブ1のスライド */}
+          <Slide_Mydogs />{" "}
+          {/* Slide_MydogsにはselectedAccountがグローバルで渡される */}
         </SwiperSlide>
         <SwiperSlide>
           <Slide_Calendar /> {/* タブ2のスライド */}

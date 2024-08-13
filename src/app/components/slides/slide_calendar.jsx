@@ -1,57 +1,85 @@
-"use client"; // このコードがクライアントサイドで動作することを指定しています。
-import React from "react";
-import Grid from "@mui/material/Grid";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import interactionPlugin from "@fullcalendar/interaction";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import Post_Todo from "@/components/posts/post_todo"; // フッターコンポーネントをインポートしています。
-import Table_Todo from "@/components/calendar_table_todo"; // テーブルコンポーネントをインポートしています。
+"use client"; // このコードがクライアントサイドで動作することを指定
 
+import React, { useRef, useEffect } from "react"; // Reactの基本機能に加えてuseRefとuseEffectをインポート
+import Grid from "@mui/material/Grid"; // MUIのGridコンポーネントをインポート。レイアウトに使用します。
+import FullCalendar from "@fullcalendar/react"; // FullCalendarのメインコンポーネントをインポート。カレンダーを表示します。
+import dayGridPlugin from "@fullcalendar/daygrid"; // 月表示用のプラグインをインポート。カレンダーの月ビューを提供します。
+import interactionPlugin from "@fullcalendar/interaction"; // クリックやドラッグの操作を可能にするプラグインをインポート
+import timeGridPlugin from "@fullcalendar/timegrid"; // 週表示や日表示用のプラグインをインポート
+import Post_Todo from "@/components/posts/post_todo"; // フッターに表示するコンポーネントをインポート
+import Table_Todo from "@/components/calendar_table_todo"; // カレンダーの下に表示するテーブルコンポーネントをインポート
+
+// Slide_Calendarコンポーネントを定義。カレンダーと関連コンテンツを表示します。
 export default function Slide_Calendar() {
+  // カレンダーにアクセスするためのリファレンスを作成
+  const calendarRef = useRef(null);
+
+  // useEffectを使用して、コンポーネントがマウントされた後にカレンダーのサイズを更新
+  useEffect(() => {
+    if (calendarRef.current) {
+      // カレンダーがマウントされた後にサイズを強制的にリフレッシュ
+      calendarRef.current.getApi().updateSize();
+    }
+  }, []); // 依存配列が空のため、初回マウント時に一度だけ実行
+
   return (
     <div>
-      {/* カレンダーをグリッドで制御します */}
+      {/* カレンダーをグリッドレイアウトで中央に配置します */}
       <Grid container spacing={2} justifyContent="center">
+        {/* グリッド内の1つのアイテムとしてカレンダーを配置 */}
         <Grid item xs={12} sm={10} md={8} lg={6}>
-          <FullCalendar
-            plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]} // プラグインを設定して、カレンダーの機能を拡張します
-            initialView="dayGridMonth" // カレンダーの初期表示を月ビューに設定
-            headerToolbar={{
-              left: "prev,next today", // ツールバーの左側に前後ボタンと「今日」のボタンを表示
-              center: "title", // ツールバーの中央にカレンダーのタイトルを表示
-              right: "dayGridMonth,timeGridWeek,timeGridDay", // ツールバーの右側に月・週・日ビューを切り替えるボタンを表示
-            }}
-            height={400} // カレンダー全体の高さを500pxに設定します
-            contentHeight={400} // カレンダー内のコンテンツ部分の高さを400pxに設定します
-            aspectRatio={2} // カレンダーの全体の縦横比を設定し、セルのサイズを調整します
-            dayMaxEventRows={true} // イベントが多い場合にセル内で折り返して表示するオプション
-            style={{ maxWidth: "100%", fontSize: "0.8em" }} // カレンダーのスタイルを調整し、フォントサイズを小さく設定します
-          />
-        </Grid>
-      </Grid>
-
-      {/* テーブルをグリッドで制御します */}
-      <Grid container spacing={2} justifyContent="center">
-        <Grid item xs={12} sm={10} md={8} lg={6}>
-          <div
-            style={{
-              textAlign: "center", // テーブル全体を中央寄せにします
-              maxHeight: "300px", // テーブルの最大高さを300pxに設定します
-              overflowY: "auto", // テーブルが高さを超える場合にスクロールバーを表示します
-              fontSize: "0.8em", // テーブルの文字サイズを小さく設定します
-            }}
-          >
-            <Table_Todo /> {/* テーブルコンポーネントを表示 */}
+          {/* FullCalendarを囲むdiv要素でスタイルを適用 */}
+          <div style={{ maxWidth: "100%", fontSize: "0.8em" }}>
+            <FullCalendar
+              ref={calendarRef} // カレンダーにリファレンスを設定して、後でアクセスできるようにする
+              plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]} // プラグインを使用してカレンダーの機能を追加
+              initialView="dayGridMonth" // カレンダーの初期表示を「月」ビューに設定
+              headerToolbar={{
+                left: "prev,next today", // ヘッダーの左側に「前」「次」「今日」ボタンを配置
+                center: "title", // ヘッダーの中央にカレンダーのタイトルを表示
+                right: "dayGridMonth,timeGridWeek,timeGridDay", // ヘッダーの右側に「月」「週」「日」ビュー切り替えボタンを配置
+              }}
+              height={400} // カレンダー全体の高さを400ピクセルに設定
+              contentHeight={400} // カレンダーのコンテンツ部分の高さを400ピクセルに設定
+              aspectRatio={2} // カレンダーの縦横比を設定。セルのサイズを調整します。
+              dayMaxEventRows={true} // イベントが多い場合にセル内で折り返して表示する設定
+              windowResize={() => {
+                // ウィンドウがリサイズされたときにもカレンダーのサイズを再計算
+                if (calendarRef.current) {
+                  calendarRef.current.getApi().updateSize();
+                }
+              }}
+            />
           </div>
         </Grid>
       </Grid>
 
-      {/* フッターをグリッドで制御します */}
+      {/* テーブルをグリッドレイアウトで中央に配置します */}
       <Grid container spacing={2} justifyContent="center">
+        {/* グリッド内の1つのアイテムとしてテーブルを配置 */}
         <Grid item xs={12} sm={10} md={8} lg={6}>
+          {/* テーブルコンポーネントを囲むdiv要素を作成 */}
+          <div
+            style={{
+              textAlign: "center", // テーブル全体を中央揃えにする
+              maxHeight: "300px", // テーブルの最大高さを300ピクセルに設定
+              overflowY: "auto", // テーブルの高さを超えた部分にスクロールバーを表示
+              fontSize: "0.8em", // テーブル内の文字サイズを小さめに設定
+            }}
+          >
+            <Table_Todo />{" "}
+            {/* カレンダー下部に表示するテーブルコンポーネント */}
+          </div>
+        </Grid>
+      </Grid>
+
+      {/* フッターコンテンツをグリッドレイアウトで中央に配置します */}
+      <Grid container spacing={2} justifyContent="center">
+        {/* グリッド内の1つのアイテムとしてフッターを配置 */}
+        <Grid item xs={12} sm={10} md={8} lg={6}>
+          {/* フッターコンテンツを囲むdiv要素を作成 */}
           <div style={{ textAlign: "center" }}>
-            <Post_Todo /> {/* フッターコンポーネントを表示 */}
+            <Post_Todo /> {/* フッター部分に表示するコンポーネント */}
           </div>
         </Grid>
       </Grid>
