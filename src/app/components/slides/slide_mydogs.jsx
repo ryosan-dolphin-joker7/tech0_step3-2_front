@@ -72,9 +72,6 @@ function Slide_Mydogs() {
         textAlign: "center", // テキストを中央揃えにします
       }}
     >
-      {/* 現在選択されているアカウントを表示します */}
-      <p>選択されたアカウント: {selectedAccount ?? "未選択"}</p>
-
       <Box
         className="card flex flex-row max-w-sm m-4" // カードスタイルを定義したクラスを適用します
         sx={{ margin: "0 auto" }} // カードを中央に配置します

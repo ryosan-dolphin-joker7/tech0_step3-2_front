@@ -5,11 +5,13 @@ import Link from "next/link"; // Next.jsのLinkコンポーネントをインポ
 import { ThemeContext } from "@/components/ThemeProvider"; // テーマの状態を管理するコンテキストをインポート
 import { AccountContext } from "@/components/AccountProvider"; // アカウントの状態を管理するコンテキストをインポート
 import { IconButton, Box, Typography, Menu, MenuItem } from "@mui/material"; // MUI（Material-UI）のコンポーネントをインポート
+import AccountModal from "@/components/AccountModal"; // モーダルウィンドウを管理するコンポーネントをインポート
+
+// アイコンをインポート
 import DarkModeIcon from "@mui/icons-material/DarkMode"; // ダークモードアイコンをインポート
 import LightModeIcon from "@mui/icons-material/LightMode"; // ライトモードアイコンをインポート
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"; // アカウントアイコンをインポート
 import MenuIcon from "@mui/icons-material/Menu"; // メニューアイコンをインポート
-import AccountModal from "@/components/AccountModal"; // モーダルウィンドウを管理するコンポーネントをインポート
 
 // Headerコンポーネントを定義
 // このコンポーネントは、アプリの上部に表示されるナビゲーションバーを作成します
