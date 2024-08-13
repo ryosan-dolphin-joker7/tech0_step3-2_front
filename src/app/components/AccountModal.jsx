@@ -33,9 +33,12 @@ export default function AccountModal({ open, handleClose }) {
       <Button
         fullWidth // ボタンを横幅いっぱいに設定
         variant="contained" // ボタンのスタイルを設定
-        color="primary" // テキストが見えるようにプライマリカラーを指定
         sx={{
-          color: muiTheme.palette.primary.contrastText, // テキストの色を背景とコントラストのある色に設定
+          backgroundColor: muiTheme.palette.primary.dark, // ボタンの背景色をプライマリカラーのダークに設定
+          color: muiTheme.palette.primary.contrastText, // ボタンのテキストカラーを設定
+          "&:hover": {
+            backgroundColor: muiTheme.palette.primary.dark, // ホバー時も同じ背景色を維持
+          },
         }}
         onClick={() => handleAccountSelect(id)} // ボタンがクリックされたときにアカウントを選択
       >
