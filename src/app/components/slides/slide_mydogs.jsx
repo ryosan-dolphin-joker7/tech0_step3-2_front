@@ -5,42 +5,8 @@ import { Box } from "@mui/material"; // MUIのBoxコンポーネントをイン�
 import Popup_Today_Dog from "@/components/posts/popup_today_dog.jsx"; // ポップアップ用のコンポーネントをインポート
 import OnePetInfoCard from "@/components/one_pet_info_card.jsx"; // ペット情報カード用のコンポーネントをインポート
 import { AccountContext } from "@/components/AccountProvider"; // アカウントコンテキストをインポート
+import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポート
 
-// ペットのデータをオブジェクトとして定義します。これを使って表示する情報を管理します。
-const petData = {
-  1: {
-    pet_id: 1,
-    pet_name: "マロン",
-    birth_date: "2021/01/01",
-    gender: "オス",
-    breed: "ダックスフンド",
-    weight: "5kg",
-    favorite_food: "ささみ",
-    photo_url: "/img/avatar.png", // ペットの画像のURL
-  },
-  2: {
-    pet_id: 2,
-    pet_name: "ココ",
-    birth_date: "2020/05/15",
-    gender: "メス",
-    breed: "シーズー",
-    weight: "4kg",
-    favorite_food: "ドッグフード",
-    photo_url: "/img/avatar_fall.png", // 別のペットの画像のURL
-  },
-  3: {
-    pet_id: 3,
-    pet_name: "ラッキー",
-    birth_date: "2019/07/23",
-    gender: "オス",
-    breed: "ゴールデンレトリバー",
-    weight: "30kg",
-    favorite_food: "チキン",
-    photo_url: "/img/avatar_winter.png", // 新しいペットの画像のURL
-  },
-};
-
-// Slide_Mydogsコンポーネントを定義します。このコンポーネントは、選択されたペットの情報を表示します。
 function Slide_Mydogs() {
   // AccountContextからselectedAccountを取得します。
   const { selectedAccount } = useContext(AccountContext);
@@ -48,39 +14,60 @@ function Slide_Mydogs() {
   // ペット情報を管理するstateを定義します。初期値はnullです。
   const [petInfo, setPetInfo] = useState(null);
 
-  // selectedAccountが変更されたとき、対応するペットの情報を設定します。
-  useEffect(() => {
-    // デフォルトで表示するペットのIDを設定します。
-    const defaultPetId = 1;
+  // ペット情報のリストを管理するためのstate。Supabaseから取得した全データを保存します。
+  const [pets, setPets] = useState([]);
 
-    // selectedAccountが有効で、そのアカウントに対応するペットの情報がある場合、その情報を設定します。
-    if (selectedAccount && petData[selectedAccount]) {
-      setPetInfo(petData[selectedAccount]);
-    } else {
-      // selectedAccountが無効な場合、デフォルトのペット情報を設定します。
-      setPetInfo(petData[defaultPetId]);
+  // Supabaseからpetinformationテーブルのすべてのデータを取得する非同期関数
+  const fetchData = async () => {
+    try {
+      const { data: petsData, error: petsError } = await supabase
+        .from("petinformation") // petinformationテーブルからデータを取得
+        .select("*"); // 全てのカラムを選択して取得
+
+      if (petsError) throw petsError; // エラーが発生した場合は例外をスローします
+
+      setPets(petsData || []); // 取得したデータをpets状態に保存します。データが空の場合は空の配列を設定します。
+    } catch (error) {
+      // データ取得に失敗した場合のエラーメッセージをコンソールに出力します。
+      console.error("ペット情報の取得に失敗しました: " + error.message);
     }
-  }, [selectedAccount]); // selectedAccountが変更されるたびにこの処理が実行されます。
+  };
+
+  // コンポーネントが最初に表示されるときに、fetchData関数を実行してデータを取得します。
+  useEffect(() => {
+    fetchData();
+  }, []); // このuseEffectは、最初のマウント時にのみ実行されます。
+
+  // selectedAccountが変更されたときに、対応するペット情報を設定するための処理
+  useEffect(() => {
+    if (selectedAccount && pets.length > 0) {
+      // selectedAccountのIDに対応するペット情報を検索します。
+      const selectedPet = pets.find((pet) => pet.petid === selectedAccount); // petidとselectedAccountが一致するペットを取得
+
+      // 該当するペット情報が見つかった場合、その情報をpetInfoに設定します。見つからない場合はnullを設定します。
+      setPetInfo(selectedPet || null);
+    }
+  }, [selectedAccount, pets]); // selectedAccountとpetsが変更されるたびにこの処理が実行されます。
 
   return (
     <Box
       sx={{
-        display: "flex", // 子要素をフレックスボックスとして表示します
-        flexDirection: "column", // 子要素を縦に並べます
-        alignItems: "center", // 子要素を中央に配置します
-        minHeight: "100vh", // 最小高さを画面全体に設定します
-        textAlign: "center", // テキストを中央揃えにします
+        display: "flex", // 子要素をフレックスボックスとして表示
+        flexDirection: "column", // 子要素を縦に並べる
+        alignItems: "center", // 子要素を中央に配置
+        minHeight: "100vh", // 画面全体の高さを確保
+        textAlign: "center", // テキストを中央揃え
       }}
     >
       <Box
-        className="card flex flex-row max-w-sm m-4" // カードスタイルを定義したクラスを適用します
-        sx={{ margin: "0 auto" }} // カードを中央に配置します
+        className="card flex flex-row max-w-sm m-4" // カードスタイルを定義したクラスを適用
+        sx={{ margin: "0 auto" }} // カードを中央に配置
       >
-        {/* ペット情報がある場合、それを表示します。なければエラーメッセージを表示します。 */}
+        {/* petInfoが存在する場合はペット情報カードを表示し、存在しない場合はエラーメッセージを表示 */}
         {petInfo ? (
           <OnePetInfoCard petInfo={petInfo} /> // ペット情報カードコンポーネントを表示
         ) : (
-          <p>選択されたペット情報がありません。</p> // ペット情報がない場合のメッセージ
+          <p>アカウントを選んでください。</p> // ペット情報がない場合のメッセージ
         )}
       </Box>
 
@@ -90,5 +77,5 @@ function Slide_Mydogs() {
   );
 }
 
-// このコンポーネントを他のファイルで使えるようにエクスポートします。
+// Slide_Mydogsコンポーネントを他のファイルで使用できるようにエクスポート
 export default Slide_Mydogs;
