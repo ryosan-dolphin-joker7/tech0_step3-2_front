@@ -42,7 +42,7 @@ const petData = {
 
 // Slide_Mydogsコンポーネントを定義します。このコンポーネントは、選択されたペットの情報を表示します。
 function Slide_Mydogs() {
-  // AccountContextからselectedAccountを取得します。これにより、どのアカウントが選択されているかが分かります。
+  // AccountContextからselectedAccountを取得します。
   const { selectedAccount } = useContext(AccountContext);
 
   // ペット情報を管理するstateを定義します。初期値はnullです。
