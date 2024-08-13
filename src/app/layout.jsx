@@ -1,23 +1,28 @@
-import React, { Suspense } from "react";
+"use client"; // このファイルがクライアントサイドで動作することを指定
+import React, { useState, Suspense } from "react";
 import { Inter } from "next/font/google";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
-import Header from "@/components/header.jsx"; // ヘッダーコンポーネントをインポート。
-import Footer from "@/components/footer.jsx"; // フッターコンポーネントをインポートしています。
-import ThemeProvider from "@/components/ThemeProvider"; // クライアントサイドのテーマ管理用コンポーネントをインポート
-import "./globals.css"; // グローバルスタイル（Tailwind CSSを含む）をインポートしています。
-import loading from "./loading";
+import Header from "@/components/header.jsx"; // ヘッダーコンポーネントをインポート
+import Footer from "@/components/footer.jsx"; // フッターコンポーネントをインポート
+import ThemeProvider from "@/components/ThemeProvider"; // テーマ管理用のコンポーネントをインポート
+import { AccountProvider } from "@/components/AccountProvider"; // アカウント選択状態を管理するプロバイダーをインポート
+import "./globals.css"; // グローバルスタイル（Tailwind CSSを含む）をインポート
+import loading from "./loading"; // ローディング画面コンポーネントをインポート
 
-// Google Fonts の Inter フォントを読み込み
+// Google Fonts の Inter フォントを読み込む設定
 const inter = Inter({ subsets: ["latin"] });
 
 // RootLayout コンポーネントを定義
-// このコンポーネントは全ページのレイアウトを管理します
-// すべてのページコンテンツはこのコンポーネントのchildrenとして渡されます
+// アプリ全体のレイアウトを管理し、ページごとのコンテンツを包み込む役割を持つ
 export default function RootLayout({ children }) {
+  // selectedAccount の状態を削除しました。これにより、状態管理が AccountProvider に移行します。
+
   return (
     <html lang="ja">
+      {" "}
+      {/* ページの言語を日本語に設定 */}
       <head>
-        {/* ページの文字コードをUTF-8に設定 */}
+        {/* ページの文字コードを UTF-8 に設定 */}
         <meta charSet="UTF-8" />
         {/* ビューポート設定でモバイルフレンドリーに */}
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -26,19 +31,24 @@ export default function RootLayout({ children }) {
         {/* ページのタイトルを設定 */}
         <title>OnePushAPP</title>
       </head>
-
       <body className={inter.className}>
-        {/* ThemeProviderを使用してテーマの設定を管理 */}
+        {/* ThemeProvider を使用してアプリ全体のテーマを管理 */}
         <ThemeProvider>
-          {/* ヘッダーコンポーネントを表示 */}
-          <Header />
-          {/* ページのキャッシュ管理を提供 */}
-          <AppRouterCacheProvider>
-            <Suspense fallback={<loading />}>{children}</Suspense>
-            {/* ページのコンテンツがここに表示されます */}
-          </AppRouterCacheProvider>
-          {/* フッターコンポーネントを表示 */}
-          <Footer />
+          {/* AccountProvider でアプリ全体をラップして、アカウントの選択状態を管理 */}
+          <AccountProvider>
+            {/* ヘッダーコンポーネントを表示。AccountProvider 経由でアカウントの状態を管理 */}
+            <Header />
+            {/* ページのキャッシュ管理と遅延読み込み処理を提供 */}
+            <AppRouterCacheProvider>
+              {/* Suspense を使用して、非同期でコンポーネントを読み込み中にローディング画面を表示 */}
+              <Suspense fallback={<loading />}>
+                {/* ページコンテンツを表示し、AccountProvider を通じて選択されたアカウント状態を使用 */}
+                {children}
+              </Suspense>
+            </AppRouterCacheProvider>
+            {/* フッターコンポーネントを表示 */}
+            <Footer />
+          </AccountProvider>
         </ThemeProvider>
       </body>
     </html>

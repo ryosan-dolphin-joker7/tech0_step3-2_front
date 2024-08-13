@@ -1,26 +1,28 @@
-"use client"; // クライアント側で動作するコードであることを指定しています。
-import React from "react";
-import { useEffect, useState } from "react";
-import { supabase } from "@/supabaseClient";
-import Link from "next/link";
-import { Box, Typography, Button, Divider, TextField } from "@mui/material";
+"use client"; // このコードがクライアントサイドで動作することを指定
+
+import React, { useEffect, useState } from "react"; // Reactの基本機能をインポート
+import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポート
+import Link from "next/link"; // Next.jsのLinkコンポーネントをインポート
+import { Box, Typography, Button, Divider, TextField } from "@mui/material"; // MUIのコンポーネントをインポート
 
 export default function Slide3() {
-  const [theme, setTheme] = useState("light");
-  const [pets, setPets] = useState([]);
-  const [error, setError] = useState(null);
-  const [selectedPet, setSelectedPet] = useState(null);
+  const [theme, setTheme] = useState("light"); // テーマを管理するためのstate
+  const [pets, setPets] = useState([]); // ペット情報を保存するためのstate
+  const [error, setError] = useState(null); // エラーメッセージを保存するためのstate
+  const [selectedPet, setSelectedPet] = useState(null); // 編集対象のペットを保存するためのstate
   const [updateData, setUpdateData] = useState({
     petname: "",
     breed: "",
     birthdate: "",
-  });
+  }); // ペット情報の更新データを保存するためのstate
 
+  // Supabaseからペット情報を取得するためのuseEffectフック
   useEffect(() => {
     const fetchData = async () => {
       console.log("Fetching data from Supabase...");
 
       try {
+        // Supabaseからデータを取得
         const { data, error } = await supabase.from("petinformation").select(`
           petid,
           petname,
@@ -32,12 +34,13 @@ export default function Slide3() {
           )
         `);
 
+        // エラーチェック
         if (error) {
           console.error("Error fetching data: ", error);
           setError("データの取得に失敗しました");
         } else {
           console.log("Data fetched successfully:", data);
-          setPets(data);
+          setPets(data); // 取得したデータをstateに保存
         }
       } catch (fetchError) {
         console.error("Fetch error: ", fetchError);
@@ -45,12 +48,14 @@ export default function Slide3() {
       }
     };
 
-    fetchData();
+    fetchData(); // データを取得する関数を呼び出し
   }, []);
 
+  // ペット情報を更新するための関数
   const handleUpdatePet = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // フォームのデフォルトの送信動作を防ぐ
     try {
+      // Supabaseにデータを更新するリクエストを送信
       const { data, error } = await supabase
         .from("petinformation")
         .update(updateData)
@@ -64,13 +69,13 @@ export default function Slide3() {
         const updatedPets = pets.map((pet) =>
           pet.petid === selectedPet.petid ? { ...pet, ...updateData } : pet
         );
-        setPets(updatedPets);
-        setSelectedPet(null);
+        setPets(updatedPets); // 更新後のペット情報をstateに保存
+        setSelectedPet(null); // 編集対象のペットをリセット
         setUpdateData({
           petname: "",
           breed: "",
           birthdate: "",
-        });
+        }); // フォームをクリア
       }
     } catch (updateError) {
       console.error("Update error: ", updateError);
@@ -80,7 +85,7 @@ export default function Slide3() {
 
   return (
     <>
-      <div style={{ paddingTop: "60px" }}></div>
+      <div style={{ paddingTop: "60px" }}></div> {/* 上部に余白を追加 */}
       <Box
         sx={{
           display: "flex",
@@ -98,9 +103,11 @@ export default function Slide3() {
           ペット管理
         </Typography>
         <Divider sx={{ width: "100%", marginBottom: "16px" }} />
-
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        {error && <p style={{ color: "red" }}>{error}</p>}{" "}
+        {/* エラーメッセージを表示 */}
         <table style={{ borderCollapse: "collapse", width: "100%" }}>
+          {" "}
+          {/* テーブルのスタイルを設定 */}
           <thead>
             <tr>
               <th style={{ border: "1px solid black", padding: "8px" }}>
@@ -155,7 +162,6 @@ export default function Slide3() {
             ))}
           </tbody>
         </table>
-
         {selectedPet && (
           <Box
             component="form"
@@ -202,7 +208,6 @@ export default function Slide3() {
             </Button>
           </Box>
         )}
-
         <Link href="/management/pets/pet" passHref>
           <Button
             variant="contained"

@@ -1,5 +1,8 @@
 "use client"; // クライアント側で動作するコードであることを指定しています。
+import Link from "next/link"; // ページ間リンクを作成するためのコンポーネントをインポートしています。
 import { Button, Box, Grid } from "@mui/material"; // Material-UIのコンポーネントをインポートしています。
+
+// アイコンをインポート
 import HomeIcon from "@mui/icons-material/Home"; // ホームアイコンをインポートしています。
 import SearchIcon from "@mui/icons-material/Search"; // 検索アイコンをインポートしています。
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday"; // カレンダーアイコンをインポートしています。
@@ -7,7 +10,6 @@ import TaskIcon from "@mui/icons-material/Task"; // タスクアイコンをイ�
 import PaymentIcon from "@mui/icons-material/Payment"; // だいじなことアイコンをインポートしています。
 import BuildIcon from "@mui/icons-material/Build"; // タスクアイコンをインポートしています。
 import PhotoLibraryIcon from "@mui/icons-material/PhotoLibrary";
-import Link from "next/link"; // ページ間リンクを作成するためのコンポーネントをインポートしています。
 
 // Footerコンポーネントを定義しています。
 // このコンポーネントはページの下部に固定されて表示され、ナビゲーションボタンを含みます。

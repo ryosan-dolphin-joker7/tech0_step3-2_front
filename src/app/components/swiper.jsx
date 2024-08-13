@@ -1,6 +1,6 @@
 "use client"; // Next.jsのClient Side Rendering (CSR)を使用するための設定
 
-import React, { useState, useEffect, useCallback } from "react"; // Reactライブラリからフックをインポート
+import React, { useState, useEffect, useCallback, useContext } from "react"; // Reactライブラリからフックをインポート
 import { Swiper, SwiperSlide } from "swiper/react"; // Swiperのコンポーネントとスライドをインポート
 import "swiper/css"; // SwiperのCSSをインポート
 import Box from "@mui/material/Box"; // MUI（Material-UI）からBoxコンポーネントをインポート
@@ -10,7 +10,6 @@ import Tab from "@mui/material/Tab"; // MUIからTabコンポーネントをイ�
 // カスタムスライドコンポーネントをインポート
 import Slide_Mydogs from "@/components/slides/slide_mydogs";
 import Slide_Calendar from "@/components/slides/slide_calendar";
-import Slide_Posts from "@/components/slides/slide_posts";
 import Slide_Pets from "@/components/slides/slide_pets";
 
 // SwiperTabコンポーネントの定義
@@ -23,7 +22,7 @@ export const SwiperTab = () => {
 
   // タブが変更されたときに呼び出される関数
   const tabChange = useCallback(
-    (event, newValue) => {
+    (newValue) => {
       setValue(newValue); // 新しいタブのインデックスをstateに設定
       if (swiper) {
         swiper.slideTo(newValue); // Swiperのスライドを移動
@@ -46,7 +45,7 @@ export const SwiperTab = () => {
       >
         <Tabs
           value={value}
-          onChange={tabChange}
+          onChange={(event, newValue) => tabChange(newValue)} // eventは使用されないので無視
           centered
           sx={{
             "& .MuiTab-root": { color: "var(--text-color)" }, // 各タブのテキストカラーをCSS変数で設定
@@ -55,7 +54,6 @@ export const SwiperTab = () => {
         >
           <Tab label="My Dogs" value={0} /> {/* タブ1 */}
           <Tab label="カレンダー" value={1} /> {/* タブ2 */}
-          <Tab label="今日の出来事" value={2} /> {/* タブ3 */}
           <Tab label="登録" value={3} /> {/* タブ4 */}
         </Tabs>
       </Box>
@@ -67,13 +65,11 @@ export const SwiperTab = () => {
         slidesPerView={1} // 一度に表示するスライド数
       >
         <SwiperSlide>
-          <Slide_Mydogs petId={1} /> {/* タブ1のスライド */}
+          <Slide_Mydogs />{" "}
+          {/* Slide_MydogsにはselectedAccountがグローバルで渡される */}
         </SwiperSlide>
         <SwiperSlide>
           <Slide_Calendar /> {/* タブ2のスライド */}
-        </SwiperSlide>
-        <SwiperSlide>
-          <Slide_Posts /> {/* タブ3のスライド */}
         </SwiperSlide>
         <SwiperSlide>
           <Slide_Pets /> {/* タブ4のスライド */}

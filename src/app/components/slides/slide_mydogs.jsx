@@ -1,9 +1,12 @@
-"use client"; // クライアント側で動作するコードであることを指定しています。
-import React, { useState, useEffect } from "react";
-import Popup_Today_Dog from "@/components/posts/popup_today_dog.jsx"; // 「今日の犬」を表示するポップアップコンポーネントをインポートしています。
-import OnePetInfoCard from "@/components/one_pet_info_card.jsx"; // ペット情報カードコンポーネントをインポートしています。
+"use client"; // このファイルがクライアントサイドで動作することを指定
 
-// 3つのペットのデータをシミュレート
+import React, { useState, useEffect, useContext } from "react"; // Reactの基本的なフックとコンテキストをインポート
+import { Box } from "@mui/material"; // MUIのBoxコンポーネントをインポート
+import Popup_Today_Dog from "@/components/posts/popup_today_dog.jsx"; // ポップアップ用のコンポーネントをインポート
+import OnePetInfoCard from "@/components/one_pet_info_card.jsx"; // ペット情報カード用のコンポーネントをインポート
+import { AccountContext } from "@/components/AccountProvider"; // アカウントコンテキストをインポート
+
+// ペットのデータをオブジェクトとして定義します。これを使って表示する情報を管理します。
 const petData = {
   1: {
     pet_id: 1,
@@ -37,54 +40,55 @@ const petData = {
   },
 };
 
-function Slide_Mydogs({ selectedAccount }) {
-  const [petId, setPetId] = useState(1); // 初期のペットIDを1に設定します。
-  const [petInfo, setPetInfo] = useState(petData[1]); // 初期のペット情報を1番目のペットに設定します。
+// Slide_Mydogsコンポーネントを定義します。このコンポーネントは、選択されたペットの情報を表示します。
+function Slide_Mydogs() {
+  // AccountContextからselectedAccountを取得します。
+  const { selectedAccount } = useContext(AccountContext);
 
-  // selectedAccountが変更されたときに対応するpetIdを設定
+  // ペット情報を管理するstateを定義します。初期値はnullです。
+  const [petInfo, setPetInfo] = useState(null);
+
+  // selectedAccountが変更されたとき、対応するペットの情報を設定します。
   useEffect(() => {
+    // デフォルトで表示するペットのIDを設定します。
+    const defaultPetId = 1;
+
+    // selectedAccountが有効で、そのアカウントに対応するペットの情報がある場合、その情報を設定します。
     if (selectedAccount && petData[selectedAccount]) {
-      setPetId(selectedAccount); // selectedAccountに基づいてpetIdを設定します。
+      setPetInfo(petData[selectedAccount]);
+    } else {
+      // selectedAccountが無効な場合、デフォルトのペット情報を設定します。
+      setPetInfo(petData[defaultPetId]);
     }
-  }, [selectedAccount]); // selectedAccountが変更されるたびにこのeffectが実行されます。
-
-  // petIdが変更されたときにペット情報を取得
-  useEffect(() => {
-    if (petId) {
-      const selectedPet = petData[petId];
-      if (selectedPet) {
-        setPetInfo(selectedPet); // 取得したペットの情報をstateに保存します。
-      }
-    }
-  }, [petId]); // petIdが変更されるたびにこのeffectが実行されます。
+  }, [selectedAccount]); // selectedAccountが変更されるたびにこの処理が実行されます。
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center", // 全体のコンテンツをセンター寄せ
-        minHeight: "100vh", // ビューポートの高さ全体を占めるように設定
-        textAlign: "center",
+    <Box
+      sx={{
+        display: "flex", // 子要素をフレックスボックスとして表示します
+        flexDirection: "column", // 子要素を縦に並べます
+        alignItems: "center", // 子要素を中央に配置します
+        minHeight: "100vh", // 最小高さを画面全体に設定します
+        textAlign: "center", // テキストを中央揃えにします
       }}
     >
-      {/* カード形式でペットの情報を表示 */}
-      <div
-        className="card flex flex-row max-w-sm m-4"
-        style={{ margin: "0 auto" }} // カードをセンター寄せにするためのスタイル
+      <Box
+        className="card flex flex-row max-w-sm m-4" // カードスタイルを定義したクラスを適用します
+        sx={{ margin: "0 auto" }} // カードを中央に配置します
       >
+        {/* ペット情報がある場合、それを表示します。なければエラーメッセージを表示します。 */}
         {petInfo ? (
-          // ペットの情報が利用可能な場合にカードを表示
-          <OnePetInfoCard petInfo={petInfo} />
+          <OnePetInfoCard petInfo={petInfo} /> // ペット情報カードコンポーネントを表示
         ) : (
-          <p>Loading...</p> // ペットの情報がロードされていない場合に表示されるメッセージ
+          <p>選択されたペット情報がありません。</p> // ペット情報がない場合のメッセージ
         )}
-      </div>
+      </Box>
 
-      {/* 他のコンテンツを表示。ここでは「今日の犬」を表示するポップアップ */}
+      {/* 「今日の犬」を表示するポップアップを追加 */}
       <Popup_Today_Dog />
-    </div>
+    </Box>
   );
 }
 
+// このコンポーネントを他のファイルで使えるようにエクスポートします。
 export default Slide_Mydogs;
