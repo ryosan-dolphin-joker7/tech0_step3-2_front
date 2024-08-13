@@ -6,19 +6,14 @@ import "swiper/css"; // SwiperのCSSをインポート
 import Box from "@mui/material/Box"; // MUI（Material-UI）からBoxコンポーネントをインポート
 import Tabs from "@mui/material/Tabs"; // MUIからTabsコンポーネントをインポート
 import Tab from "@mui/material/Tab"; // MUIからTabコンポーネントをインポート
-import { AccountContext } from "@/components/AccountProvider"; // アカウントコンテキストをインポート
 
 // カスタムスライドコンポーネントをインポート
 import Slide_Mydogs from "@/components/slides/slide_mydogs";
 import Slide_Calendar from "@/components/slides/slide_calendar";
-import Slide_Posts from "@/components/slides/slide_posts";
 import Slide_Pets from "@/components/slides/slide_pets";
 
 // SwiperTabコンポーネントの定義
 export const SwiperTab = () => {
-  // AccountContextからselectedAccountを取得
-  const { selectedAccount } = useContext(AccountContext);
-
   // タブの選択状態を管理するためのstate
   const [value, setValue] = useState(0);
 
@@ -27,7 +22,7 @@ export const SwiperTab = () => {
 
   // タブが変更されたときに呼び出される関数
   const tabChange = useCallback(
-    (event, newValue) => {
+    (newValue) => {
       setValue(newValue); // 新しいタブのインデックスをstateに設定
       if (swiper) {
         swiper.slideTo(newValue); // Swiperのスライドを移動
@@ -50,7 +45,7 @@ export const SwiperTab = () => {
       >
         <Tabs
           value={value}
-          onChange={tabChange}
+          onChange={(event, newValue) => tabChange(newValue)} // eventは使用されないので無視
           centered
           sx={{
             "& .MuiTab-root": { color: "var(--text-color)" }, // 各タブのテキストカラーをCSS変数で設定
@@ -59,7 +54,6 @@ export const SwiperTab = () => {
         >
           <Tab label="My Dogs" value={0} /> {/* タブ1 */}
           <Tab label="カレンダー" value={1} /> {/* タブ2 */}
-          <Tab label="今日の出来事" value={2} /> {/* タブ3 */}
           <Tab label="登録" value={3} /> {/* タブ4 */}
         </Tabs>
       </Box>
@@ -76,9 +70,6 @@ export const SwiperTab = () => {
         </SwiperSlide>
         <SwiperSlide>
           <Slide_Calendar /> {/* タブ2のスライド */}
-        </SwiperSlide>
-        <SwiperSlide>
-          <Slide_Posts /> {/* タブ3のスライド */}
         </SwiperSlide>
         <SwiperSlide>
           <Slide_Pets /> {/* タブ4のスライド */}

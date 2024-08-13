@@ -29,6 +29,15 @@ export default function ThemeProvider({ children }) {
   const muiTheme = createTheme({
     palette: {
       mode: theme, // MUI のテーマモード (light/dark) を設定
+      primary: {
+        main: theme === "light" ? "#1976d2" : "#90caf9", // Light mode: blue, Dark mode: lighter blue
+      },
+      secondary: {
+        main: theme === "light" ? "#dc004e" : "#f48fb1", // Light mode: red, Dark mode: pink
+      },
+      text: {
+        primary: theme === "light" ? "#000000" : "#ffffff", // Light mode: black, Dark mode: white
+      },
     },
   });
 
