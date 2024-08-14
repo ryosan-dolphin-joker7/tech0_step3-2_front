@@ -27,7 +27,7 @@ export default function Footer() {
     >
       <Grid container spacing={0}>
         {/* ホームボタン */}
-        <Grid item xs={3}>
+        <Grid item xs={2}>
           <Link href="/" prefetch={false}>
             <Button
               sx={{
@@ -68,8 +68,8 @@ export default function Footer() {
         </Grid>
 
         {/* タスクボタン */}
-        <Grid item xs={3}>
-          <Link href="/tasks" prefetch={false}>
+        <Grid item xs={2}>
+          <Link href="/todos" prefetch={false}>
             <Button
               sx={{
                 display: "flex",
@@ -82,25 +82,6 @@ export default function Footer() {
             >
               <TaskIcon className="icon" /> {/* タスクアイコンを表示 */}
               <div style={{ fontSize: "0.75rem" }}>やること</div>{" "}
-              {/* ボタンラベルを表示 */}
-            </Button>
-          </Link>
-        </Grid>
-        {/* 開発中のボタン */}
-        <Grid item xs={3}>
-          <Link href="/development" prefetch={false}>
-            <Button
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                width: "100%",
-                padding: "0.2rem 0",
-                minHeight: "50px",
-                color: "var(--icon-color)",
-              }}
-            >
-              <BuildIcon className="icon" /> {/* タスクアイコンを表示 */}
-              <div style={{ fontSize: "0.75rem" }}>開発中</div>{" "}
               {/* ボタンラベルを表示 */}
             </Button>
           </Link>
@@ -119,10 +100,30 @@ export default function Footer() {
                 color: "var(--icon-color)",
               }}
             >
-              <PaymentIcon className="icon" />{" "}
+              <PaymentIcon className="icon" />
               {/* だいじなことアイコンを表示 */}
               <div style={{ fontSize: "0.75rem" }}>だいじなこと</div>{" "}
               {/* だいじなことラベルを表示 */}
+            </Button>
+          </Link>
+        </Grid>
+
+        {/* 開発中のボタン */}
+        <Grid item xs={2}>
+          <Link href="/development" prefetch={false}>
+            <Button
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                width: "100%",
+                padding: "0.2rem 0",
+                minHeight: "50px",
+                color: "var(--icon-color)",
+              }}
+            >
+              <BuildIcon className="icon" /> {/* タスクアイコンを表示 */}
+              <div style={{ fontSize: "0.75rem" }}>開発中</div>{" "}
+              {/* ボタンラベルを表示 */}
             </Button>
           </Link>
         </Grid>

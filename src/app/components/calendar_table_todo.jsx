@@ -57,7 +57,7 @@ const Home = () => {
 
   return (
     <div>
-      <h1>スケジュール</h1> {/* 見出しを表示します */}
+      <h1>今日のスケジュール</h1> {/* 見出しを表示します */}
       {error && <p style={{ color: "red" }}>{error}</p>}{" "}
       {/* エラーが発生した場合にエラーメッセージを表示します */}
       <table style={{ borderCollapse: "collapse", width: "100%" }}>
