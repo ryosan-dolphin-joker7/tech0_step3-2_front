@@ -65,6 +65,7 @@ export default function Slide_Calendar() {
               maxHeight: "300px", // テーブルの最大高さを300ピクセルに設定
               overflowY: "auto", // テーブルの高さを超えた部分にスクロールバーを表示
               fontSize: "0.8em", // テーブル内の文字サイズを小さめに設定
+              padding: "10px", // テーブルの内側に余白を設定
             }}
           >
             <Table_Todo />{" "}
@@ -78,7 +79,7 @@ export default function Slide_Calendar() {
         {/* グリッド内の1つのアイテムとしてフッターを配置 */}
         <Grid item xs={12} sm={10} md={8} lg={6}>
           {/* フッターコンテンツを囲むdiv要素を作成 */}
-          <div style={{ textAlign: "center" }}>
+          <div style={{ textAlign: "center", padding: "10px" }}>
             <Post_Todo /> {/* フッター部分に表示するコンポーネント */}
           </div>
         </Grid>

@@ -22,13 +22,23 @@ export default function Post_Footer({ theme }) {
       style={{
         bottom: 10,
         width: "100%",
-        color: theme === "light" ? "#000" : "#fff",
       }}
     >
       <div>
-        <button className="btn btn-primary m-2 text-1xl" onClick={openModal}>
+        <Button
+          variant="contained"
+          color={theme === "light" ? "primary" : "secondary"}
+          onClick={openModal}
+          sx={{
+            borderRadius: 50,
+            backgroundColor: theme === "light" ? "#e66a63" : "#e66a63",
+            "&:hover": {
+              backgroundColor: theme === "light" ? "#303f9f" : "#c51162",
+            },
+          }}
+        >
           予定を登録する
-        </button>
+        </Button>
       </div>
       <UploadTodoModal open={modalOpen} handleClose={closeModal} />
     </div>

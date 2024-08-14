@@ -21,16 +21,23 @@ export default function Post_Footer({ theme }) {
       style={{
         bottom: 10,
         width: "100%",
-        color: theme === "light" ? "#000" : "#fff",
       }}
     >
       <div>
-        <button
-          className="btn btn-primary m-2 text-1xl"
+        <Button
+          variant="contained"
+          color={theme === "light" ? "primary" : "secondary"}
           onClick={openModal_today_dog}
+          sx={{
+            borderRadius: 50,
+            backgroundColor: theme === "light" ? "#e66a63" : "#e66a63",
+            "&:hover": {
+              backgroundColor: theme === "light" ? "#303f9f" : "#c51162",
+            },
+          }}
         >
           今日のわんこ名言！！
-        </button>
+        </Button>
       </div>
       <TodayDogImageModal
         open={modal_dog_Open}
