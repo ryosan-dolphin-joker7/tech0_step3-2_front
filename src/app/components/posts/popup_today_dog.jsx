@@ -26,17 +26,15 @@ export default function Post_Footer({ theme }) {
       <div>
         <Button
           variant="contained"
-          color={theme === "light" ? "primary" : "secondary"}
           onClick={openModal_today_dog}
           sx={{
             borderRadius: 50,
-            backgroundColor: theme === "light" ? "#e66a63" : "#e66a63",
             "&:hover": {
               backgroundColor: theme === "light" ? "#303f9f" : "#c51162",
             },
           }}
         >
-          今日のわんこ名言！！
+          今日のわんこ占い
         </Button>
       </div>
       <TodayDogImageModal

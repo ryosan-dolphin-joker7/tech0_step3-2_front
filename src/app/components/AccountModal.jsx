@@ -1,6 +1,7 @@
-import React, { useContext } from "react"; // Reactと必要なフックをインポート
+import React, { useState, useEffect, useContext } from "react"; // Reactの基本的なフックとコンテキストをインポート
 import { Modal, Box, Typography, Button } from "@mui/material"; // MUIからモーダルやボタンなどのコンポーネントをインポート
 import { AccountContext } from "./AccountProvider"; // アカウントコンテキストをインポート
+import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポート
 
 // モーダルのスタイルを定義するオブジェクト
 const modalStyle = {
@@ -18,33 +19,62 @@ const modalStyle = {
 // AccountModalコンポーネントを定義
 export default function AccountModal({ open, handleClose }) {
   const { setSelectedAccount } = useContext(AccountContext); // アカウント選択関数を取得
+  const [users, setUsers] = useState([]); // ユーザーデータを保存する状態を追加
+
+  // Supabaseからuserinformationテーブルのすべてのデータを取得する非同期関数
+  const fetchData = async () => {
+    try {
+      // Supabaseからuserinformationテーブルのデータを取得
+      const { data: usersData, error: usersError } = await supabase
+        .from("userinformation")
+        .select("*"); // 全てのカラムを選択して取得
+
+      if (usersError) throw usersError; // エラーが発生した場合は例外をスローします
+
+      // useridの順にデータをソート
+      const sortedUsers = usersData.sort((a, b) => a.userid - b.userid);
+
+      setUsers(sortedUsers || []); // ソート後のデータをusers状態に保存します。データが空の場合は空の配列を設定します。
+    } catch (error) {
+      // データ取得に失敗した場合のエラーメッセージをコンソールに出力します。
+      console.error("アカウント情報の取得に失敗しました: " + error.message);
+    }
+  };
+
+  // コンポーネントが最初に表示されるときに、fetchData関数を実行してデータを取得します。
+  useEffect(() => {
+    fetchData();
+  }, []); // このuseEffectは、最初のマウント時にのみ実行されます。
 
   // アカウントが選択されたときに呼び出される関数
-  const handleAccountSelect = (id) => {
-    setSelectedAccount(id); // 選択されたアカウントのIDをグローバル状態に設定
+  const handleAccountSelect = (userid) => {
+    setSelectedAccount(userid); // 選択されたアカウントのIDをグローバル状態に設定
     handleClose(); // モーダルを閉じる
   };
 
-  // アカウント選択ボタンを生成する関数を定義
-  const renderAccountButton = (id, name) => (
-    <Box mt={2} key={id}>
-      <Button
-        fullWidth // ボタンを横幅いっぱいに設定
-        variant="contained" // ボタンのスタイルを設定
-        sx={{
-          backgroundColor: "#e66a63 !important", // ホバーしていないときの背景色を強制的に設定
-          color: "#fff !important", // ボタンのテキストカラーを強制的に白色に設定
-          "&:hover": {
-            backgroundColor: "#1565c0 !important", // ホバー時に濃い青色に設定
-            border: "1px solid #fff", // ホバー時に白いボーダーを追加して視認性を向上
-          },
-        }}
-        onClick={() => handleAccountSelect(id)} // ボタンがクリックされたときにアカウントを選択
-      >
-        {name} {/* ボタンに表示するアカウント名 */}
-      </Button>
-    </Box>
-  );
+  // 取得したユーザーデータを基にボタンをレンダリングする関数
+  const renderAccountButtons = () => {
+    // users配列の各ユーザーに対してボタンを生成
+    return users.map((user) => (
+      <Box mt={2} key={user.userid}>
+        <Button
+          fullWidth // ボタンを横幅いっぱいに設定
+          variant="contained" // ボタンのスタイルを設定
+          sx={{
+            backgroundColor: "#e66a63 !important", // ホバーしていないときの背景色を強制的に設定
+            color: "#fff !important", // ボタンのテキストカラーを強制的に白色に設定
+            "&:hover": {
+              backgroundColor: "#1565c0 !重要", // ホバー時に濃い青色に設定
+              border: "1px solid #fff", // ホバー時に白いボーダーを追加して視認性を向上
+            },
+          }}
+          onClick={() => handleAccountSelect(user.userid)} // ボタンがクリックされたときにアカウントを選択
+        >
+          {user.user_name} {/* ボタンに表示するアカウント名 */}
+        </Button>
+      </Box>
+    ));
+  };
 
   // モーダルウィンドウの描画内容を定義
   return (
@@ -70,10 +100,8 @@ export default function AccountModal({ open, handleClose }) {
         >
           ログインするアカウントを選んでください: {/* モーダル内の説明文 */}
         </Typography>
-        {/* 3つのアカウント選択ボタンを表示 */}
-        {renderAccountButton(1, "アカウント 1")}
-        {renderAccountButton(2, "アカウント 2")}
-        {renderAccountButton(3, "アカウント 3")}
+        {renderAccountButtons()}{" "}
+        {/* Supabaseから取得したデータを使ってボタンを表示 */}
       </Box>
     </Modal>
   );

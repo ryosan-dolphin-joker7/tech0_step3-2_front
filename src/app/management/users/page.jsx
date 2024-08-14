@@ -92,7 +92,7 @@ export default function UserManagementPage() {
         setItems(updatedItems);
         setSelectedUser(null); // 選択状態をリセット
         setUpdateData({
-          username: "",
+          user_name: "",
           birthdate: "",
           password: "",
           servicelevel: "",
@@ -170,7 +170,7 @@ export default function UserManagementPage() {
             {items.map((item, index) => (
               <tr key={index}>
                 <td style={{ border: "1px solid black", padding: "8px" }}>
-                  {item.username}
+                  {item.user_name}
                 </td>
                 <td style={{ border: "1px solid black", padding: "8px" }}>
                   {item.birthdate}
@@ -188,7 +188,7 @@ export default function UserManagementPage() {
                     onClick={() => {
                       setSelectedUser(item);
                       setUpdateData({
-                        username: item.username,
+                        username: item.user_name,
                         birthdate: item.birthdate,
                         password: item.password,
                         servicelevel: item.servicelevel,
@@ -217,9 +217,9 @@ export default function UserManagementPage() {
           >
             <TextField
               label="UserName"
-              value={updateData.username}
+              value={updateData.user_name}
               onChange={(e) =>
-                setUpdateData({ ...updateData, username: e.target.value })
+                setUpdateData({ ...updateData, user_name: e.target.value })
               }
               fullWidth
             />
