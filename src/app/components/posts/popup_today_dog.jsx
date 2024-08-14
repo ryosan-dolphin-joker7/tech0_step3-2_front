@@ -34,7 +34,7 @@ export default function Post_Footer({ theme }) {
             },
           }}
         >
-          今日のわんこ名言！！
+          今日のわんこ占い
         </Button>
       </div>
       <TodayDogImageModal

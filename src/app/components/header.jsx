@@ -129,16 +129,7 @@ export default function Header() {
         <IconButton sx={iconButtonStyle} onClick={handleModalOpen}>
           <AccountCircleIcon />
         </IconButton>
-        {/* 選択されたアカウントIDを表示。選択されたアカウントがある場合のみ表示 */}
-        {selectedAccount && (
-          <Typography
-            variant="body1"
-            color="textPrimary"
-            sx={{ marginLeft: "8px" }}
-          >
-            {`ID: ${selectedAccount}`}
-          </Typography>
-        )}
+
         {/* モーダルウィンドウを表示。選択されたアカウントIDを更新する関数を渡す */}
         <AccountModal
           open={modalOpen} // モーダルの開閉状態を制御

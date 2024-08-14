@@ -33,7 +33,7 @@ export default function PetManagementPage() {
           birthdate,
           users:userid (
             userid,
-            username
+            user_name
           )
         `);
 

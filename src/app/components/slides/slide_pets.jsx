@@ -30,7 +30,7 @@ export default function Slide3() {
           birthdate,
           users:userid (
             userid,
-            username
+            user_name
           )
         `);
 
