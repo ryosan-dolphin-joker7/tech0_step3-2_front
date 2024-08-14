@@ -27,11 +27,9 @@ export default function Post_Footer({ theme }) {
       <div>
         <Button
           variant="contained"
-          color={theme === "light" ? "primary" : "secondary"}
           onClick={openModal}
           sx={{
             borderRadius: 50,
-            backgroundColor: theme === "light" ? "#e66a63" : "#e66a63",
             "&:hover": {
               backgroundColor: theme === "light" ? "#303f9f" : "#c51162",
             },
