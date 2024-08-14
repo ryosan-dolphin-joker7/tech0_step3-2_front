@@ -1,12 +1,14 @@
 "use client"; // このコードがクライアントサイドで動作することを指定
 
-import React, { useEffect, useState } from "react"; // Reactの基本機能をインポート
+import React, { useEffect, useState, useContext } from "react"; // Reactの基本機能とuseContextをインポート
 import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポート
 import Link from "next/link"; // Next.jsのLinkコンポーネントをインポート
 import { Box, Typography, Button, Divider, TextField } from "@mui/material"; // MUIのコンポーネントをインポート
+import { AccountContext } from "@/components/AccountProvider"; // アカウントコンテキストをインポート
 
 export default function Slide3() {
-  const [theme, setTheme] = useState("light"); // テーマを管理するためのstate
+  // AccountContextから選択されたアカウントを取得します
+  const { selectedAccount } = useContext(AccountContext);
   const [pets, setPets] = useState([]); // ペット情報を保存するためのstate
   const [error, setError] = useState(null); // エラーメッセージを保存するためのstate
   const [selectedPet, setSelectedPet] = useState(null); // 編集対象のペットを保存するためのstate
@@ -21,18 +23,20 @@ export default function Slide3() {
     const fetchData = async () => {
       console.log("Fetching data from Supabase...");
 
+      // selectedAccountがnullまたはundefinedの場合、データ取得をスキップ
+      if (!selectedAccount || !selectedAccount) {
+        console.log(
+          "selectedAccountが設定されていないため、データ取得をスキップします。"
+        );
+        return;
+      }
+
       try {
-        // Supabaseからデータを取得
-        const { data, error } = await supabase.from("petinformation").select(`
-          petid,
-          petname,
-          breed,
-          birthdate,
-          users:userid (
-            userid,
-            user_name
-          )
-        `);
+        // Supabaseから、現在のユーザーに関連するペット情報を取得
+        const { data, error } = await supabase
+          .from("petinformation")
+          .select("*")
+          .eq("userid", selectedAccount); // useridが選択されたアカウントのuseridと一致するデータを取得
 
         // エラーチェック
         if (error) {
@@ -48,8 +52,9 @@ export default function Slide3() {
       }
     };
 
-    fetchData(); // データを取得する関数を呼び出し
-  }, []);
+    // データ取得関数を実行
+    fetchData();
+  }, [selectedAccount]); // selectedAccountが変更されるたびに再取得
 
   // ペット情報を更新するための関数
   const handleUpdatePet = async (e) => {
@@ -120,9 +125,6 @@ export default function Slide3() {
                 誕生日
               </th>
               <th style={{ border: "1px solid black", padding: "8px" }}>
-                飼い主
-              </th>
-              <th style={{ border: "1px solid black", padding: "8px" }}>
                 操作
               </th>
             </tr>
@@ -138,9 +140,6 @@ export default function Slide3() {
                 </td>
                 <td style={{ border: "1px solid black", padding: "8px" }}>
                   {pet.birthdate}
-                </td>
-                <td style={{ border: "1px solid black", padding: "8px" }}>
-                  {pet.users.username}
                 </td>
                 <td style={{ border: "1px solid black", padding: "8px" }}>
                   <Button
