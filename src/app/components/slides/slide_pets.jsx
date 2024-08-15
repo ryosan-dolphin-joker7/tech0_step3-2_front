@@ -5,227 +5,74 @@ import { supabase } from "@/supabaseClient"; // Supabaseクライアントをイ
 import Link from "next/link"; // Next.jsのLinkコンポーネントをインポート
 import { Box, Typography, Button, Divider, TextField } from "@mui/material"; // MUIのコンポーネントをインポート
 import { AccountContext } from "@/components/AccountProvider"; // アカウントコンテキストをインポート
+import OnePetInsuranceCard from "@/components/one_pet_insurance_card.jsx"; // ペット情報カード用のコンポーネントをインポート
 
 export default function Slide3() {
-  // AccountContextから選択されたアカウントを取得します
+  // AccountContextからselectedAccountを取得します。
   const { selectedAccount } = useContext(AccountContext);
-  const [pets, setPets] = useState([]); // ペット情報を保存するためのstate
-  const [error, setError] = useState(null); // エラーメッセージを保存するためのstate
-  const [selectedPet, setSelectedPet] = useState(null); // 編集対象のペットを保存するためのstate
-  const [updateData, setUpdateData] = useState({
-    petname: "",
-    breed: "",
-    birthdate: "",
-  }); // ペット情報の更新データを保存するためのstate
 
-  // Supabaseからペット情報を取得するためのuseEffectフック
-  useEffect(() => {
-    const fetchData = async () => {
-      console.log("Fetching data from Supabase...");
+  // ペット情報を管理するstateを定義します。初期値はnullです。
+  const [petInfo, setPetInfo] = useState(null);
 
-      // selectedAccountがnullまたはundefinedの場合、データ取得をスキップ
-      if (!selectedAccount || !selectedAccount) {
-        console.log(
-          "selectedAccountが設定されていないため、データ取得をスキップします。"
-        );
-        return;
-      }
+  // ペット情報のリストを管理するためのstate。Supabaseから取得した全データを保存します。
+  const [pets, setPets] = useState([]);
 
-      try {
-        // Supabaseから、現在のユーザーに関連するペット情報を取得
-        const { data, error } = await supabase
-          .from("petinformation")
-          .select("*")
-          .eq("userid", selectedAccount); // useridが選択されたアカウントのuseridと一致するデータを取得
-
-        // エラーチェック
-        if (error) {
-          console.error("Error fetching data: ", error);
-          setError("データの取得に失敗しました");
-        } else {
-          console.log("Data fetched successfully:", data);
-          setPets(data); // 取得したデータをstateに保存
-        }
-      } catch (fetchError) {
-        console.error("Fetch error: ", fetchError);
-        setError("データの取得中にエラーが発生しました");
-      }
-    };
-
-    // データ取得関数を実行
-    fetchData();
-  }, [selectedAccount]); // selectedAccountが変更されるたびに再取得
-
-  // ペット情報を更新するための関数
-  const handleUpdatePet = async (e) => {
-    e.preventDefault(); // フォームのデフォルトの送信動作を防ぐ
+  // Supabaseからpetinformationテーブルのすべてのデータを取得する非同期関数
+  const fetchData = async () => {
     try {
-      // Supabaseにデータを更新するリクエストを送信
-      const { data, error } = await supabase
-        .from("petinformation")
-        .update(updateData)
-        .eq("petid", selectedPet.petid);
+      const { data: petsData, error: petsError } = await supabase
+        .from("insurance") // insuranceテーブルからデータを取得
+        .select("*, petinformation(petname)"); // 全てのカラムを選択して取得
+      //dataの中身をコンソールに出力
 
-      if (error) {
-        console.error("Error updating data: ", error);
-        setError("データの更新に失敗しました");
-      } else {
-        console.log("Data updated successfully:", data);
-        const updatedPets = pets.map((pet) =>
-          pet.petid === selectedPet.petid ? { ...pet, ...updateData } : pet
-        );
-        setPets(updatedPets); // 更新後のペット情報をstateに保存
-        setSelectedPet(null); // 編集対象のペットをリセット
-        setUpdateData({
-          petname: "",
-          breed: "",
-          birthdate: "",
-        }); // フォームをクリア
-      }
-    } catch (updateError) {
-      console.error("Update error: ", updateError);
-      setError("データの更新中にエラーが発生しました");
+      if (petsError) throw petsError; // エラーが発生した場合は例外をスローします
+
+      setPets(petsData || []); // 取得したデータをpets状態に保存します。データが空の場合は空の配列を設定します。
+    } catch (error) {
+      // データ取得に失敗した場合のエラーメッセージをコンソールに出力します。
+      console.error("ペット情報の取得に失敗しました: " + error.message);
     }
   };
 
+  // コンポーネントが最初に表示されるときに、fetchData関数を実行してデータを取得します。
+  useEffect(() => {
+    fetchData();
+  }, []); // このuseEffectは、最初のマウント時にのみ実行されます。
+
+  // selectedAccountが変更されたときに、対応するペット情報を設定するための処理
+  useEffect(() => {
+    if (selectedAccount && pets.length > 0) {
+      // selectedAccountのIDに対応するペット情報を検索します。
+      const selectedPet = pets.find((pet) => pet.petid === selectedAccount); // petidとselectedAccountが一致するペットを取得
+
+      // 該当するペット情報が見つかった場合、その情報をpetInfoに設定します。見つからない場合はnullを設定します。
+      setPetInfo(selectedPet || null);
+    }
+  }, [selectedAccount, pets]); // selectedAccountとpetsが変更されるたびにこの処理が実行されます。
+
   return (
-    <>
-      <div style={{ paddingTop: "60px" }}></div> {/* 上部に余白を追加 */}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          maxWidth: "600px",
-          margin: "0 auto",
-          padding: "16px",
-          backgroundColor: "#f9f9f9",
-          borderRadius: "8px",
-          boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-        }}
-      >
-        <Typography variant="h6" gutterBottom>
-          ペット管理
-        </Typography>
-        <Divider sx={{ width: "100%", marginBottom: "16px" }} />
-        {error && <p style={{ color: "red" }}>{error}</p>}{" "}
-        {/* エラーメッセージを表示 */}
-        <table style={{ borderCollapse: "collapse", width: "100%" }}>
-          {" "}
-          {/* テーブルのスタイルを設定 */}
-          <thead>
-            <tr>
-              <th style={{ border: "1px solid black", padding: "8px" }}>
-                ペットの名前
-              </th>
-              <th style={{ border: "1px solid black", padding: "8px" }}>
-                種類
-              </th>
-              <th style={{ border: "1px solid black", padding: "8px" }}>
-                誕生日
-              </th>
-              <th style={{ border: "1px solid black", padding: "8px" }}>
-                操作
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {pets.map((pet, index) => (
-              <tr key={index}>
-                <td style={{ border: "1px solid black", padding: "8px" }}>
-                  {pet.petname}
-                </td>
-                <td style={{ border: "1px solid black", padding: "8px" }}>
-                  {pet.breed}
-                </td>
-                <td style={{ border: "1px solid black", padding: "8px" }}>
-                  {pet.birthdate}
-                </td>
-                <td style={{ border: "1px solid black", padding: "8px" }}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => {
-                      setSelectedPet(pet);
-                      setUpdateData({
-                        petname: pet.petname,
-                        breed: pet.breed,
-                        birthdate: pet.birthdate,
-                      });
-                    }}
-                  >
-                    編集
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {selectedPet && (
-          <Box
-            component="form"
-            onSubmit={handleUpdatePet}
-            sx={{
-              marginTop: "16px",
-              width: "100%",
-              display: "flex",
-              flexDirection: "column",
-              gap: "16px",
-            }}
-          >
-            <TextField
-              label="ペットの名前"
-              value={updateData.petname}
-              onChange={(e) =>
-                setUpdateData({ ...updateData, petname: e.target.value })
-              }
-              fullWidth
-            />
-            <TextField
-              label="種類"
-              value={updateData.breed}
-              onChange={(e) =>
-                setUpdateData({ ...updateData, breed: e.target.value })
-              }
-              fullWidth
-            />
-            <TextField
-              label="誕生日"
-              value={updateData.birthdate}
-              onChange={(e) =>
-                setUpdateData({ ...updateData, birthdate: e.target.value })
-              }
-              fullWidth
-            />
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              sx={{ marginTop: "16px" }}
-            >
-              更新
-            </Button>
-          </Box>
-        )}
-        <Link href="/management/pets/pet" passHref>
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{ marginTop: "16px", width: "100%" }}
-          >
-            + 新規登録
-          </Button>
-        </Link>
-        <Link href="/management" passHref>
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{ marginTop: "16px", width: "100%" }}
-          >
-            戻る
-          </Button>
-        </Link>
-      </Box>
-    </>
+    <Box
+      sx={{
+        display: "flex", // 子要素をフレックスボックスとして表示
+        flexDirection: "column", // 子要素を縦に並べる
+        alignItems: "center", // 子要素を中央に配置
+        textAlign: "center", // テキストを中央揃え
+      }}
+    >
+      <div style={{ textAlign: "center" }}>
+        {/* 犬のカード情報などを表示する */}
+        <Box
+          className="card flex flex-row max-w-sm m-4" // カードスタイルを定義したクラスを適用
+          sx={{ margin: "0 auto" }} // カードを中央に配置
+        >
+          {/* petInfoが存在する場合はペット情報カードを表示し、存在しない場合はエラーメッセージを表示 */}
+          {petInfo ? (
+            <OnePetInsuranceCard petInfo={petInfo} /> // ペット情報カードコンポーネントを表示
+          ) : (
+            <p>アカウントを選んでください。</p> // ペット情報がない場合のメッセージ
+          )}
+        </Box>
+      </div>
+    </Box>
   );
 }
