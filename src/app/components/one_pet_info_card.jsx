@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react"; // Reactの基本的なフックをインポート
+import React, { useState, useEffect, useCallback } from "react"; // useCallbackを追加
 import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポート
+import Image from "next/image"; // next/imageを使用して画像を最適化
 
 export default function OnePetInfoCard({ petInfo }) {
   const [todayTasks, setTodayTasks] = useState([]); // 今日のタスクを管理するステートを定義
@@ -10,27 +11,28 @@ export default function OnePetInfoCard({ petInfo }) {
   }
 
   // 今日のタスクをSupabaseから取得する関数
-  useEffect(() => {
-    const fetchTodayTasks = async () => {
-      const today = new Date().toISOString().split("T")[0]; // 今日の日付をYYYY-MM-DD形式で取得
+  const fetchTodayTasks = useCallback(async () => {
+    const today = new Date().toISOString().split("T")[0]; // 今日の日付をYYYY-MM-DD形式で取得
 
-      // todosテーブルから、今日のタスクを取得
+    try {
       const { data: tasksData, error: tasksError } = await supabase
         .from("todos")
         .select("*")
         .eq("end_date", today); // `end_date`が今日の日付と一致するタスクを取得
 
       if (tasksError) {
-        console.error(
-          "今日のタスクの取得に失敗しました: " + tasksError.message
-        );
-      } else {
-        setTodayTasks(tasksData || []); // 取得したデータをステートに保存
+        throw new Error(tasksError.message);
       }
-    };
 
+      setTodayTasks(tasksData || []); // 取得したデータをステートに保存
+    } catch (error) {
+      console.error("今日のタスクの取得に失敗しました:", error.message);
+    }
+  }, []); // useCallbackを使用してfetchTodayTasks関数をメモ化
+
+  useEffect(() => {
     fetchTodayTasks(); // コンポーネントのマウント時にタスクを取得
-  }, []);
+  }, [fetchTodayTasks]); // 依存配列にfetchTodayTasksを追加
 
   // ペット情報を変数に格納
   const {
@@ -69,10 +71,13 @@ export default function OnePetInfoCard({ petInfo }) {
 
       {/* 画像を表示するためのコンテナ */}
       <div className="image-container">
-        <img
+        <Image
           src={photo_url} // 画像のURLを指定
           alt={petname} // 画像が表示されないときに代わりに表示するテキスト
           className="pet-image" // CSSクラスを指定
+          width={500} // 幅を指定
+          height={500} // 高さを指定
+          objectFit="cover" // 画像がコンテナを覆うように表示（縦横比を維持）
         />
       </div>
 
@@ -131,9 +136,6 @@ export default function OnePetInfoCard({ petInfo }) {
           overflow: hidden;
         }
         .pet-image {
-          width: 70%;
-          height: 70%;
-          object-fit: cover;
           border-radius: 10px;
         }
         .card {
