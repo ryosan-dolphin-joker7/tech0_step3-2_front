@@ -5,11 +5,6 @@ import Image from "next/image"; // next/imageを使用して画像を最適化
 export default function OnePetInfoCard({ petInfo }) {
   const [todayTasks, setTodayTasks] = useState([]); // 今日のタスクを管理するステートを定義
 
-  // ペット情報がない場合、アカウント選択を促すメッセージを表示
-  if (!petInfo) {
-    return <p>アカウントを選んでください。</p>;
-  }
-
   // 今日のタスクをSupabaseから取得する関数
   const fetchTodayTasks = useCallback(async () => {
     const today = new Date().toISOString().split("T")[0]; // 今日の日付をYYYY-MM-DD形式で取得
@@ -31,8 +26,15 @@ export default function OnePetInfoCard({ petInfo }) {
   }, []); // useCallbackを使用してfetchTodayTasks関数をメモ化
 
   useEffect(() => {
-    fetchTodayTasks(); // コンポーネントのマウント時にタスクを取得
-  }, [fetchTodayTasks]); // 依存配列にfetchTodayTasksを追加
+    if (petInfo) {
+      fetchTodayTasks(); // コンポーネントのマウント時にタスクを取得
+    }
+  }, [fetchTodayTasks, petInfo]); // 依存配列にfetchTodayTasksとpetInfoを追加
+
+  // ペット情報がない場合、アカウント選択を促すメッセージを表示
+  if (!petInfo) {
+    return <p>アカウントを選んでください。</p>;
+  }
 
   // ペット情報を変数に格納
   const {
