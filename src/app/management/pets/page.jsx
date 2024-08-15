@@ -139,7 +139,7 @@ export default function PetManagementPage() {
                   {pet.birthdate}
                 </td>
                 <td style={{ border: "1px solid black", padding: "8px" }}>
-                  {pet.users.username}
+                  {pet.users.user_name}
                 </td>
                 <td style={{ border: "1px solid black", padding: "8px" }}>
                   <Button
