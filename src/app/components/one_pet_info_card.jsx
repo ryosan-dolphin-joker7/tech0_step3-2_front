@@ -1,6 +1,36 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react"; // useCallbackを追加
+import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポート
+import Image from "next/image"; // next/imageを使用して画像を最適化
 
 export default function OnePetInfoCard({ petInfo }) {
+  const [todayTasks, setTodayTasks] = useState([]); // 今日のタスクを管理するステートを定義
+
+  // 今日のタスクをSupabaseから取得する関数
+  const fetchTodayTasks = useCallback(async () => {
+    const today = new Date().toISOString().split("T")[0]; // 今日の日付をYYYY-MM-DD形式で取得
+
+    try {
+      const { data: tasksData, error: tasksError } = await supabase
+        .from("todos")
+        .select("*")
+        .eq("end_date", today); // `end_date`が今日の日付と一致するタスクを取得
+
+      if (tasksError) {
+        throw new Error(tasksError.message);
+      }
+
+      setTodayTasks(tasksData || []); // 取得したデータをステートに保存
+    } catch (error) {
+      console.error("今日のタスクの取得に失敗しました:", error.message);
+    }
+  }, []); // useCallbackを使用してfetchTodayTasks関数をメモ化
+
+  useEffect(() => {
+    if (petInfo) {
+      fetchTodayTasks(); // コンポーネントのマウント時にタスクを取得
+    }
+  }, [fetchTodayTasks, petInfo]); // 依存配列にfetchTodayTasksとpetInfoを追加
+
   // ペット情報がない場合、アカウント選択を促すメッセージを表示
   if (!petInfo) {
     return <p>アカウントを選んでください。</p>;
@@ -23,13 +53,33 @@ export default function OnePetInfoCard({ petInfo }) {
       {/* ペットの名前を表示 */}
       <h2 className="dog-name">Today&apos;s: {petname}</h2>
 
+      {/* 今日のタスクを表示する */}
+      <div style={{ marginTop: "20px" }}>
+        <h2>
+          今日は
+          {todayTasks.length > 0 ? (
+            todayTasks.map((task, index) => (
+              <span key={task.id}>
+                {task.title}
+                {index < todayTasks.length - 1 ? "、" : "をやるワン！"}
+                {/* 複数タスクの場合は「、」、最後のタスクには「をやるワン！」を付ける */}
+              </span>
+            ))
+          ) : (
+            <span>暇だなぁ</span> // 今日のタスクが無い場合のメッセージ
+          )}
+        </h2>
+      </div>
+
       {/* 画像を表示するためのコンテナ */}
       <div className="image-container">
-        {/* 通常のimgタグを使用して画像を表示 */}
-        <img
+        <Image
           src={photo_url} // 画像のURLを指定
           alt={petname} // 画像が表示されないときに代わりに表示するテキスト
           className="pet-image" // CSSクラスを指定
+          width={500} // 幅を指定
+          height={500} // 高さを指定
+          objectFit="cover" // 画像がコンテナを覆うように表示（縦横比を維持）
         />
       </div>
 
@@ -68,57 +118,53 @@ export default function OnePetInfoCard({ petInfo }) {
         </div>
       </div>
 
-      {/* スタイルを定義 */}
       <style jsx>{`
         .container {
-          text-align: center; /* コンテンツ全体を中央揃えに */
+          text-align: center;
         }
         .dog-name {
-          color: red; /* ペットの名前を赤色で表示 */
-          font-size: 22px; /* フォントサイズを22pxに設定 */
-          text-align: center; /* テキストを中央揃えに */
-          font-weight: bold; /* フォントを太字に */
+          color: red;
+          font-size: 22px;
+          text-align: center;
+          font-weight: bold;
         }
         .image-container {
           display: flex;
-          justify-content: center; /* 画像を中央に配置 */
-          max-width: 500px; /* 画像コンテナの最大幅を500pxに設定 */
-          max-height: 500px; /* 画像コンテナの最大高さを500pxに設定 */
-          width: 100%; /* コンテナの幅を親要素に合わせて100%に設定 */
-          height: auto; /* 高さは自動で調整 */
-          overflow: hidden; /* 画像がコンテナからはみ出さないようにする */
+          justify-content: center;
+          max-width: 500px;
+          max-height: 500px;
+          width: 100%;
+          height: auto;
+          overflow: hidden;
         }
         .pet-image {
-          width: 70%; /* 親要素に合わせて画像の幅を100%に設定 */
-          height: 70%; /* 親要素の高さに合わせて画像の高さを100%に設定 */
-          object-fit: cover; /* 画像がコンテナを覆うように表示（縦横比を維持） */
-          border-radius: 10px; /* 画像の角を10px丸くする */
+          border-radius: 10px;
         }
         .card {
-          margin: 16px auto; /* カードを上下左右に16pxのマージンで中央に配置 */
-          padding: 1px; /* カードの内側に1pxのパディングを設定 */
-          border: 1px solid #ddd; /* 薄いグレーのボーダーをカードに設定 */
-          border-radius: 10px; /* カードの角を10px丸くする */
-          max-width: 500px; /* カードの最大幅を500pxに設定 */
-          background-color: white; /* カードの背景色を白に設定 */
+          margin: 16px auto;
+          padding: 1px;
+          border: 1px solid #ddd;
+          border-radius: 10px;
+          max-width: 500px;
+          background-color: white;
         }
         .card-body {
-          padding: 10px; /* カードの内側に10pxのパディングを設定 */
+          padding: 10px;
         }
         .card-title {
-          color: red; /* タイトルを赤色で表示 */
-          font-size: 24px; /* フォントサイズを24pxに設定 */
+          color: red;
+          font-size: 24px;
         }
         .profile-table {
-          width: 100%; /* テーブルの幅を親要素に合わせる */
+          width: 100%;
         }
         .profile-table th,
         .profile-table td {
-          text-align: left; /* テキストを左揃えに */
+          text-align: left;
         }
         .profile-table th {
-          width: 30%; /* テーブルヘッダーの幅を40%に設定 */
-          font-weight: bold; /* テーブルヘッダーのフォントを太字に */
+          width: 30%;
+          font-weight: bold;
         }
       `}</style>
     </div>
