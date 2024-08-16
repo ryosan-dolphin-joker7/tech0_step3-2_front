@@ -53,7 +53,7 @@ export default function OnePetTodoCard({ petTodo }) {
           className="pet-image"
           width={500}
           height={500}
-          objectFit="cover"
+          style={{ objectFit: "cover" }}
         />
         {/* 今日のタスクを表示するセクションを画像の上に重ねる */}
         <div className="task-overlay">

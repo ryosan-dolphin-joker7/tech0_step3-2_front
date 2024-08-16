@@ -12,6 +12,10 @@ export default function Post_Footer({ theme, refreshTodos }) {
 
   // モーダルを開く関数です。
   const openModal = () => {
+    // ボタンに `inert` 属性を追加して、モーダルが開いている間ボタンがフォーカスを受けないようにします
+    if (buttonRef.current) {
+      buttonRef.current.setAttribute("inert", "true"); // inert属性を設定してフォーカスを防止
+    }
     setModalOpen(true); // モーダルを開くためにステートをtrueに設定します。
   };
 
@@ -20,8 +24,8 @@ export default function Post_Footer({ theme, refreshTodos }) {
     setModalOpen(false); // モーダルを閉じるためにステートをfalseに設定します。
     setTimeout(() => {
       if (buttonRef.current) {
-        // フォーカスを再設定し、aria-hidden属性が問題にならないようにします
-        buttonRef.current.removeAttribute("aria-hidden"); // aria-hidden属性を削除
+        // モーダルが閉じられた後に、ボタンから `inert` 属性を削除して再度フォーカス可能にします
+        buttonRef.current.removeAttribute("inert"); // inert属性を削除してフォーカスを再度可能に
         buttonRef.current.focus(); // モーダルを閉じた後、ボタンにフォーカスを戻します。
       }
     }, 0); // 次のレンダリング後にフォーカスを戻す
@@ -40,7 +44,7 @@ export default function Post_Footer({ theme, refreshTodos }) {
           onClick={openModal} // ボタンがクリックされたときにモーダルを開く関数を呼び出します。
           ref={buttonRef} // ボタンのリファレンスを設定します。
           sx={{
-            borderRadius: 50,
+            borderRadius: 50, // ボタンの角を丸くします。
             "&:hover": {
               backgroundColor: theme === "light" ? "#303f9f" : "#c51162", // テーマに応じてホバーカラーを変更します。
             },
