@@ -1,53 +1,60 @@
 "use client"; // クライアント側（ブラウザ）で動作するコードであることを示しています。
 
 import { useEffect, useState, useContext } from "react"; // Reactのフックをインポートしています。
-import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートしています。
+import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートしています。Supabaseはバックエンドサービスで、データベースや認証などの機能を提供します。
 import { AccountContext } from "@/components/AccountProvider"; // アカウント情報を提供するコンテキストをインポートしています。
+import Modal from "@/components/posts/update_todo_modal"; // Todoの更新用モーダルコンポーネントをインポートしています。
 
 const Home = () => {
-  const [items, setItems] = useState([]); // Todoアイテムのリストを保持するためのステート変数
-  const [error, setError] = useState(null); // エラーメッセージを保持するためのステート変数
-  const [loading, setLoading] = useState(true); // ローディング状態（データが取得中かどうか）を管理するためのステート変数
-  const [selectedTodoDetails, setSelectedTodoDetails] = useState(null); // 選択されたTodoの詳細情報を保持するためのステート変数
-  const [isModalOpen, setIsModalOpen] = useState(false); // モーダルの表示/非表示を管理するためのステート変数
-  const { selectedAccount } = useContext(AccountContext); // AccountContextから、現在選択されているアカウントIDを取得
+  // 以下は、コンポーネント内で使用するためのステート（状態）変数の定義です。
+  const [items, setItems] = useState([]); // Todoアイテムのリストを保持するためのステート。初期値は空の配列。
+  const [error, setError] = useState(null); // エラーメッセージを保持するためのステート。初期値はnull。
+  const [loading, setLoading] = useState(true); // ローディング状態（データが取得中かどうか）を管理するためのステート。初期値はtrue。
+  const [selectedTodoDetails, setSelectedTodoDetails] = useState(null); // 選択されたTodoの詳細情報を保持するためのステート。初期値はnull。
+  const [isModalOpen, setIsModalOpen] = useState(false); // モーダルの表示/非表示を管理するためのステート。初期値はfalse。
+  const { selectedAccount } = useContext(AccountContext); // AccountContextから、現在選択されているアカウントIDを取得します。
 
+  // コンポーネントの初回レンダリング時にデータを取得するための副作用を設定します。
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Supabaseから'todos'テーブルの全データを取得します。
         const { data, error } = await supabase.from("todos").select("*");
 
         if (error) {
-          console.error("Error fetching data: ", error);
-          setError("データの取得に失敗しました");
+          console.error("Error fetching data: ", error); // エラーが発生した場合、コンソールにエラーメッセージを表示します。
+          setError("データの取得に失敗しました"); // エラーメッセージをステートにセットします。
         } else {
-          setItems(data);
+          setItems(data); // 取得したデータをitemsステートにセットします。
         }
       } catch (fetchError) {
-        console.error("Fetch error: ", fetchError);
-        setError("データの取得中にエラーが発生しました");
+        console.error("Fetch error: ", fetchError); // データ取得中にエラーが発生した場合、コンソールにエラーメッセージを表示します。
+        setError("データの取得中にエラーが発生しました"); // エラーメッセージをステートにセットします。
       } finally {
-        setLoading(false);
+        setLoading(false); // データ取得が完了したため、ローディング状態を解除します。
       }
     };
 
-    fetchData();
+    fetchData(); // データ取得関数を実行します。
   }, []); // 空の依存配列により、この副作用はコンポーネントの初回表示時にのみ実行されます。
 
+  // 現在選択されているアカウントに紐づくTodoアイテムのみをフィルタリングします。
   const selectedTodo = items.filter((item) => item.userid === selectedAccount);
 
+  // タスクの状態を切り替える関数です。
   const toggleTaskState = async (id, currentState) => {
     try {
-      const newState = !currentState;
+      const newState = !currentState; // 現在の状態を反転させます（trueならfalse、falseならtrueにします）。
       const { error } = await supabase
         .from("todos")
-        .update({ state: newState })
-        .eq("id", id);
+        .update({ state: newState }) // タスクの状態を更新します。
+        .eq("id", id); // 指定したIDのタスクのみを対象にします。
 
       if (error) {
-        console.error("Error updating task state: ", error);
-        setError("タスクの状態更新に失敗しました");
+        console.error("Error updating task state: ", error); // エラーが発生した場合、コンソールにエラーメッセージを表示します。
+        setError("タスクの状態更新に失敗しました"); // エラーメッセージをステートにセットします。
       } else {
+        // 更新が成功した場合、itemsステートを更新して新しい状態を反映します。
         setItems((prevItems) =>
           prevItems.map((item) =>
             item.id === id ? { ...item, state: newState } : item
@@ -55,37 +62,37 @@ const Home = () => {
         );
       }
     } catch (updateError) {
-      console.error("Update error: ", updateError);
-      setError("タスクの状態更新中にエラーが発生しました");
+      console.error("Update error: ", updateError); // 更新処理中にエラーが発生した場合、コンソールにエラーメッセージを表示します。
+      setError("タスクの状態更新中にエラーが発生しました"); // エラーメッセージをステートにセットします。
     }
   };
 
+  // Todoアイテムの行がクリックされたときに、モーダルを表示し、詳細をセットします。
   const handleRowClick = (todo) => {
-    setSelectedTodoDetails(todo);
-    setIsModalOpen(true);
+    setSelectedTodoDetails(todo); // クリックされたTodoアイテムの詳細をセットします。
+    setIsModalOpen(true); // モーダルを表示します。
   };
 
+  // モーダルを閉じる関数です。
   const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedTodoDetails(null);
-  };
-
-  const handleModalClick = (e) => {
-    e.stopPropagation(); // モーダルコンテンツ内のクリックイベントがモーダル全体に伝播しないようにする
+    setIsModalOpen(false); // モーダルを非表示にします。
+    setSelectedTodoDetails(null); // 選択されたTodoの詳細情報をクリアします。
   };
 
   return (
     <div>
       <h1>今日のスケジュール</h1>
       {loading && <p>読み込み中...</p>}
+      {/* ローディング中はこのメッセージを表示します */}
       {error && <p style={{ color: "red" }}>{error}</p>}
+      {/* エラーが発生した場合、このメッセージを表示します */}
       <table style={{ borderCollapse: "collapse", width: "100%" }}>
+        {/* テーブルのスタイルを設定します */}
         <thead>
           <tr>
             <th style={{ border: "1px solid black", padding: "8px" }}>
               タスク
             </th>
-            <th style={{ border: "1px solid black", padding: "8px" }}>詳細</th>
             <th style={{ border: "1px solid black", padding: "8px" }}>
               いつまでにやるか
             </th>
@@ -96,17 +103,15 @@ const Home = () => {
           {selectedTodo.map((item) => (
             <tr
               key={item.id}
-              onClick={() => handleRowClick(item)}
+              onClick={() => handleRowClick(item)} // 行がクリックされたときに詳細を表示する処理
               style={{ cursor: "pointer" }} // 行をクリック可能にするためにカーソルを変更
             >
               <td style={{ border: "1px solid black", padding: "8px" }}>
-                {item.title}
+                {item.title} {/* タスクのタイトル */}
               </td>
+
               <td style={{ border: "1px solid black", padding: "8px" }}>
-                {item.contents}
-              </td>
-              <td style={{ border: "1px solid black", padding: "8px" }}>
-                {item.end_date}
+                {item.end_date} {/* タスクの終了期限 */}
               </td>
               <td
                 style={{
@@ -126,59 +131,14 @@ const Home = () => {
           ))}
         </tbody>
       </table>
-
       {/* モーダルの表示 */}
-      {isModalOpen && (
-        <div
-          style={modalOverlayStyle} // 半透明の背景を適用
-          onClick={closeModal} // 背景がクリックされたときにモーダルを閉じる
-        >
-          <div
-            style={modalContentStyle} // モーダルのコンテンツ部分に不透明な背景を適用
-            onClick={handleModalClick} // モーダルコンテンツ内のクリックはモーダルを閉じない
-          >
-            <h2>Todoの詳細</h2>
-            <p>
-              <strong>タスク:</strong> {selectedTodoDetails.title}
-            </p>
-            <p>
-              <strong>詳細:</strong> {selectedTodoDetails.contents}
-            </p>
-            <p>
-              <strong>いつまでにやるか:</strong> {selectedTodoDetails.end_date}
-            </p>
-            <p>
-              <strong>完了状態:</strong>{" "}
-              {selectedTodoDetails.state ? "完了" : "未完了"}
-            </p>
-            <button onClick={closeModal}>閉じる</button> {/* 閉じるボタン */}
-          </div>
-        </div>
-      )}
+      <Modal
+        isOpen={isModalOpen} // モーダルの表示状態
+        onClose={closeModal} // モーダルを閉じる処理
+        todoDetails={selectedTodoDetails} // モーダルに渡すTodoの詳細情報
+      />
     </div>
   );
-};
-
-// モーダル全体の背景スタイル設定
-const modalOverlayStyle = {
-  position: "fixed", // 画面に固定
-  top: 0,
-  left: 0,
-  width: "100%",
-  height: "100%",
-  backgroundColor: "rgba(0, 0, 0, 0.5)", // 背景を半透明の黒に設定
-  display: "flex", // モーダルを中央に配置するためにflexを使用
-  alignItems: "center",
-  justifyContent: "center",
-};
-
-// モーダルのコンテンツ部分のスタイル設定
-const modalContentStyle = {
-  backgroundColor: "white", // コンテンツの背景色を白に設定
-  padding: "20px", // コンテンツ内の余白
-  borderRadius: "5px", // 角を丸くする
-  width: "400px",
-  textAlign: "center", // 中央揃え
 };
 
 export default Home; // Homeコンポーネントをエクスポートして他のファイルから使用可能にする

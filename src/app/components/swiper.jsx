@@ -1,11 +1,14 @@
 "use client"; // Next.jsのClient Side Rendering (CSR)を使用するための設定
 
-import React, { useState, useEffect, useCallback, useContext } from "react"; // Reactライブラリからフックをインポート
+import React, { useState, useCallback } from "react"; // Reactライブラリからフックをインポート
 import { Swiper, SwiperSlide } from "swiper/react"; // Swiperのコンポーネントとスライドをインポート
 import "swiper/css"; // SwiperのCSSをインポート
 import Box from "@mui/material/Box"; // MUI（Material-UI）からBoxコンポーネントをインポート
 import Tabs from "@mui/material/Tabs"; // MUIからTabsコンポーネントをインポート
 import Tab from "@mui/material/Tab"; // MUIからTabコンポーネントをインポート
+import PetsIcon from "@mui/icons-material/Pets"; // ペットのアイコンをインポート
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday"; // カレンダーのアイコンをインポート
+import CreditCardIcon from "@mui/icons-material/CreditCard"; // カードのアイコンをインポート
 
 // カスタムスライドコンポーネントをインポート
 import Slide_Mydogs from "@/components/slides/slide_mydogs";
@@ -52,9 +55,12 @@ export const SwiperTab = () => {
             "& .Mui-selected": { color: "var(--text-color)" }, // 選択されたタブのテキストカラーもCSS変数で設定
           }}
         >
-          <Tab label="My Dogs" value={0} /> {/* タブ1 */}
-          <Tab label="カレンダー" value={1} /> {/* タブ2 */}
-          <Tab label="カード" value={2} /> {/* タブ4 */}
+          <Tab label="My Dogs" icon={<PetsIcon />} value={0} />{" "}
+          {/* タブ1にアイコンを追加 */}
+          <Tab label="カレンダー" icon={<CalendarTodayIcon />} value={1} />{" "}
+          {/* タブ2にアイコンを追加 */}
+          <Tab label="カード" icon={<CreditCardIcon />} value={2} />{" "}
+          {/* タブ3にアイコンを追加 */}
         </Tabs>
       </Box>
 
@@ -72,7 +78,7 @@ export const SwiperTab = () => {
           <Slide_Calendar /> {/* タブ2のスライド */}
         </SwiperSlide>
         <SwiperSlide>
-          <Slide_Pets /> {/* タブ4のスライド */}
+          <Slide_Pets /> {/* タブ3のスライド */}
         </SwiperSlide>
       </Swiper>
     </>
