@@ -1,74 +1,80 @@
-import React, { useRef, useEffect, useState } from "react"; // Reactの機能をインポート
-import Grid from "@mui/material/Grid"; // MUIのGridレイアウトコンポーネントをインポート
-import FullCalendar from "@fullcalendar/react"; // FullCalendarコンポーネントをインポート
-import dayGridPlugin from "@fullcalendar/daygrid"; // FullCalendarの月表示プラグインをインポート
-import interactionPlugin from "@fullcalendar/interaction"; // FullCalendarのインタラクションプラグインをインポート
-import timeGridPlugin from "@fullcalendar/timegrid"; // FullCalendarの週・日表示プラグインをインポート
-import Post_Todo from "@/components/posts/post_todo"; // Todoの投稿コンポーネントをインポート
-import Table_Todo from "@/components/calendar_table_todo"; // Todoのテーブル表示コンポーネントをインポート
-import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポート
-
-import PetsIcon from "@mui/icons-material/Pets"; // ペットのアイコンをインポート
+import React, {
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+  useContext,
+} from "react";
+import Grid from "@mui/material/Grid";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import Post_Todo from "@/components/posts/post_todo";
+import Table_Todo from "@/components/calendar_table_todo";
+import { supabase } from "@/supabaseClient";
+import PetsIcon from "@mui/icons-material/Pets";
+import { AccountContext } from "@/components/AccountProvider"; // アカウント情報を提供するコンテキストをインポート
 
 export default function Slide_Calendar() {
-  const calendarRef = useRef(null); // FullCalendarコンポーネントへの参照を作成
-  const [events, setEvents] = useState([]); // イベント情報を格納する状態を初期化
+  const calendarRef = useRef(null);
+  const [events, setEvents] = useState([]);
+  const { selectedAccount } = useContext(AccountContext); // AccountContextからselectedAccountを取得
 
   // Supabaseからイベントを取得する非同期関数
-  const fetchEvents = async () => {
-    //console.log("Fetching events..."); // デバッグログ：イベントの取得を開始
-    const { data, error } = await supabase.from("todos").select("*"); // Supabaseから"todos"テーブルの全データを取得
+  const fetchEvents = useCallback(async () => {
+    try {
+      // Supabaseから"todos"テーブルの全データを取得
+      const { data, error } = await supabase.from("todos").select("*");
+      if (error) throw error;
 
-    if (error) {
-      console.error("Error fetching events:", error); // エラーが発生した場合、コンソールにエラーメッセージを表示
-    } else {
-      // 取得したデータをFullCalendarに適した形式にフォーマット
-      const formattedEvents = data.map((item) => ({
-        title: item.title, // イベントのタイトル
-        start: item.end_date, // イベントの開始日
-        icon: <PetsIcon style={{ fontSize: "1.5rem", color: "#3f51b5" }} />, // イベントにペットアイコンを追加
+      // selectedAccountに対応するイベントのみをフィルタリング
+      const filteredData = data.filter(
+        (item) => item.userid === selectedAccount
+      );
+
+      // フィルタリングしたデータをFullCalendarに適した形式にフォーマット
+      const formattedEvents = filteredData.map((item) => ({
+        title: item.title,
+        start: item.end_date,
+        icon: <PetsIcon style={{ fontSize: "1.5rem", color: "#3f51b5" }} />,
       }));
 
-      //console.log("Events fetched:", formattedEvents); // デバッグログ：取得したイベントの内容を表示
       setEvents(formattedEvents); // フォーマット済みのイベントを状態に保存
+    } catch (error) {
+      console.error("Error fetching events:", error); // エラーハンドリング
     }
-  };
+  }, [selectedAccount]); // selectedAccountが変わるたびにこの関数が再生成される
 
-  // コンポーネントが初めてレンダリングされたときにイベントを取得する
+  // コンポーネントが初めてレンダリングされたときにイベントを取得
   useEffect(() => {
     fetchEvents(); // 初回レンダリング時にイベントを取得
-  }, []);
+  }, [fetchEvents]);
 
-  // イベントが更新されたときにカレンダーを再描画する
+  // イベントが更新されたときにカレンダーを再描画
   useEffect(() => {
-    //console.log("Events state updated:", events); // デバッグログ：イベントの状態が更新されたときに表示
     if (calendarRef.current) {
       calendarRef.current.getApi().refetchEvents(); // カレンダーのイベントを再取得して更新
     }
   }, [events]);
 
   // カレンダーイベントのカスタム表示を行う関数
-  const renderEventContent = (eventInfo) => {
-    return (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          overflow: "visible",
-          height: "auto",
-        }}
-      >
-        {eventInfo.event.extendedProps.icon}{" "}
-        {/* イベントに付随するアイコンを表示 */}
-        <span style={{ marginLeft: "5px", fontSize: "1em" }}>
-          {eventInfo.event.title} {/* イベントのタイトルを表示 */}
-        </span>
-      </div>
-    );
-  };
-
-  //console.log("Rendering Slide_Calendar component..."); // デバッグログ：コンポーネントがレンダリングされるたびに表示
+  const renderEventContent = (eventInfo) => (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        overflow: "visible",
+        height: "auto",
+      }}
+    >
+      {eventInfo.event.extendedProps.icon}
+      <span style={{ marginLeft: "5px", fontSize: "1em" }}>
+        {eventInfo.event.title}
+      </span>
+    </div>
+  );
 
   return (
     <div>
@@ -91,7 +97,7 @@ export default function Slide_Calendar() {
               height={400} // カレンダーの高さを設定
               contentHeight={400} // カレンダーのコンテンツ高さを設定
               aspectRatio={2} // カレンダーのアスペクト比を設定
-              dayMaxEventRows={true} // 1日に表示するイベント数の上限を設定
+              dayMaxEventRows // 1日に表示するイベント数の上限を設定
               windowResize={() => {
                 if (calendarRef.current) {
                   calendarRef.current.getApi().updateSize(); // ウィンドウサイズ変更時にカレンダーサイズを更新
