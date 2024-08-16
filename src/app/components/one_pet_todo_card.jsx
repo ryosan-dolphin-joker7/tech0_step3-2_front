@@ -10,21 +10,29 @@ export default function OnePetTodoCard({ petTodo }) {
     const today = new Date().toISOString().split("T")[0]; // 今日の日付をYYYY-MM-DD形式で取得
 
     try {
+      // Supabaseから`end_date`が今日の日付と一致するタスクを取得
       const { data: tasksData, error: tasksError } = await supabase
         .from("todos")
         .select("*")
-        .eq("end_date", today); // `end_date`が今日の日付と一致するタスクを取得
+        .eq("end_date", today);
 
       if (tasksError) {
-        throw new Error(tasksError.message);
+        throw new Error(tasksError.message); // エラーが発生した場合は例外をスロー
       }
 
-      setTodayTasks(tasksData || []); // 取得したデータをステートに保存
+      // petTodoの`userid`と一致するタスクのみをフィルタリング
+      const filteredTasks = tasksData.filter(
+        (task) => task.userid === petTodo.userid
+      );
+
+      // フィルタリングされたタスクをステートに保存
+      setTodayTasks(filteredTasks || []);
     } catch (error) {
       console.error("今日のタスクの取得に失敗しました:", error.message);
     }
-  }, []);
+  }, [petTodo]);
 
+  // petTodoが存在する場合にタスクを取得
   useEffect(() => {
     if (petTodo) {
       fetchTodayTasks(); // コンポーネントのマウント時にタスクを取得
@@ -124,7 +132,7 @@ export default function OnePetTodoCard({ petTodo }) {
         .card-title {
           color: red;
           font-size: 24px;
-
+        }
       `}</style>
     </div>
   );

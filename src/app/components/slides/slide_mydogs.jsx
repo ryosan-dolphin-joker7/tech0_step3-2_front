@@ -1,53 +1,48 @@
 "use client"; // このファイルがクライアントサイドで動作することを指定
 
-import React, { useState, useEffect, useContext } from "react"; // Reactの基本的なフックとコンテキストをインポート
+import React, { useState, useEffect, useContext, useMemo } from "react"; // Reactの基本的なフックとコンテキストをインポート
 import { Box } from "@mui/material"; // MUIのBoxコンポーネントをインポート
-import Popup_Today_Dog from "@/components/posts/popup_today_dog.jsx"; // ポップアップ用のコンポーネントをインポート
-import OnePetTodoCard from "@/components/one_pet_todo_card.jsx"; // ペット情報カード用のコンポーネントをインポート
+import Popup_Today_Dog from "@/components/posts/popup_today_dog"; // ポップアップ用のコンポーネントをインポート
+import OnePetTodoCard from "@/components/one_pet_todo_card"; // ペット情報カード用のコンポーネントをインポート
 import { AccountContext } from "@/components/AccountProvider"; // アカウントコンテキストをインポート
 import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポート
 
 function Slide_Mydogs() {
-  // AccountContextからselectedAccountを取得します。
+  // AccountContextからselectedAccountを取得します
   const { selectedAccount } = useContext(AccountContext);
 
-  // ペット情報を管理するstateを定義します。初期値はnullです。
-  const [petTodo, setPetTodo] = useState(null);
-
-  // ペット情報のリストを管理するためのstate。Supabaseから取得した全データを保存します。
+  // すべてのペット情報を管理するためのstateを定義します。初期値は空の配列です
   const [pets, setPets] = useState([]);
 
-  // Supabaseからpetinformationテーブルのすべてのデータを取得する非同期関数
+  // Supabaseからデータを取得する関数を定義します
   const fetchData = async () => {
     try {
-      const { data: petsData, error: petsError } = await supabase
+      // Supabaseのpetinformationテーブルからすべてのデータを取得します
+      const { data: petsData, error } = await supabase
         .from("petinformation") // petinformationテーブルからデータを取得
-        .select("*"); // 全てのカラムを選択して取得
+        .select("*"); // すべてのカラムを選択して取得
 
-      if (petsError) throw petsError; // エラーが発生した場合は例外をスローします
+      // データ取得中にエラーが発生した場合は、例外をスローします
+      if (error) throw error;
 
-      setPets(petsData || []); // 取得したデータをpets状態に保存します。データが空の場合は空の配列を設定します。
+      // 取得したペット情報をpets stateに保存します
+      setPets(petsData || []); // データが空の場合は空の配列を設定します
     } catch (error) {
-      // データ取得に失敗した場合のエラーメッセージをコンソールに出力します。
-      console.error("ペット情報の取得に失敗しました: " + error.message);
+      // データ取得に失敗した場合のエラーメッセージをコンソールに出力します
+      console.error("ペット情報の取得に失敗しました: ", error.message);
     }
   };
 
-  // コンポーネントが最初に表示されるときに、fetchData関数を実行してデータを取得します。
+  // コンポーネントが最初に表示されたときにデータを取得するためにfetchData関数を呼び出します
   useEffect(() => {
-    fetchData();
-  }, []); // このuseEffectは、最初のマウント時にのみ実行されます。
+    fetchData(); // ペット情報のデータを取得するfetchData関数を呼び出します
+  }, []); // このuseEffectは、最初のマウント時にのみ実行されます
 
-  // selectedAccountが変更されたときに、対応するペット情報を設定するための処理
-  useEffect(() => {
-    if (selectedAccount && pets.length > 0) {
-      // selectedAccountのIDに対応するペット情報を検索します。
-      const selectedPet = pets.find((pet) => pet.petid === selectedAccount); // petidとselectedAccountが一致するペットを取得
-
-      // 該当するペット情報が見つかった場合、その情報をpetTodoに設定します。見つからない場合はnullを設定します。
-      setPetTodo(selectedPet || null);
-    }
-  }, [selectedAccount, pets]); // selectedAccountとpetsが変更されるたびにこの処理が実行されます。
+  // selectedAccountに対応するペット情報をメモ化して取得します
+  const selectedPetInfo = useMemo(() => {
+    // petInfoの中からselectedAccountに対応するuseridを持つペット情報を配列で返します
+    return pets.filter((pet) => pet.userid === selectedAccount);
+  }, [selectedAccount, pets]); // selectedAccountまたはpetsが変更されたときに再計算されます
 
   return (
     <Box
@@ -63,9 +58,9 @@ function Slide_Mydogs() {
         className="card flex flex-row max-w-sm m-4" // カードスタイルを定義したクラスを適用
         sx={{ margin: "0 auto" }} // カードを中央に配置
       >
-        {/* petTodoが存在する場合はペット情報カードを表示し、存在しない場合はエラーメッセージを表示 */}
-        {petTodo ? (
-          <OnePetTodoCard petTodo={petTodo} /> // ペット情報カードコンポーネントを表示
+        {/* selectedPetInfoが存在する場合はペット情報カードを表示し、存在しない場合はエラーメッセージを表示 */}
+        {selectedPetInfo.length > 0 ? (
+          <OnePetTodoCard petTodo={selectedPetInfo[0]} /> // 最初のペット情報をペット情報カードコンポーネントに渡して表示
         ) : (
           <p>アカウントを選んでください。</p> // ペット情報がない場合のメッセージ
         )}

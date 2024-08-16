@@ -1,57 +1,53 @@
-"use client"; // クライアント側で動作するコードであることを指定しています。
+"use client"; // クライアント側（ブラウザ）で動作するコードであることを示しています。
 
-import { useEffect, useState, useContext } from "react"; // useContextを含めたReactのフックをインポートします。
-import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートします。
-import { AccountContext } from "@/components/AccountProvider"; // アカウント情報を提供するコンテキストをインポート
+import { useEffect, useState, useContext } from "react"; // Reactのフックをインポートしています。
+import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートしています。
+import { AccountContext } from "@/components/AccountProvider"; // アカウント情報を提供するコンテキストをインポートしています。
 
 const Home = () => {
-  const [items, setItems] = useState([]); // Todoアイテムのリストを保持するためのステートを定義します。
-  const [error, setError] = useState(null); // エラーメッセージを保持するためのステートを定義します。
-  const [loading, setLoading] = useState(true); // ローディング状態を保持するためのステートを追加します。
-  const { selectedAccount } = useContext(AccountContext); // AccountContextから選択されたアカウントIDを取得します
+  const [items, setItems] = useState([]); // Todoアイテムのリストを保持するためのステート変数
+  const [error, setError] = useState(null); // エラーメッセージを保持するためのステート変数
+  const [loading, setLoading] = useState(true); // ローディング状態（データが取得中かどうか）を管理するためのステート変数
+  const [selectedTodoDetails, setSelectedTodoDetails] = useState(null); // 選択されたTodoの詳細情報を保持するためのステート変数
+  const [isModalOpen, setIsModalOpen] = useState(false); // モーダルの表示/非表示を管理するためのステート変数
+  const { selectedAccount } = useContext(AccountContext); // AccountContextから、現在選択されているアカウントIDを取得
 
-  // コンポーネントがマウントされたときにデータを取得するための副作用フックを設定します。
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // SupabaseからすべてのTodoデータを取得します
         const { data, error } = await supabase.from("todos").select("*");
 
         if (error) {
-          console.error("Error fetching data: ", error); // エラーログを出力します。
-          setError("データの取得に失敗しました"); // エラーメッセージをステートに設定します。
+          console.error("Error fetching data: ", error);
+          setError("データの取得に失敗しました");
         } else {
-          setItems(data); // 取得したデータをステートに設定します。
+          setItems(data);
         }
       } catch (fetchError) {
-        console.error("Fetch error: ", fetchError); // エラーログを出力します。
-        setError("データの取得中にエラーが発生しました"); // エラーメッセージをステートに設定します。
+        console.error("Fetch error: ", fetchError);
+        setError("データの取得中にエラーが発生しました");
       } finally {
-        setLoading(false); // ローディング状態を解除します。
+        setLoading(false);
       }
     };
 
-    fetchData(); // データ取得関数を実行します。
-  }, []); // 空の依存配列により、コンポーネントがマウントされたときにのみ実行されます。
+    fetchData();
+  }, []); // 空の依存配列により、この副作用はコンポーネントの初回表示時にのみ実行されます。
 
-  // selectedAccountに対応するすべてのTodoをフィルタリングする
   const selectedTodo = items.filter((item) => item.userid === selectedAccount);
-  // itemsの中からselectedAccountに対応するuseridを持つTodoを配列で返します
 
-  // タスクを完了/未完了としてマークするための関数を定義します。
   const toggleTaskState = async (id, currentState) => {
     try {
-      const newState = !currentState; // 現在の状態を反転させます（true -> false, false -> true）
+      const newState = !currentState;
       const { error } = await supabase
         .from("todos")
-        .update({ state: newState }) // `state`を新しい値に更新します。
-        .eq("id", id); // `id`が一致するレコードのみを更新します。
+        .update({ state: newState })
+        .eq("id", id);
 
       if (error) {
-        console.error("Error updating task state: ", error); // エラーログを出力します。
-        setError("タスクの状態更新に失敗しました"); // エラーメッセージをステートに設定します。
+        console.error("Error updating task state: ", error);
+        setError("タスクの状態更新に失敗しました");
       } else {
-        // 成功時には、ローカルのステートも更新して、UIに反映します。
         setItems((prevItems) =>
           prevItems.map((item) =>
             item.id === id ? { ...item, state: newState } : item
@@ -59,50 +55,50 @@ const Home = () => {
         );
       }
     } catch (updateError) {
-      console.error("Update error: ", updateError); // エラーログを出力します。
-      setError("タスクの状態更新中にエラーが発生しました"); // エラーメッセージをステートに設定します。
+      console.error("Update error: ", updateError);
+      setError("タスクの状態更新中にエラーが発生しました");
     }
+  };
+
+  const handleRowClick = (todo) => {
+    setSelectedTodoDetails(todo);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedTodoDetails(null);
+  };
+
+  const handleModalClick = (e) => {
+    e.stopPropagation(); // モーダルコンテンツ内のクリックイベントがモーダル全体に伝播しないようにする
   };
 
   return (
     <div>
-      <h1>今日のスケジュール</h1> {/* 見出しを表示します */}
-      {loading && <p>読み込み中...</p>}{" "}
-      {/* データ取得中のローディングメッセージを表示します */}
-      {error && <p style={{ color: "red" }}>{error}</p>}{" "}
-      {/* エラーが発生した場合にエラーメッセージを表示します */}
+      <h1>今日のスケジュール</h1>
+      {loading && <p>読み込み中...</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
       <table style={{ borderCollapse: "collapse", width: "100%" }}>
         <thead>
           <tr>
-            <th
-              scope="col"
-              style={{ border: "1px solid black", padding: "8px" }}
-            >
+            <th style={{ border: "1px solid black", padding: "8px" }}>
               タスク
             </th>
-            <th
-              scope="col"
-              style={{ border: "1px solid black", padding: "8px" }}
-            >
-              詳細
-            </th>
-            <th
-              scope="col"
-              style={{ border: "1px solid black", padding: "8px" }}
-            >
+            <th style={{ border: "1px solid black", padding: "8px" }}>詳細</th>
+            <th style={{ border: "1px solid black", padding: "8px" }}>
               いつまでにやるか
             </th>
-            <th
-              scope="col"
-              style={{ border: "1px solid black", padding: "8px" }}
-            >
-              完了
-            </th>
+            <th style={{ border: "1px solid black", padding: "8px" }}>完了</th>
           </tr>
         </thead>
         <tbody>
           {selectedTodo.map((item) => (
-            <tr key={item.id}>
+            <tr
+              key={item.id}
+              onClick={() => handleRowClick(item)}
+              style={{ cursor: "pointer" }} // 行をクリック可能にするためにカーソルを変更
+            >
               <td style={{ border: "1px solid black", padding: "8px" }}>
                 {item.title}
               </td>
@@ -119,19 +115,70 @@ const Home = () => {
                   textAlign: "center",
                 }}
               >
-                {/* チェックボックスを追加し、クリックでタスクの完了状態を切り替えます */}
                 <input
                   type="checkbox"
-                  checked={item.state} // `state`がtrueの場合はチェックを入れる
-                  onChange={() => toggleTaskState(item.id, item.state)} // チェックボックスの状態が変更されたときに、タスクの完了状態を切り替えます
+                  checked={item.state} // stateがtrueの場合はチェックが入る
+                  onChange={() => toggleTaskState(item.id, item.state)} // 状態を切り替える関数を呼び出す
+                  onClick={(e) => e.stopPropagation()} // チェックボックスのクリックで行クリックイベントが発生しないようにする
                 />
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {/* モーダルの表示 */}
+      {isModalOpen && (
+        <div
+          style={modalOverlayStyle} // 半透明の背景を適用
+          onClick={closeModal} // 背景がクリックされたときにモーダルを閉じる
+        >
+          <div
+            style={modalContentStyle} // モーダルのコンテンツ部分に不透明な背景を適用
+            onClick={handleModalClick} // モーダルコンテンツ内のクリックはモーダルを閉じない
+          >
+            <h2>Todoの詳細</h2>
+            <p>
+              <strong>タスク:</strong> {selectedTodoDetails.title}
+            </p>
+            <p>
+              <strong>詳細:</strong> {selectedTodoDetails.contents}
+            </p>
+            <p>
+              <strong>いつまでにやるか:</strong> {selectedTodoDetails.end_date}
+            </p>
+            <p>
+              <strong>完了状態:</strong>{" "}
+              {selectedTodoDetails.state ? "完了" : "未完了"}
+            </p>
+            <button onClick={closeModal}>閉じる</button> {/* 閉じるボタン */}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default Home; // Homeコンポーネントをエクスポートします。
+// モーダル全体の背景スタイル設定
+const modalOverlayStyle = {
+  position: "fixed", // 画面に固定
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "100%",
+  backgroundColor: "rgba(0, 0, 0, 0.5)", // 背景を半透明の黒に設定
+  display: "flex", // モーダルを中央に配置するためにflexを使用
+  alignItems: "center",
+  justifyContent: "center",
+};
+
+// モーダルのコンテンツ部分のスタイル設定
+const modalContentStyle = {
+  backgroundColor: "white", // コンテンツの背景色を白に設定
+  padding: "20px", // コンテンツ内の余白
+  borderRadius: "5px", // 角を丸くする
+  width: "400px",
+  textAlign: "center", // 中央揃え
+};
+
+export default Home; // Homeコンポーネントをエクスポートして他のファイルから使用可能にする
