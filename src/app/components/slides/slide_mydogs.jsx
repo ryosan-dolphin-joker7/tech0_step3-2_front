@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useContext } from "react"; // Reactの基本的なフックとコンテキストをインポート
 import { Box } from "@mui/material"; // MUIのBoxコンポーネントをインポート
 import Popup_Today_Dog from "@/components/posts/popup_today_dog.jsx"; // ポップアップ用のコンポーネントをインポート
-import OnePetInfoCard from "@/components/one_pet_info_card.jsx"; // ペット情報カード用のコンポーネントをインポート
+import OnePetTodoCard from "@/components/one_pet_todo_card.jsx"; // ペット情報カード用のコンポーネントをインポート
 import { AccountContext } from "@/components/AccountProvider"; // アカウントコンテキストをインポート
 import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポート
 
@@ -12,7 +12,7 @@ function Slide_Mydogs() {
   const { selectedAccount } = useContext(AccountContext);
 
   // ペット情報を管理するstateを定義します。初期値はnullです。
-  const [petInfo, setPetInfo] = useState(null);
+  const [petTodo, setPetTodo] = useState(null);
 
   // ペット情報のリストを管理するためのstate。Supabaseから取得した全データを保存します。
   const [pets, setPets] = useState([]);
@@ -44,8 +44,8 @@ function Slide_Mydogs() {
       // selectedAccountのIDに対応するペット情報を検索します。
       const selectedPet = pets.find((pet) => pet.petid === selectedAccount); // petidとselectedAccountが一致するペットを取得
 
-      // 該当するペット情報が見つかった場合、その情報をpetInfoに設定します。見つからない場合はnullを設定します。
-      setPetInfo(selectedPet || null);
+      // 該当するペット情報が見つかった場合、その情報をpetTodoに設定します。見つからない場合はnullを設定します。
+      setPetTodo(selectedPet || null);
     }
   }, [selectedAccount, pets]); // selectedAccountとpetsが変更されるたびにこの処理が実行されます。
 
@@ -63,9 +63,9 @@ function Slide_Mydogs() {
         className="card flex flex-row max-w-sm m-4" // カードスタイルを定義したクラスを適用
         sx={{ margin: "0 auto" }} // カードを中央に配置
       >
-        {/* petInfoが存在する場合はペット情報カードを表示し、存在しない場合はエラーメッセージを表示 */}
-        {petInfo ? (
-          <OnePetInfoCard petInfo={petInfo} /> // ペット情報カードコンポーネントを表示
+        {/* petTodoが存在する場合はペット情報カードを表示し、存在しない場合はエラーメッセージを表示 */}
+        {petTodo ? (
+          <OnePetTodoCard petTodo={petTodo} /> // ペット情報カードコンポーネントを表示
         ) : (
           <p>アカウントを選んでください。</p> // ペット情報がない場合のメッセージ
         )}

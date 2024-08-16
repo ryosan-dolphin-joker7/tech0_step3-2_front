@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/supabaseClient";
 import Image from "next/image";
 
-export default function OnePetInfoCard({ petInfo }) {
+export default function OnePetTodoCard({ petTodo }) {
   const [todayTasks, setTodayTasks] = useState([]); // 今日のタスクを管理するステートを定義
 
   // 今日のタスクをSupabaseから取得する関数
@@ -26,63 +26,50 @@ export default function OnePetInfoCard({ petInfo }) {
   }, []);
 
   useEffect(() => {
-    if (petInfo) {
+    if (petTodo) {
       fetchTodayTasks(); // コンポーネントのマウント時にタスクを取得
     }
-  }, [fetchTodayTasks, petInfo]);
+  }, [fetchTodayTasks, petTodo]);
 
-  if (!petInfo) {
+  if (!petTodo) {
     return <p>アカウントを選んでください。</p>;
   }
 
   const {
     petname, // ペットの名前
-    breed, // ペットの犬種
-    birthdate, // ペットの生年月日
-    gender, // ペットの性別
-    weight, // ペットの体重
-    furcolor, // ペットの毛色
-    notes, // ペットの特徴やメモ
     photo_url, // ペットの写真のURL
-  } = petInfo;
+  } = petTodo;
 
   return (
     <div className="container">
       {/* ペットの名前を表示 */}
-      <h2 className="dog-name">{petname}のプロフィール</h2>
+      <h2 className="dog-name">Today&apos;s: {petname}</h2>
 
-      {/* ペットのプロフィール情報を表示するカード */}
-      <div className="card">
-        <div className="card-body">
-          <h2 className="card-title">Profile</h2>
-          <table className="profile-table">
-            <tbody>
-              <tr>
-                <th>生年月日</th>
-                <td>{birthdate}</td>
-              </tr>
-              <tr>
-                <th>性別</th>
-                <td>{gender}</td>
-              </tr>
-              <tr>
-                <th>犬種</th>
-                <td>{breed}</td>
-              </tr>
-              <tr>
-                <th>毛色</th>
-                <td>{furcolor}</td>
-              </tr>
-              <tr>
-                <th>体重</th>
-                <td>{weight} kg</td>
-              </tr>
-              <tr>
-                <th>個性</th>
-                <td>{notes}</td>
-              </tr>
-            </tbody>
-          </table>
+      {/* 画像を表示するためのコンテナ */}
+      <div className="image-container">
+        <Image
+          src={photo_url}
+          alt={petname}
+          className="pet-image"
+          width={500}
+          height={500}
+          style={{ objectFit: "cover" }}
+        />
+        {/* 今日のタスクを表示するセクションを画像の上に重ねる */}
+        <div className="task-overlay">
+          <h2>
+            今日は
+            {todayTasks.length > 0 ? (
+              todayTasks.map((task, index) => (
+                <span key={task.id}>
+                  {task.title}
+                  {index < todayTasks.length - 1 ? "、" : "をやるワン！"}
+                </span>
+              ))
+            ) : (
+              <span>暇だなぁ。散歩にいきたいなぁ</span>
+            )}
+          </h2>
         </div>
       </div>
 
@@ -137,18 +124,7 @@ export default function OnePetInfoCard({ petInfo }) {
         .card-title {
           color: red;
           font-size: 24px;
-        }
-        .profile-table {
-          width: 100%;
-        }
-        .profile-table th,
-        .profile-table td {
-          text-align: left;
-        }
-        .profile-table th {
-          width: 30%;
-          font-weight: bold;
-        }
+
       `}</style>
     </div>
   );

@@ -1,54 +1,67 @@
 "use client"; // このコードがクライアントサイドで動作することを指定
 
-import React, { useEffect, useState, useContext } from "react"; // Reactの基本機能とuseContextをインポート
+import React, { useEffect, useState, useContext, useMemo } from "react";
 import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポート
-import Link from "next/link"; // Next.jsのLinkコンポーネントをインポート
-import { Box, Typography, Button, Divider, TextField } from "@mui/material"; // MUIのコンポーネントをインポート
-import { AccountContext } from "@/components/AccountProvider"; // アカウントコンテキストをインポート
-import OnePetInsuranceCard from "@/components/one_pet_insurance_card.jsx"; // ペット情報カード用のコンポーネントをインポート
+import { Box } from "@mui/material"; // MUIのBoxコンポーネントをインポート
+import { AccountContext } from "@/components/AccountProvider"; // アカウント情報を提供するコンテキストをインポート
+import OnePetInsuranceCard from "@/components/one_pet_insurance_card.jsx"; // ペット保険情報カード用のコンポーネントをインポート
+import OnePetInfoCard from "@/components/one_pet_info_card"; // ペット情報カード用のコンポーネントをインポート
 
-export default function Slide3() {
-  // AccountContextからselectedAccountを取得します。
-  const { selectedAccount } = useContext(AccountContext);
+export default function Slide_pets() {
+  const { selectedAccount } = useContext(AccountContext); // AccountContextから選択されたアカウントIDを取得します
 
-  // ペット情報を管理するstateを定義します。初期値はnullです。
-  const [petInfo, setPetInfo] = useState(null);
+  const [insuranceInfoList, setInsuranceInfoList] = useState([]); // 保険情報を管理するためのstate。初期値は空の配列です
+  const [petInfo, setPetInfo] = useState([]); // ペット情報を管理するためのstate。初期値は空の配列です
+  const [fetchError, setFetchError] = useState(null); // データ取得が失敗した場合のエラーメッセージを管理するstate
 
-  // ペット情報のリストを管理するためのstate。Supabaseから取得した全データを保存します。
-  const [pets, setPets] = useState([]);
-
-  // Supabaseからpetinformationテーブルのすべてのデータを取得する非同期関数
+  // Supabaseからinsuranceテーブルとpetinformationテーブルのデータを取得する非同期関数
   const fetchData = async () => {
     try {
-      const { data: petsData, error: petsError } = await supabase
-        .from("insurance") // insuranceテーブルからデータを取得
-        .select("*, petinformation(petname)"); // 全てのカラムを選択して取得
-      //dataの中身をコンソールに出力
+      // insuranceテーブルからデータを取得し、関連するpetinformationテーブルのデータも取得
+      const { data: insuranceData, error: insuranceError } =
+        await supabase.from("insurance").select(`
+          *,
+          petinformation (
+            userid,
+            petname
+          )
+        `);
 
-      if (petsError) throw petsError; // エラーが発生した場合は例外をスローします
+      if (insuranceError) throw insuranceError; // エラーが発生した場合は例外をスロー
 
-      setPets(petsData || []); // 取得したデータをpets状態に保存します。データが空の場合は空の配列を設定します。
+      setInsuranceInfoList(insuranceData || []); // 取得したデータをinsuranceInfoListに保存。データが空の場合は空の配列を設定
+
+      // petinformationテーブルからデータを取得
+      const { data: petInformationData, error: petInformationError } =
+        await supabase.from("petinformation").select("*"); // 全てのカラムを選択してデータ取得
+
+      if (petInformationError) throw petInformationError; // エラーが発生した場合は例外をスロー
+
+      setPetInfo(petInformationData || []); // 取得したデータをpetInfoに保存。データが空の場合は空の配列を設定
     } catch (error) {
-      // データ取得に失敗した場合のエラーメッセージをコンソールに出力します。
-      console.error("ペット情報の取得に失敗しました: " + error.message);
+      console.error("データの取得に失敗しました: " + error.message); // エラーメッセージをコンソールに出力
+      setFetchError("データの取得に失敗しました。"); // UIに表示するためのエラーメッセージを設定
     }
   };
 
-  // コンポーネントが最初に表示されるときに、fetchData関数を実行してデータを取得します。
+  // コンポーネントが最初に表示されたときに、データを取得する
   useEffect(() => {
-    fetchData();
-  }, []); // このuseEffectは、最初のマウント時にのみ実行されます。
+    fetchData(); // fetchData関数を呼び出してデータを取得
+  }, []); // このuseEffectは、コンポーネントが最初にマウントされたときにのみ実行されます
 
-  // selectedAccountが変更されたときに、対応するペット情報を設定するための処理
-  useEffect(() => {
-    if (selectedAccount && pets.length > 0) {
-      // selectedAccountのIDに対応するペット情報を検索します。
-      const selectedPet = pets.find((pet) => pet.petid === selectedAccount); // petidとselectedAccountが一致するペットを取得
+  // selectedAccountに対応するすべてのペット情報を取得する
+  const selectedPetInfo = useMemo(() => {
+    return petInfo.filter((info) => info.userid === selectedAccount);
+    // petInfoの中からselectedAccountに対応するuseridを持つペット情報を配列で返します
+  }, [selectedAccount, petInfo]); // selectedAccountまたはpetInfoが変更されたときに再計算されます
 
-      // 該当するペット情報が見つかった場合、その情報をpetInfoに設定します。見つからない場合はnullを設定します。
-      setPetInfo(selectedPet || null);
-    }
-  }, [selectedAccount, pets]); // selectedAccountとpetsが変更されるたびにこの処理が実行されます。
+  // selectedAccountに対応するすべての保険情報を取得する
+  const selectedInsuranceInfo = useMemo(() => {
+    return insuranceInfoList.filter(
+      (insurance) => insurance.petinformation.userid === selectedAccount
+    );
+    // insuranceInfoListの中からselectedAccountに対応するuseridを持つ保険情報を配列で返します
+  }, [selectedAccount, insuranceInfoList]); // selectedAccountまたはinsuranceInfoListが変更されたときに再計算されます
 
   return (
     <Box
@@ -59,20 +72,43 @@ export default function Slide3() {
         textAlign: "center", // テキストを中央揃え
       }}
     >
-      <div style={{ textAlign: "center" }}>
-        {/* 犬のカード情報などを表示する */}
-        <Box
-          className="card flex flex-row max-w-sm m-4" // カードスタイルを定義したクラスを適用
-          sx={{ margin: "0 auto" }} // カードを中央に配置
-        >
-          {/* petInfoが存在する場合はペット情報カードを表示し、存在しない場合はエラーメッセージを表示 */}
-          {petInfo ? (
-            <OnePetInsuranceCard petInfo={petInfo} /> // ペット情報カードコンポーネントを表示
+      {fetchError ? (
+        <p>{fetchError}</p> // データ取得時のエラーが発生した場合はエラーメッセージを表示
+      ) : (
+        <div style={{ textAlign: "center" }}>
+          {/* 複数のペット情報が存在する場合は、それぞれのペット情報カードを表示 */}
+          {selectedPetInfo.length > 0 ? (
+            selectedPetInfo.map((pet, index) => (
+              <Box
+                key={index} // 各ペット情報に対して一意のキーを設定
+                className="card flex flex-row max-w-sm m-4"
+                sx={{ margin: "0 auto" }} // カードを中央に配置
+              >
+                <OnePetInfoCard petInfo={pet} />
+                {/* 複数のペット情報カードを表示 */}
+              </Box>
+            ))
           ) : (
-            <p>アカウントを選んでください。</p> // ペット情報がない場合のメッセージ
+            <p>該当するペット情報がありません。</p> // ペット情報がない場合のメッセージ
           )}
-        </Box>
-      </div>
+
+          {/* 複数の保険情報が存在する場合は、それぞれの保険情報カードを表示 */}
+          {selectedInsuranceInfo.length > 0 ? (
+            selectedInsuranceInfo.map((insurance, index) => (
+              <Box
+                key={index} // 各保険情報に対して一意のキーを設定
+                className="card flex flex-row max-w-sm m-4"
+                sx={{ margin: "0 auto" }} // カードを中央に配置
+              >
+                <OnePetInsuranceCard petInsurance={insurance} />
+                {/* 複数の保険情報カードを表示 */}
+              </Box>
+            ))
+          ) : (
+            <p>保険情報がありません。</p> // 保険情報がない場合のメッセージ
+          )}
+        </div>
+      )}
     </Box>
   );
 }
