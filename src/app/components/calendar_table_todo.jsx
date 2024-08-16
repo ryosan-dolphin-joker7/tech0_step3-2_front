@@ -1,18 +1,21 @@
-// src/app/table/page.jsx
 "use client"; // クライアント側で動作するコードであることを指定しています。
 
-import { useEffect, useState } from "react"; // Reactのフックをインポートします。
+import { useEffect, useState, useContext } from "react"; // useContextを含めたReactのフックをインポートします。
 import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートします。
+import { AccountContext } from "@/components/AccountProvider"; // アカウント情報を提供するコンテキストをインポート
 
 const Home = () => {
   const [items, setItems] = useState([]); // Todoアイテムのリストを保持するためのステートを定義します。
   const [error, setError] = useState(null); // エラーメッセージを保持するためのステートを定義します。
+  const [loading, setLoading] = useState(true); // ローディング状態を保持するためのステートを追加します。
+  const { selectedAccount } = useContext(AccountContext); // AccountContextから選択されたアカウントIDを取得します
 
   // コンポーネントがマウントされたときにデータを取得するための副作用フックを設定します。
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data, error } = await supabase.from("todos").select("*"); // Supabaseから"todos"テーブルのデータを取得します。
+        // SupabaseからすべてのTodoデータを取得します
+        const { data, error } = await supabase.from("todos").select("*");
 
         if (error) {
           console.error("Error fetching data: ", error); // エラーログを出力します。
@@ -23,11 +26,17 @@ const Home = () => {
       } catch (fetchError) {
         console.error("Fetch error: ", fetchError); // エラーログを出力します。
         setError("データの取得中にエラーが発生しました"); // エラーメッセージをステートに設定します。
+      } finally {
+        setLoading(false); // ローディング状態を解除します。
       }
     };
 
     fetchData(); // データ取得関数を実行します。
   }, []); // 空の依存配列により、コンポーネントがマウントされたときにのみ実行されます。
+
+  // selectedAccountに対応するすべてのTodoをフィルタリングする
+  const selectedTodo = items.filter((item) => item.userid === selectedAccount);
+  // itemsの中からselectedAccountに対応するuseridを持つTodoを配列で返します
 
   // タスクを完了/未完了としてマークするための関数を定義します。
   const toggleTaskState = async (id, currentState) => {
@@ -58,23 +67,41 @@ const Home = () => {
   return (
     <div>
       <h1>今日のスケジュール</h1> {/* 見出しを表示します */}
+      {loading && <p>読み込み中...</p>}{" "}
+      {/* データ取得中のローディングメッセージを表示します */}
       {error && <p style={{ color: "red" }}>{error}</p>}{" "}
       {/* エラーが発生した場合にエラーメッセージを表示します */}
       <table style={{ borderCollapse: "collapse", width: "100%" }}>
         <thead>
           <tr>
-            <th style={{ border: "1px solid black", padding: "8px" }}>
+            <th
+              scope="col"
+              style={{ border: "1px solid black", padding: "8px" }}
+            >
               タスク
             </th>
-            <th style={{ border: "1px solid black", padding: "8px" }}>詳細</th>
-            <th style={{ border: "1px solid black", padding: "8px" }}>
+            <th
+              scope="col"
+              style={{ border: "1px solid black", padding: "8px" }}
+            >
+              詳細
+            </th>
+            <th
+              scope="col"
+              style={{ border: "1px solid black", padding: "8px" }}
+            >
               いつまでにやるか
             </th>
-            <th style={{ border: "1px solid black", padding: "8px" }}>完了</th>
+            <th
+              scope="col"
+              style={{ border: "1px solid black", padding: "8px" }}
+            >
+              完了
+            </th>
           </tr>
         </thead>
         <tbody>
-          {items.map((item) => (
+          {selectedTodo.map((item) => (
             <tr key={item.id}>
               <td style={{ border: "1px solid black", padding: "8px" }}>
                 {item.title}
