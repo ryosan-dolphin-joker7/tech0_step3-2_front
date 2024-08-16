@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/supabaseClient";
 import Image from "next/image";
 
-export default function OnePetInfoCard({ petInfo }) {
+export default function OnePetTodoCard({ petTodo }) {
   const [todayTasks, setTodayTasks] = useState([]); // 今日のタスクを管理するステートを定義
 
   // 今日のタスクをSupabaseから取得する関数
@@ -26,12 +26,12 @@ export default function OnePetInfoCard({ petInfo }) {
   }, []);
 
   useEffect(() => {
-    if (petInfo) {
+    if (petTodo) {
       fetchTodayTasks(); // コンポーネントのマウント時にタスクを取得
     }
-  }, [fetchTodayTasks, petInfo]);
+  }, [fetchTodayTasks, petTodo]);
 
-  if (!petInfo) {
+  if (!petTodo) {
     return <p>アカウントを選んでください。</p>;
   }
 
@@ -44,12 +44,40 @@ export default function OnePetInfoCard({ petInfo }) {
     furcolor, // ペットの毛色
     notes, // ペットの特徴やメモ
     photo_url, // ペットの写真のURL
-  } = petInfo;
+  } = petTodo;
 
   return (
     <div className="container">
       {/* ペットの名前を表示 */}
       <h2 className="dog-name">Today&apos;s: {petname}</h2>
+
+      {/* 画像を表示するためのコンテナ */}
+      <div className="image-container">
+        <Image
+          src={photo_url}
+          alt={petname}
+          className="pet-image"
+          width={500}
+          height={500}
+          objectFit="cover"
+        />
+        {/* 今日のタスクを表示するセクションを画像の上に重ねる */}
+        <div className="task-overlay">
+          <h2>
+            今日は
+            {todayTasks.length > 0 ? (
+              todayTasks.map((task, index) => (
+                <span key={task.id}>
+                  {task.title}
+                  {index < todayTasks.length - 1 ? "、" : "をやるワン！"}
+                </span>
+              ))
+            ) : (
+              <span>暇だなぁ。散歩にいきたいなぁ</span>
+            )}
+          </h2>
+        </div>
+      </div>
 
       {/* ペットのプロフィール情報を表示するカード */}
       <div className="card">

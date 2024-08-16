@@ -2,17 +2,17 @@
 
 import React, { useEffect, useState, useContext } from "react"; // Reactの基本機能とuseContextをインポート
 import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポート
-import Link from "next/link"; // Next.jsのLinkコンポーネントをインポート
 import { Box, Typography, Button, Divider, TextField } from "@mui/material"; // MUIのコンポーネントをインポート
 import { AccountContext } from "@/components/AccountProvider"; // アカウントコンテキストをインポート
 import OnePetInsuranceCard from "@/components/one_pet_insurance_card.jsx"; // ペット情報カード用のコンポーネントをインポート
+import OnePetInfoCard from "@/components/one_pet_info_card"; // ペット情報カード用のコンポーネントをインポート
 
-export default function Slide3() {
+export default function Slide_pets() {
   // AccountContextからselectedAccountを取得します。
   const { selectedAccount } = useContext(AccountContext);
 
   // ペット情報を管理するstateを定義します。初期値はnullです。
-  const [petInfo, setPetInfo] = useState(null);
+  const [petInsurance, setPetInsurance] = useState(null);
 
   // ペット情報のリストを管理するためのstate。Supabaseから取得した全データを保存します。
   const [pets, setPets] = useState([]);
@@ -23,7 +23,6 @@ export default function Slide3() {
       const { data: petsData, error: petsError } = await supabase
         .from("insurance") // insuranceテーブルからデータを取得
         .select("*, petinformation(petname)"); // 全てのカラムを選択して取得
-      //dataの中身をコンソールに出力
 
       if (petsError) throw petsError; // エラーが発生した場合は例外をスローします
 
@@ -45,8 +44,8 @@ export default function Slide3() {
       // selectedAccountのIDに対応するペット情報を検索します。
       const selectedPet = pets.find((pet) => pet.petid === selectedAccount); // petidとselectedAccountが一致するペットを取得
 
-      // 該当するペット情報が見つかった場合、その情報をpetInfoに設定します。見つからない場合はnullを設定します。
-      setPetInfo(selectedPet || null);
+      // 該当するペット情報が見つかった場合、その情報をpetInsuranceに設定します。見つからない場合はnullを設定します。
+      setPetInsurance(selectedPet || null);
     }
   }, [selectedAccount, pets]); // selectedAccountとpetsが変更されるたびにこの処理が実行されます。
 
@@ -65,9 +64,9 @@ export default function Slide3() {
           className="card flex flex-row max-w-sm m-4" // カードスタイルを定義したクラスを適用
           sx={{ margin: "0 auto" }} // カードを中央に配置
         >
-          {/* petInfoが存在する場合はペット情報カードを表示し、存在しない場合はエラーメッセージを表示 */}
-          {petInfo ? (
-            <OnePetInsuranceCard petInfo={petInfo} /> // ペット情報カードコンポーネントを表示
+          {/* petInsuranceが存在する場合はペット情報カードを表示し、存在しない場合はエラーメッセージを表示 */}
+          {petInsurance ? (
+            <OnePetInsuranceCard petInsurance={petInsurance} /> // ペット情報カードコンポーネントを表示
           ) : (
             <p>アカウントを選んでください。</p> // ペット情報がない場合のメッセージ
           )}

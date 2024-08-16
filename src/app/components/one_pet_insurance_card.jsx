@@ -1,8 +1,8 @@
 import React from "react";
 
-export default function OnePetInsuranceCard({ petInfo }) {
+export default function OnePetInsuranceCard({ petInsurance }) {
   // ペット情報がない場合、アカウント選択を促すメッセージを表示
-  if (!petInfo) {
+  if (!petInsurance) {
     return <p>アカウントを選んでください。</p>;
   }
 
@@ -13,7 +13,7 @@ export default function OnePetInsuranceCard({ petInfo }) {
     petid, // ペットのID
     petinformation: { petname }, // ペット情報からペットの名前を取得
     insurance_card_url, // 保険証の写真のURL
-  } = petInfo;
+  } = petInsurance;
 
   return (
     <div className="container">
