@@ -37,12 +37,6 @@ export default function OnePetTodoCard({ petTodo }) {
 
   const {
     petname, // ペットの名前
-    breed, // ペットの犬種
-    birthdate, // ペットの生年月日
-    gender, // ペットの性別
-    weight, // ペットの体重
-    furcolor, // ペットの毛色
-    notes, // ペットの特徴やメモ
     photo_url, // ペットの写真のURL
   } = petTodo;
 
@@ -76,41 +70,6 @@ export default function OnePetTodoCard({ petTodo }) {
               <span>暇だなぁ。散歩にいきたいなぁ</span>
             )}
           </h2>
-        </div>
-      </div>
-
-      {/* ペットのプロフィール情報を表示するカード */}
-      <div className="card">
-        <div className="card-body">
-          <h2 className="card-title">Profile</h2>
-          <table className="profile-table">
-            <tbody>
-              <tr>
-                <th>生年月日</th>
-                <td>{birthdate}</td>
-              </tr>
-              <tr>
-                <th>性別</th>
-                <td>{gender}</td>
-              </tr>
-              <tr>
-                <th>犬種</th>
-                <td>{breed}</td>
-              </tr>
-              <tr>
-                <th>毛色</th>
-                <td>{furcolor}</td>
-              </tr>
-              <tr>
-                <th>体重</th>
-                <td>{weight} kg</td>
-              </tr>
-              <tr>
-                <th>個性</th>
-                <td>{notes}</td>
-              </tr>
-            </tbody>
-          </table>
         </div>
       </div>
 
@@ -165,18 +124,7 @@ export default function OnePetTodoCard({ petTodo }) {
         .card-title {
           color: red;
           font-size: 24px;
-        }
-        .profile-table {
-          width: 100%;
-        }
-        .profile-table th,
-        .profile-table td {
-          text-align: left;
-        }
-        .profile-table th {
-          width: 30%;
-          font-weight: bold;
-        }
+
       `}</style>
     </div>
   );

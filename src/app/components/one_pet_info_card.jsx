@@ -49,7 +49,7 @@ export default function OnePetInfoCard({ petInfo }) {
   return (
     <div className="container">
       {/* ペットの名前を表示 */}
-      <h2 className="dog-name">Today&apos;s: {petname}</h2>
+      <h2 className="dog-name">{petname}のプロフィール</h2>
 
       {/* ペットのプロフィール情報を表示するカード */}
       <div className="card">
