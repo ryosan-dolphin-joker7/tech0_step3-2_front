@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react"; // useCallbackを追加
-import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポート
-import Image from "next/image"; // next/imageを使用して画像を最適化
+import React, { useState, useEffect, useCallback } from "react";
+import { supabase } from "@/supabaseClient";
+import Image from "next/image";
 
 export default function OnePetInfoCard({ petInfo }) {
   const [todayTasks, setTodayTasks] = useState([]); // 今日のタスクを管理するステートを定義
@@ -23,20 +23,18 @@ export default function OnePetInfoCard({ petInfo }) {
     } catch (error) {
       console.error("今日のタスクの取得に失敗しました:", error.message);
     }
-  }, []); // useCallbackを使用してfetchTodayTasks関数をメモ化
+  }, []);
 
   useEffect(() => {
     if (petInfo) {
       fetchTodayTasks(); // コンポーネントのマウント時にタスクを取得
     }
-  }, [fetchTodayTasks, petInfo]); // 依存配列にfetchTodayTasksとpetInfoを追加
+  }, [fetchTodayTasks, petInfo]);
 
-  // ペット情報がない場合、アカウント選択を促すメッセージを表示
   if (!petInfo) {
     return <p>アカウントを選んでください。</p>;
   }
 
-  // ペット情報を変数に格納
   const {
     petname, // ペットの名前
     breed, // ペットの犬種
@@ -53,34 +51,32 @@ export default function OnePetInfoCard({ petInfo }) {
       {/* ペットの名前を表示 */}
       <h2 className="dog-name">Today&apos;s: {petname}</h2>
 
-      {/* 今日のタスクを表示する */}
-      <div style={{ marginTop: "20px" }}>
-        <h2>
-          今日は
-          {todayTasks.length > 0 ? (
-            todayTasks.map((task, index) => (
-              <span key={task.id}>
-                {task.title}
-                {index < todayTasks.length - 1 ? "、" : "をやるワン！"}
-                {/* 複数タスクの場合は「、」、最後のタスクには「をやるワン！」を付ける */}
-              </span>
-            ))
-          ) : (
-            <span>暇だなぁ</span> // 今日のタスクが無い場合のメッセージ
-          )}
-        </h2>
-      </div>
-
       {/* 画像を表示するためのコンテナ */}
       <div className="image-container">
         <Image
-          src={photo_url} // 画像のURLを指定
-          alt={petname} // 画像が表示されないときに代わりに表示するテキスト
-          className="pet-image" // CSSクラスを指定
-          width={500} // 幅を指定
-          height={500} // 高さを指定
-          objectFit="cover" // 画像がコンテナを覆うように表示（縦横比を維持）
+          src={photo_url}
+          alt={petname}
+          className="pet-image"
+          width={500}
+          height={500}
+          objectFit="cover"
         />
+        {/* 今日のタスクを表示するセクションを画像の上に重ねる */}
+        <div className="task-overlay">
+          <h2>
+            今日は
+            {todayTasks.length > 0 ? (
+              todayTasks.map((task, index) => (
+                <span key={task.id}>
+                  {task.title}
+                  {index < todayTasks.length - 1 ? "、" : "をやるワン！"}
+                </span>
+              ))
+            ) : (
+              <span>暇だなぁ。散歩にいきたいなぁ</span>
+            )}
+          </h2>
+        </div>
       </div>
 
       {/* ペットのプロフィール情報を表示するカード */}
@@ -118,6 +114,7 @@ export default function OnePetInfoCard({ petInfo }) {
         </div>
       </div>
 
+      {/* スタイル定義 */}
       <style jsx>{`
         .container {
           text-align: center;
@@ -129,6 +126,7 @@ export default function OnePetInfoCard({ petInfo }) {
           font-weight: bold;
         }
         .image-container {
+          position: relative; // 子要素を相対的に配置
           display: flex;
           justify-content: center;
           max-width: 500px;
@@ -139,6 +137,19 @@ export default function OnePetInfoCard({ petInfo }) {
         }
         .pet-image {
           border-radius: 10px;
+        }
+        .task-overlay {
+          position: absolute; // 親要素に対して絶対位置を指定
+          top: 10%; // 画像の上部に位置
+          left: 50%; // 水平方向の中央に配置
+          transform: translateX(-50%); // 中央揃え
+          background-color: rgba(255, 255, 255, 0.9); // 半透明の背景
+          padding: 10px;
+          border-radius: 10px;
+          box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+          text-align: center;
+          font-weight: bold;
+          width: 80%; // オーバーレイの幅を指定
         }
         .card {
           margin: 16px auto;
