@@ -1,9 +1,9 @@
 import React, {
-  useRef,
   useEffect,
   useState,
-  useCallback,
   useContext,
+  useRef,
+  useCallback,
 } from "react";
 import Grid from "@mui/material/Grid";
 import FullCalendar from "@fullcalendar/react";
@@ -11,7 +11,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import Post_Todo from "@/components/posts/post_todo";
-import Table_Todo from "@/components/calendar_table_todo";
+import Calendar_Table_Todo from "@/components/calendar_table_todo";
 import { supabase } from "@/supabaseClient";
 import PetsIcon from "@mui/icons-material/Pets";
 import { AccountContext } from "@/components/AccountProvider"; // アカウント情報を提供するコンテキストをインポート
@@ -124,7 +124,7 @@ export default function Slide_Calendar() {
               padding: "10px",
             }}
           >
-            <Table_Todo /> {/* Todoリストを表示するコンポーネント */}
+            <Calendar_Table_Todo /> {/* Todoリストを表示するコンポーネント */}
           </div>
         </Grid>
       </Grid>

@@ -43,18 +43,9 @@ const Home = () => {
     fetchData(); // データ取得関数を実行します。
   }, []); // 空の依存配列により、この副作用はコンポーネントの初回表示時にのみ実行されます。
 
-  // 今日の日付を取得します
-  const today = new Date().toLocaleDateString("en-CA", {
-    timeZone: "Asia/Tokyo",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
-
-  // 現在選択されているアカウントと今日の日付と一致するTodoアイテムのみをフィルタリングします。
+  // 現在選択されているアカウントに紐づくTodoアイテムのみをフィルタリングします。
   const selectedTodo = items.filter(
-    (item) =>
-      item.assignee.family_id === selectedAccount && item.end_date === today
+    (item) => item.assignee.family_id === selectedAccount
   );
 
   // タスクの状態を切り替える関数です。
@@ -108,6 +99,9 @@ const Home = () => {
             <th style={{ border: "1px solid black", padding: "8px" }}>
               タスク
             </th>
+            <th style={{ border: "1px solid black", padding: "8px" }}>
+              いつまでにやるか
+            </th>
             <th style={{ border: "1px solid black", padding: "8px" }}>担当</th>
             <th style={{ border: "1px solid black", padding: "8px" }}>完了</th>
             <th style={{ border: "1px solid black", padding: "8px" }}>
@@ -124,6 +118,9 @@ const Home = () => {
             >
               <td style={{ border: "1px solid black", padding: "8px" }}>
                 {item.title} {/* タスクのタイトル */}
+              </td>
+              <td style={{ border: "1px solid black", padding: "8px" }}>
+                {item.end_date} {/* タスクの終了期限 */}
               </td>
               <td style={{ border: "1px solid black", padding: "8px" }}>
                 {item.assignee.user_name} {/* タスクの担当者 */}
