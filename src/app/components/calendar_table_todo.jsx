@@ -19,7 +19,12 @@ const Home = () => {
     const fetchData = async () => {
       try {
         // Supabaseから'todos'テーブルの全データを取得します。
-        const { data, error } = await supabase.from("todos").select("*");
+        const { data, error } = await supabase.from("todos").select(`
+          *,
+          assignee:userinformation!todos_assignee_user_id_fkey (user_name,family_id),
+          completer:userinformation!todos_completer_user_id_fkey (user_name,family_id)
+        `);
+        // ユーザー情報を取得するためのクエリを追加します。
 
         if (error) {
           console.error("Error fetching data: ", error); // エラーが発生した場合、コンソールにエラーメッセージを表示します。
@@ -39,7 +44,9 @@ const Home = () => {
   }, []); // 空の依存配列により、この副作用はコンポーネントの初回表示時にのみ実行されます。
 
   // 現在選択されているアカウントに紐づくTodoアイテムのみをフィルタリングします。
-  const selectedTodo = items.filter((item) => item.userid === selectedAccount);
+  const selectedTodo = items.filter(
+    (item) => item.assignee.family_id === selectedAccount
+  );
 
   // タスクの状態を切り替える関数です。
   const toggleTaskState = async (id, currentState) => {
@@ -47,8 +54,7 @@ const Home = () => {
       const newState = !currentState; // 現在の状態を反転させます（trueならfalse、falseならtrueにします）。
       const { error } = await supabase
         .from("todos")
-        .update({ state: newState }) // タスクの状態を更新します。
-        .eq("id", id); // 指定したIDのタスクのみを対象にします。
+        .update({ state: newState }); // タスクの状態を更新します。
 
       if (error) {
         console.error("Error updating task state: ", error); // エラーが発生した場合、コンソールにエラーメッセージを表示します。
@@ -96,7 +102,11 @@ const Home = () => {
             <th style={{ border: "1px solid black", padding: "8px" }}>
               いつまでにやるか
             </th>
+            <th style={{ border: "1px solid black", padding: "8px" }}>担当</th>
             <th style={{ border: "1px solid black", padding: "8px" }}>完了</th>
+            <th style={{ border: "1px solid black", padding: "8px" }}>
+              完了者
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -109,9 +119,11 @@ const Home = () => {
               <td style={{ border: "1px solid black", padding: "8px" }}>
                 {item.title} {/* タスクのタイトル */}
               </td>
-
               <td style={{ border: "1px solid black", padding: "8px" }}>
                 {item.end_date} {/* タスクの終了期限 */}
+              </td>
+              <td style={{ border: "1px solid black", padding: "8px" }}>
+                {item.assignee.user_name} {/* タスクの担当者 */}
               </td>
               <td
                 style={{
@@ -126,6 +138,9 @@ const Home = () => {
                   onChange={() => toggleTaskState(item.id, item.state)} // 状態を切り替える関数を呼び出す
                   onClick={(e) => e.stopPropagation()} // チェックボックスのクリックで行クリックイベントが発生しないようにする
                 />
+              </td>
+              <td style={{ border: "1px solid black", padding: "8px" }}>
+                {item.completer?.user_name || "未完了"} {/* タスクの完了者 */}
               </td>
             </tr>
           ))}
