@@ -47,8 +47,8 @@ export default function AccountModal({ open, handleClose }) {
   }, []); // このuseEffectは、最初のマウント時にのみ実行されます。
 
   // アカウントが選択されたときに呼び出される関数
-  const handleAccountSelect = (userid) => {
-    setSelectedAccount(userid); // 選択されたアカウントのIDをグローバル状態に設定
+  const handleAccountSelect = (family_id) => {
+    setSelectedAccount(family_id); // 選択されたアカウントのIDをグローバル状態に設定
     handleClose(); // モーダルを閉じる
   };
 
@@ -56,7 +56,7 @@ export default function AccountModal({ open, handleClose }) {
   const renderAccountButtons = () => {
     // users配列の各ユーザーに対してボタンを生成
     return users.map((user) => (
-      <Box mt={2} key={user.userid}>
+      <Box mt={2} key={user.family_id}>
         <Button
           fullWidth // ボタンを横幅いっぱいに設定
           variant="contained" // ボタンのスタイルを設定
@@ -68,7 +68,7 @@ export default function AccountModal({ open, handleClose }) {
               border: "1px solid #fff", // ホバー時に白いボーダーを追加して視認性を向上
             },
           }}
-          onClick={() => handleAccountSelect(user.userid)} // ボタンがクリックされたときにアカウントを選択
+          onClick={() => handleAccountSelect(user.family_id)} // ボタンがクリックされたときにアカウントを選択
         >
           {user.user_name} {/* ボタンに表示するアカウント名 */}
         </Button>

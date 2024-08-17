@@ -22,7 +22,7 @@ export default function Slide_pets() {
         await supabase.from("insurance").select(`
           *,
           petinformation (
-            userid,
+            family_id,
             petname
           )
         `);
@@ -51,14 +51,14 @@ export default function Slide_pets() {
 
   // selectedAccountに対応するすべてのペット情報を取得する
   const selectedPetInfo = useMemo(() => {
-    return petInfo.filter((info) => info.userid === selectedAccount);
+    return petInfo.filter((info) => info.family_id === selectedAccount);
     // petInfoの中からselectedAccountに対応するuseridを持つペット情報を配列で返します
   }, [selectedAccount, petInfo]); // selectedAccountまたはpetInfoが変更されたときに再計算されます
 
   // selectedAccountに対応するすべての保険情報を取得する
   const selectedInsuranceInfo = useMemo(() => {
     return insuranceInfoList.filter(
-      (insurance) => insurance.petinformation.userid === selectedAccount
+      (insurance) => insurance.petinformation.family_id === selectedAccount
     );
     // insuranceInfoListの中からselectedAccountに対応するuseridを持つ保険情報を配列で返します
   }, [selectedAccount, insuranceInfoList]); // selectedAccountまたはinsuranceInfoListが変更されたときに再計算されます

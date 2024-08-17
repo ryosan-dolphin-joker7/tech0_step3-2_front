@@ -7,7 +7,13 @@ export default function OnePetTodoCard({ petTodo }) {
 
   // 今日のタスクをSupabaseから取得する関数
   const fetchTodayTasks = useCallback(async () => {
-    const today = new Date().toISOString().split("T")[0]; // 今日の日付をYYYY-MM-DD形式で取得
+    // 今日の日付を取得します
+    const today = new Date().toLocaleDateString("en-CA", {
+      timeZone: "Asia/Tokyo",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
 
     try {
       // Supabaseから`end_date`が今日の日付と一致するタスクを取得
@@ -20,9 +26,9 @@ export default function OnePetTodoCard({ petTodo }) {
         throw new Error(tasksError.message); // エラーが発生した場合は例外をスロー
       }
 
-      // petTodoの`userid`と一致するタスクのみをフィルタリング
+      // petTodoの`family_id`と一致するタスクのみをフィルタリング
       const filteredTasks = tasksData.filter(
-        (task) => task.userid === petTodo.userid
+        (task) => task.family_id === petTodo.family_id
       );
 
       // フィルタリングされたタスクをステートに保存
