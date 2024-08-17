@@ -25,12 +25,16 @@ export default function Slide_Calendar() {
   const fetchEvents = useCallback(async () => {
     try {
       // Supabaseから"todos"テーブルの全データを取得
-      const { data, error } = await supabase.from("todos").select("*");
+      const { data, error } = await supabase
+        .from("todos")
+        .select(
+          "*,assignee:userinformation!todos_assignee_user_id_fkey (user_name,family_id)"
+        );
       if (error) throw error;
 
       // selectedAccountに対応するイベントのみをフィルタリング
       const filteredData = data.filter(
-        (item) => item.userid === selectedAccount
+        (item) => item.assignee.family_id === selectedAccount
       );
 
       // フィルタリングしたデータをFullCalendarに適した形式にフォーマット
