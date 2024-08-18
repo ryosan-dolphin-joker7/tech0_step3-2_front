@@ -9,7 +9,6 @@ import "./globals.css"; // グローバルなCSSスタイルをインポート�
 
 import { AccountContext } from "@/app/components/AccountProvider"; // アカウント情報を共有するためのコンテキストをインポートします。
 import LoginPrompt from "@/app/components/LoginPrompt"; // ログインプロンプトを表示するためのコンポーネントをインポートします。
-import LogoutPrompt from "@/app/components/LogoutPrompt"; // ログアウトボタンを表示するためのコンポーネントをインポートします。
 import { useSession } from "next-auth/react"; // NextAuth.jsからセッション情報を取得するためのフックをインポートします。
 
 export default function Page() {
@@ -86,7 +85,6 @@ export default function Page() {
         <div className="pt-8 pb-16">
           <SwiperTab selectedAccount={selectedAccount} />
         </div>
-        <LogoutPrompt />
       </div>
     );
   }
