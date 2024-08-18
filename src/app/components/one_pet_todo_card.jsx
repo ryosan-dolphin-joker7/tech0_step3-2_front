@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { supabase } from "@/supabaseClient";
+import { supabase } from "@/app/supabaseClient";
 import Image from "next/image";
 
 export default function OnePetTodoCard({ petTodo }) {

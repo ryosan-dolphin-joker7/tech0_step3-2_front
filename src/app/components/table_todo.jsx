@@ -1,9 +1,9 @@
 "use client"; // クライアント側（ブラウザ）で動作するコードであることを示しています。
 
 import { useEffect, useState, useContext } from "react"; // Reactのフックをインポートしています。
-import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートしています。Supabaseはバックエンドサービスで、データベースや認証などの機能を提供します。
-import { AccountContext } from "@/components/AccountProvider"; // アカウント情報を提供するコンテキストをインポートしています。
-import Modal from "@/components/posts/update_todo_modal"; // Todoの更新用モーダルコンポーネントをインポートしています。
+import { supabase } from "@/app/supabaseClient"; // Supabaseクライアントをインポートしています。Supabaseはバックエンドサービスで、データベースや認証などの機能を提供します。
+import { AccountContext } from "@/app/components/AccountProvider"; // アカウント情報を提供するコンテキストをインポートしています。
+import Modal from "@/app/components/posts/update_todo_modal"; // Todoの更新用モーダルコンポーネントをインポートしています。
 
 const Home = () => {
   // 以下は、コンポーネント内で使用するためのステート（状態）変数の定義です。

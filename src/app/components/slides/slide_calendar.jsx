@@ -10,11 +10,11 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import Post_Todo from "@/components/posts/post_todo";
-import Calendar_Table_Todo from "@/components/calendar_table_todo";
-import { supabase } from "@/supabaseClient";
+import Post_Todo from "@/app/components/posts/post_todo";
+import Calendar_Table_Todo from "@/app/components/calendar_table_todo";
+import { supabase } from "@/app/supabaseClient";
 import PetsIcon from "@mui/icons-material/Pets";
-import { AccountContext } from "@/components/AccountProvider"; // アカウント情報を提供するコンテキストをインポート
+import { AccountContext } from "@/app/components/AccountProvider"; // アカウント情報を提供するコンテキストをインポート
 
 export default function Slide_Calendar() {
   const calendarRef = useRef(null);

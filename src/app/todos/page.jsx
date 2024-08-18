@@ -1,103 +1,125 @@
-"use client";
+"use client"; // このファイルがクライアントサイドで動作することを指定
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"; // Reactのフックをインポート
 import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポート
-import Table_Todo from "@/components/table_todo";
-import Grid from "@mui/material/Grid";
+import Table_Todo from "@/components/table_todo"; // Todoリストを表示するカスタムコンポーネントをインポート
+import Grid from "@mui/material/Grid"; // MUIのGridコンポーネントをインポート
 
 function TodoPage() {
+  // ToDoリストのデータを管理する状態
   const [todos, setTodos] = useState([]);
+  // 新しいToDoのタイトルを管理する状態
   const [newTodo, setNewTodo] = useState("");
-  const [today, setToday] = useState(new Date()); // 今日の日付を管理
-  const [dates, setDates] = useState([]); // 日付のリストを管理
-  const [selectedFilter, setSelectedFilter] = useState("すべて"); // フィルタの選択状態
-  const [selectedDate, setSelectedDate] = useState(today); // 選択された日付
+  // 今日の日付を管理する状態
+  const [today, setToday] = useState(new Date());
+  // 日付のリストを管理する状態
+  const [dates, setDates] = useState([]);
+  // 選択されたフィルタを管理する状態
+  const [selectedFilter, setSelectedFilter] = useState("すべて");
+  // 選択された日付を管理する状態
+  const [selectedDate, setSelectedDate] = useState(today);
 
+  // コンポーネントがマウントされたときに日付のリストを生成する
   useEffect(() => {
-    // 今日を中央に配置するために5日分のリストを作成
     const generateDates = () => {
-      const currentDate = new Date();
-      const tempDates = [];
+      const currentDate = new Date(); // 現在の日付を取得
+      const tempDates = []; // 日付を格納する一時的な配列
+
+      // 今日を中央に配置するために、-2日から+2日までの5日分の日付をリストに追加
       for (let i = -2; i <= 2; i++) {
         const newDate = new Date();
-        newDate.setDate(currentDate.getDate() + i);
-        tempDates.push(newDate);
+        newDate.setDate(currentDate.getDate() + i); // 日付を設定
+        tempDates.push(newDate); // 配列に追加
       }
-      setDates(tempDates);
+
+      setDates(tempDates); // 生成した日付リストを状態にセット
     };
 
-    generateDates();
-  }, []);
+    generateDates(); // 日付リストを生成する関数を実行
+  }, []); // 空の依存配列を指定することで、マウント時に一度だけ実行
 
-  // ToDoリストのデータ取得
+  // 選択された日付やフィルタに基づいてToDoリストを取得する
   useEffect(() => {
-    async function fetchTodos() {
+    const fetchTodos = async () => {
       const { data, error } = await supabase
-        .from("todos")
+        .from("todos") // "todos"テーブルからデータを取得
         .select("*")
-        .gte("start_date", selectedDate.toISOString().split("T")[0])
+        .gte("start_date", selectedDate.toISOString().split("T")[0]) // 選択された日付と一致するデータを取得
         .lte("end_date", selectedDate.toISOString().split("T")[0]);
 
-      let filteredData = data;
+      if (!error) {
+        let filteredData = data;
 
-      if (selectedFilter !== "すべて") {
-        filteredData = filteredData.filter(
-          (todo) => todo.contents === selectedFilter
-        );
-      }
+        // 選択されたフィルタに基づいてデータを絞り込む
+        if (selectedFilter !== "すべて") {
+          filteredData = filteredData.filter(
+            (todo) => todo.contents === selectedFilter
+          );
+        }
 
-      if (error) {
-        console.error("Error fetching todos:", error);
+        setTodos(filteredData); // フィルタされたToDoリストを状態にセット
       } else {
-        setTodos(filteredData);
+        console.error("Error fetching todos:", error.message || error); // エラーハンドリング
       }
-    }
-    fetchTodos();
-  }, [selectedDate, selectedFilter]);
+    };
 
+    fetchTodos(); // ToDoリストを取得する関数を実行
+
+    // クリーンアップ関数を返す（アンマウント時に実行）
+    return () => {
+      // 非同期処理に関しては、特に明示的なクリーンアップは必要ないが、ここにクリーンアップロジックを追加することも可能
+    };
+  }, [selectedDate, selectedFilter]); // 選択された日付やフィルタが変更されたときに実行
+
+  // 新しいToDoを追加する関数
   const addTodo = async () => {
     if (newTodo.trim()) {
+      // 新しいToDoのタイトルが空白でないか確認
       const { data, error } = await supabase.from("todos").insert([
         {
-          title: newTodo,
-          start_date: selectedDate,
-          end_date: selectedDate,
-          state: false,
-          contents: selectedFilter,
+          title: newTodo, // ToDoのタイトル
+          start_date: selectedDate, // 開始日付
+          end_date: selectedDate, // 終了日付
+          state: false, // 状態（未完了）
+          contents: selectedFilter, // フィルタ内容
         },
       ]);
-      if (error) {
-        console.error("Error adding todo:", error);
+
+      if (!error) {
+        setTodos([...todos, ...data]); // 新しいToDoをリストに追加
+        setNewTodo(""); // 新しいToDoの入力欄をクリア
       } else {
-        setTodos([...todos, ...data]);
-        setNewTodo("");
+        console.error("Error adding todo:", error.message || error); // エラーハンドリング
       }
     }
   };
 
+  // ToDoの完了状態をトグル（切り替え）する関数
   const toggleTodoState = async (id, currentState) => {
     const { error } = await supabase
       .from("todos")
-      .update({ state: !currentState })
+      .update({ state: !currentState }) // 状態を反転させる
       .eq("id", id);
 
-    if (error) {
-      console.error("Error updating todo:", error);
-    } else {
+    if (!error) {
       setTodos(
         todos.map((todo) =>
           todo.id === id ? { ...todo, state: !currentState } : todo
         )
       );
+    } else {
+      console.error("Error updating todo:", error.message || error); // エラーハンドリング
     }
   };
 
+  // ToDoを削除する関数
   const deleteTodo = async (id) => {
     const { error } = await supabase.from("todos").delete().eq("id", id);
-    if (error) {
-      console.error("Error deleting todo:", error);
+
+    if (!error) {
+      setTodos(todos.filter((todo) => todo.id !== id)); // 削除されたToDoをリストから取り除く
     } else {
-      setTodos(todos.filter((todo) => todo.id !== id));
+      console.error("Error deleting todo:", error.message || error); // エラーハンドリング
     }
   };
 
@@ -111,12 +133,12 @@ function TodoPage() {
 
         {/* 日付スライダー */}
         <div className="flex overflow-x-auto no-scrollbar mb-4">
-          {dates.map((date, index) => (
+          {dates.map((date) => (
             <div
-              key={index}
+              key={date.toISOString()} // 日付のISO文字列をkeyとして使用
               className={`flex-shrink-0 p-2 text-center w-16 ${
                 date.toDateString() === selectedDate.toDateString()
-                  ? "bg-red-500 text-white"
+                  ? "bg-red-500 text-white" // 選択された日付には特別なスタイルを適用
                   : "bg-gray-200"
               }`}
               onClick={() => setSelectedDate(date)} // 日付を選択
@@ -136,7 +158,7 @@ function TodoPage() {
               key={filter}
               className={`px-4 py-1 rounded-full ${
                 selectedFilter === filter
-                  ? "bg-red-500 text-white"
+                  ? "bg-red-500 text-white" // 選択されたフィルタに特別なスタイルを適用
                   : "bg-gray-200"
               }`}
               onClick={() => setSelectedFilter(filter)} // フィルタを選択

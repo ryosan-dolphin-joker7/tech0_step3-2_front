@@ -6,7 +6,7 @@ const users = [
   {
     email: "test@test.com",
     // "test" というパスワードをハッシュ化して保存しています
-    password: bcrypt.hashSync("test", 10),
+    password: await bcrypt.hash("test", 10), // 非同期でハッシュ化
   },
 ];
 
@@ -39,10 +39,10 @@ export const authOptions = {
         }
 
         // 入力されたパスワードをハッシュ化されたパスワードと比較
-        const isValidPassword = bcrypt.compareSync(
+        const isValidPassword = await bcrypt.compare(
           credentials.password,
           user.password
-        );
+        ); // 非同期で比較
 
         if (!isValidPassword) {
           // パスワードが間違っている場合はエラーを投げる
@@ -71,7 +71,6 @@ export const authOptions = {
 
   // カスタムエラーページの設定（任意）
   // サインインページのカスタム設定は削除し、デフォルトを使用します
-  // デフォルトのサインインページが使用されるようにします
   pages: {
     error: "/auth/error", // エラーページのパスを指定（必要に応じて）
     // signInオプションは削除しています

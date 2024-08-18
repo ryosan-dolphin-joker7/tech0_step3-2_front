@@ -1,7 +1,7 @@
 "use client"; // クライアント側で動作するコードであることを指定しています。
 import React, { useState } from "react";
 import { Button } from "@mui/material"; // Material-UIのボタンコンポーネントをインポートしています。
-import TodayDogImageModal from "@/components/posts/popup_today_dog_modal"; // モーダルコンポーネントをインポートしています。
+import TodayDogImageModal from "@/app/components/posts/popup_today_dog_modal"; // モーダルコンポーネントをインポートしています。
 
 export default function Post_Footer({ theme }) {
   const [modal_dog_Open, setModal_dog_Open] = useState(false); // モーダルの開閉状態を管理するためのstateを定義しています。

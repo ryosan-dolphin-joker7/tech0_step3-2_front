@@ -3,17 +3,22 @@
 // 必要なモジュールやコンポーネントをインポートします。
 import Link from "next/link"; // Next.jsのページ間のリンクを作成するためのコンポーネント。
 import { useEffect, useState, useContext } from "react"; // Reactのフック（useEffect, useState, useContext）をインポートします。
-import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートします。これはデータベースにアクセスするために使用されます。
-import LoadingScreen from "@/components/LoadingScreen"; // ローディング中に表示される画面のコンポーネント。
-import { SwiperTab } from "@/components/swiper"; // スワイプ可能なタブを表示するコンポーネント。
-import "@/components/LoadingScreen.module.css"; // ローディング画面用のCSSファイルをインポート。
-import "./globals.css"; // 全体に適用されるグローバルなCSSスタイルをインポートします（Tailwind CSSを使用）。
+import { supabase } from "@/app/supabaseClient"; // Supabaseクライアントをインポートします。これはデータベースにアクセスするために使用されます。
+import LoadingScreen from "@/app/components/LoadingScreen"; // ローディング中に表示される画面のコンポーネント。
+import { SwiperTab } from "@/app/components/swiper"; // スワイプ可能なタブを表示するコンポーネント。
+import "@/app/components/LoadingScreen.module.css"; // ローディング画面用のCSSファイルをインポート。
+import "@/app/globals.css"; // 全体に適用されるグローバルなCSSスタイルをインポートします（Tailwind CSSを使用）。
+import { useSession, signIn } from "next-auth/react";
+import LoginPrompt from "@/app/components/LoginPrompt";
 
 // アカウントの情報を共有するためのコンテキストをインポートします。
-import { AccountContext } from "@/components/AccountProvider";
+import { AccountContext } from "./components/AccountProvider";
 
 // Pageコンポーネントの定義
 export default function Page({}) {
+  // useSessionフックを使ってセッション情報を取得します。
+  const { data: session, status } = useSession();
+
   // AccountContextから現在選択されているアカウント情報を取得します。
   const { selectedAccount } = useContext(AccountContext);
 
@@ -25,6 +30,10 @@ export default function Page({}) {
 
   // コンポーネントが初めて表示されたときに実行される処理を定義します。
   useEffect(() => {
+    if (!session) {
+      return <LoginPrompt />;
+    }
+
     const fetchData = async () => {
       try {
         // Supabaseを使ってタスクデータをデータベースから取得します。

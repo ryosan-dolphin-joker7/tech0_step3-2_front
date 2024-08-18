@@ -2,10 +2,10 @@
 
 import React, { useContext, useState, useEffect } from "react"; // Reactのフックをインポート
 import Link from "next/link"; // Next.jsのLinkコンポーネントをインポート
-import { ThemeContext } from "@/components/ThemeProvider"; // テーマの状態を管理するコンテキストをインポート
-import { AccountContext } from "@/components/AccountProvider"; // アカウントの状態を管理するコンテキストをインポート
+import { ThemeContext } from "@/app/components/ThemeProvider"; // テーマの状態を管理するコンテキストをインポート
+import { AccountContext } from "@/app/components/AccountProvider"; // アカウントの状態を管理するコンテキストをインポート
 import { IconButton, Box, Typography, Menu, MenuItem } from "@mui/material"; // MUI（Material-UI）のコンポーネントをインポート
-import AccountModal from "@/components/AccountModal"; // モーダルウィンドウを管理するコンポーネントをインポート
+import AccountModal from "@/app/components/AccountModal"; // モーダルウィンドウを管理するコンポーネントをインポート
 
 // アイコンをインポート
 import DarkModeIcon from "@mui/icons-material/DarkMode"; // ダークモードアイコンをインポート
@@ -28,12 +28,13 @@ export default function Header() {
   // モーダルウィンドウの開閉状態を管理するためのuseStateフック
   const [modalOpen, setModalOpen] = useState(false);
 
-  // 今日の日付を保存するためのuseStateフックを定義（初期値は空文字列）
-  const [today, setToday] = useState("");
+  // 今日の日付を保存するためのuseStateフック
+  // 初期値として現在の日付を設定しておくことで、初期レンダリング時に日付が表示される
+  const [today, setToday] = useState(new Date().toISOString().split("T")[0]);
 
-  // useEffectフックを使用して、コンポーネントがクライアントサイドで表示されたときに日付を設定
+  // useEffectフックを使用して、コンポーネントがクライアントサイドで表示されたときに日付を再設定
   useEffect(() => {
-    // クライアントサイドでのみ、現在の日付を取得して設定
+    // クライアントサイドでのみ、現在の日付を取得して再設定
     setToday(new Date().toISOString().split("T")[0]);
   }, []); // 依存配列が空なので、コンポーネントの最初のレンダリング時にのみ実行されます
 
@@ -97,22 +98,22 @@ export default function Header() {
         {/* 各メニューアイテムにリンクを設定 */}
         <MenuItem onClick={handleMenuClose}>
           <Link href="/" passHref>
-            Home
+            <a>Home</a>
           </Link>
         </MenuItem>
         <MenuItem onClick={handleMenuClose}>
           <Link href="/management/users" passHref>
-            Users
+            <a>Users</a>
           </Link>
         </MenuItem>
         <MenuItem onClick={handleMenuClose}>
           <Link href="/management/pets" passHref>
-            Pets
+            <a>Pets</a>
           </Link>
         </MenuItem>
         <MenuItem onClick={handleMenuClose}>
           <Link href="/management/facilities" passHref>
-            Facilities
+            <a>Facilities</a>
           </Link>
         </MenuItem>
       </Menu>
