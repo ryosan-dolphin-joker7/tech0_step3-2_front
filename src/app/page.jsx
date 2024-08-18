@@ -12,7 +12,7 @@ import { useSession, signIn } from "next-auth/react";
 import LoginPrompt from "@/app/components/LoginPrompt";
 
 // アカウントの情報を共有するためのコンテキストをインポートします。
-import { AccountContext } from "./components/AccountProvider";
+import { AccountContext } from "@/app/components/AccountProvider";
 
 // Pageコンポーネントの定義
 export default function Page({}) {
