@@ -2,12 +2,12 @@
 
 import React, { useContext, useState, useEffect } from "react"; // Reactのフックをインポート
 import Link from "next/link"; // Next.jsのLinkコンポーネントをインポート
-import { ThemeContext } from "@/components/ThemeProvider"; // テーマの状態を管理するコンテキストをインポート
-import { AccountContext } from "@/components/AccountProvider"; // アカウントの状態を管理するコンテキストをインポート
-import { IconButton, Box, Typography, Menu, MenuItem } from "@mui/material"; // MUI（Material-UI）のコンポーネントをインポート
-import AccountModal from "@/components/AccountModal"; // モーダルウィンドウを管理するコンポーネントをインポート
+import { ThemeContext } from "@/app/components/ThemeProvider"; // テーマの状態を管理するコンテキストをインポート
+import { AccountContext } from "@/app/components/AccountProvider"; // アカウントの状態を管理するコンテキストをインポート
+import AccountModal from "@/app/components/AccountModal"; // モーダルウィンドウを管理するコンポーネントをインポート
 
 // アイコンをインポート
+import { IconButton, Box, Typography, Menu, MenuItem } from "@mui/material"; // MUI（Material-UI）のコンポーネントをインポート
 import DarkModeIcon from "@mui/icons-material/DarkMode"; // ダークモードアイコンをインポート
 import LightModeIcon from "@mui/icons-material/LightMode"; // ライトモードアイコンをインポート
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"; // アカウントアイコンをインポート
