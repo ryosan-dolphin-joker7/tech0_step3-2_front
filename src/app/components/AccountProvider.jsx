@@ -8,9 +8,19 @@ export function AccountProvider({ children }) {
   // selectedAccount状態を管理
   const [selectedAccount, setSelectedAccount] = useState(null);
 
+  // selectedUserAccount状態を管理
+  const [selectedUserAccount, setSelectedUserAccount] = useState(null);
+
   return (
-    // AccountContext.Providerでラップし、selectedAccountとsetSelectedAccountを提供
-    <AccountContext.Provider value={{ selectedAccount, setSelectedAccount }}>
+    // AccountContext.Providerでラップし、必要な状態と関数を提供
+    <AccountContext.Provider
+      value={{
+        selectedAccount,
+        setSelectedAccount,
+        selectedUserAccount,
+        setSelectedUserAccount,
+      }}
+    >
       {children}
     </AccountContext.Provider>
   );

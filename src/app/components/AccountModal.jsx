@@ -18,7 +18,9 @@ const modalStyle = {
 
 // AccountModalコンポーネントを定義
 export default function AccountModal({ open, handleClose }) {
-  const { setSelectedAccount } = useContext(AccountContext); // アカウント選択関数を取得
+  // ファミリーとユーザーのアカウント選択関数を取得
+  const { setSelectedAccount, setSelectedUserAccount } =
+    useContext(AccountContext);
   const [users, setUsers] = useState([]); // ユーザーデータを保存する状態を追加
 
   // Supabaseからuserinformationテーブルのすべてのデータを取得する非同期関数
@@ -47,8 +49,9 @@ export default function AccountModal({ open, handleClose }) {
   }, []); // このuseEffectは、最初のマウント時にのみ実行されます。
 
   // アカウントが選択されたときに呼び出される関数
-  const handleAccountSelect = (family_id) => {
-    setSelectedAccount(family_id); // 選択されたアカウントのIDをグローバル状態に設定
+  const handleAccountSelect = (user) => {
+    setSelectedAccount(user.family_id); // 選択されたアカウントのIDをグローバル状態に設定
+    setSelectedUserAccount(user.userid); // 選択されたアカウントのIDをグローバル状態に設定
     handleClose(); // モーダルを閉じる
   };
 
@@ -56,7 +59,7 @@ export default function AccountModal({ open, handleClose }) {
   const renderAccountButtons = () => {
     // users配列の各ユーザーに対してボタンを生成
     return users.map((user) => (
-      <Box mt={2} key={user.family_id}>
+      <Box mt={2} key={user.userid}>
         <Button
           fullWidth // ボタンを横幅いっぱいに設定
           variant="contained" // ボタンのスタイルを設定
@@ -68,7 +71,7 @@ export default function AccountModal({ open, handleClose }) {
               border: "1px solid #fff", // ホバー時に白いボーダーを追加して視認性を向上
             },
           }}
-          onClick={() => handleAccountSelect(user.family_id)} // ボタンがクリックされたときにアカウントを選択
+          onClick={() => handleAccountSelect(user)} // ボタンがクリックされたときにアカウントを選択
         >
           {user.user_name} {/* ボタンに表示するアカウント名 */}
         </Button>
@@ -100,7 +103,7 @@ export default function AccountModal({ open, handleClose }) {
         >
           ログインするアカウントを選んでください: {/* モーダル内の説明文 */}
         </Typography>
-        {renderAccountButtons()}{" "}
+        {renderAccountButtons()}
         {/* Supabaseから取得したデータを使ってボタンを表示 */}
       </Box>
     </Modal>

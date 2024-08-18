@@ -1,49 +1,45 @@
-"use client"; // クライアント側（ブラウザ）で動作するコードであることを示しています。
+"use client";
 
-import { useEffect, useState, useContext } from "react"; // Reactのフックをインポートしています。
-import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートしています。Supabaseはバックエンドサービスで、データベースや認証などの機能を提供します。
-import { AccountContext } from "@/components/AccountProvider"; // アカウント情報を提供するコンテキストをインポートしています。
-import Modal from "@/components/posts/update_todo_modal"; // Todoの更新用モーダルコンポーネントをインポートしています。
+import { useEffect, useState, useContext } from "react";
+import { supabase } from "@/supabaseClient";
+import { AccountContext } from "@/components/AccountProvider";
+import Modal from "@/components/posts/update_todo_modal";
 
 const Home = () => {
-  // 以下は、コンポーネント内で使用するためのステート（状態）変数の定義です。
-  const [items, setItems] = useState([]); // Todoアイテムのリストを保持するためのステート。初期値は空の配列。
-  const [error, setError] = useState(null); // エラーメッセージを保持するためのステート。初期値はnull。
-  const [loading, setLoading] = useState(true); // ローディング状態（データが取得中かどうか）を管理するためのステート。初期値はtrue。
-  const [selectedTodoDetails, setSelectedTodoDetails] = useState(null); // 選択されたTodoの詳細情報を保持するためのステート。初期値はnull。
-  const [isModalOpen, setIsModalOpen] = useState(false); // モーダルの表示/非表示を管理するためのステート。初期値はfalse。
-  const { selectedAccount } = useContext(AccountContext); // AccountContextから、現在選択されているアカウントIDを取得します。
+  const [items, setItems] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [selectedTodoDetails, setSelectedTodoDetails] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { selectedAccount, selectedUserAccount } = useContext(AccountContext);
 
-  // コンポーネントの初回レンダリング時にデータを取得するための副作用を設定します。
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Supabaseから'todos'テーブルの全データを取得します。
-        const { data, error } = await supabase.from("todos").select(`
-          *,
-          assignee:userinformation!todos_assignee_user_id_fkey (user_name,family_id),
-          completer:userinformation!todos_completer_user_id_fkey (user_name,family_id)
-        `);
-        // ユーザー情報を取得するためのクエリを追加します。
+  // データを取得する関数
+  const fetchData = async () => {
+    try {
+      const { data, error } = await supabase.from("todos").select(`
+        *,
+        assignee:userinformation!todos_assignee_user_id_fkey (user_name,family_id),
+        completer:userinformation!todos_completer_user_id_fkey (user_name,family_id)
+      `);
 
-        if (error) {
-          console.error("Error fetching data: ", error); // エラーが発生した場合、コンソールにエラーメッセージを表示します。
-          setError("データの取得に失敗しました"); // エラーメッセージをステートにセットします。
-        } else {
-          setItems(data); // 取得したデータをitemsステートにセットします。
-        }
-      } catch (fetchError) {
-        console.error("Fetch error: ", fetchError); // データ取得中にエラーが発生した場合、コンソールにエラーメッセージを表示します。
-        setError("データの取得中にエラーが発生しました"); // エラーメッセージをステートにセットします。
-      } finally {
-        setLoading(false); // データ取得が完了したため、ローディング状態を解除します。
+      if (error) {
+        console.error("Error fetching data: ", error);
+        setError("データの取得に失敗しました");
+      } else {
+        setItems(data);
       }
-    };
+    } catch (fetchError) {
+      console.error("Fetch error: ", fetchError);
+      setError("データの取得中にエラーが発生しました");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchData(); // データ取得関数を実行します。
-  }, []); // 空の依存配列により、この副作用はコンポーネントの初回表示時にのみ実行されます。
+  useEffect(() => {
+    fetchData(); // コンポーネントがマウントされたときにデータを取得
+  }, []);
 
-  // 今日の日付を取得します
   const today = new Date().toLocaleDateString("en-CA", {
     timeZone: "Asia/Tokyo",
     year: "numeric",
@@ -51,58 +47,53 @@ const Home = () => {
     day: "2-digit",
   });
 
-  // 現在選択されているアカウントと今日の日付と一致するTodoアイテムのみをフィルタリングします。
   const selectedTodo = items.filter(
     (item) =>
       item.assignee.family_id === selectedAccount && item.end_date === today
   );
 
-  // タスクの状態を切り替える関数です。
   const toggleTaskState = async (id, currentState) => {
     try {
-      const newState = !currentState; // 現在の状態を反転させます（trueならfalse、falseならtrueにします）。
+      const newState = !currentState;
+      const newCompleterId = newState ? selectedUserAccount : null;
+
       const { error } = await supabase
         .from("todos")
-        .update({ state: newState }); // タスクの状態を更新します。
+        .update({
+          state: newState,
+          completer_user_id: newCompleterId,
+        })
+        .eq("id", id);
 
       if (error) {
-        console.error("Error updating task state: ", error); // エラーが発生した場合、コンソールにエラーメッセージを表示します。
-        setError("タスクの状態更新に失敗しました"); // エラーメッセージをステートにセットします。
+        console.error("Error updating task state: ", error);
+        setError("タスクの状態更新に失敗しました");
       } else {
-        // 更新が成功した場合、itemsステートを更新して新しい状態を反映します。
-        setItems((prevItems) =>
-          prevItems.map((item) =>
-            item.id === id ? { ...item, state: newState } : item
-          )
-        );
+        // 最新のデータを取得してitemsを更新
+        fetchData();
       }
     } catch (updateError) {
-      console.error("Update error: ", updateError); // 更新処理中にエラーが発生した場合、コンソールにエラーメッセージを表示します。
-      setError("タスクの状態更新中にエラーが発生しました"); // エラーメッセージをステートにセットします。
+      console.error("Update error: ", updateError);
+      setError("タスクの状態更新中にエラーが発生しました");
     }
   };
 
-  // Todoアイテムの行がクリックされたときに、モーダルを表示し、詳細をセットします。
   const handleRowClick = (todo) => {
-    setSelectedTodoDetails(todo); // クリックされたTodoアイテムの詳細をセットします。
-    setIsModalOpen(true); // モーダルを表示します。
+    setSelectedTodoDetails(todo);
+    setIsModalOpen(true);
   };
 
-  // モーダルを閉じる関数です。
   const closeModal = () => {
-    setIsModalOpen(false); // モーダルを非表示にします。
-    setSelectedTodoDetails(null); // 選択されたTodoの詳細情報をクリアします。
+    setIsModalOpen(false);
+    setSelectedTodoDetails(null);
   };
 
   return (
     <div>
       <h1>今日のスケジュール</h1>
       {loading && <p>読み込み中...</p>}
-      {/* ローディング中はこのメッセージを表示します */}
       {error && <p style={{ color: "red" }}>{error}</p>}
-      {/* エラーが発生した場合、このメッセージを表示します */}
       <table style={{ borderCollapse: "collapse", width: "100%" }}>
-        {/* テーブルのスタイルを設定します */}
         <thead>
           <tr>
             <th style={{ border: "1px solid black", padding: "8px" }}>
@@ -119,14 +110,14 @@ const Home = () => {
           {selectedTodo.map((item) => (
             <tr
               key={item.id}
-              onClick={() => handleRowClick(item)} // 行がクリックされたときに詳細を表示する処理
-              style={{ cursor: "pointer" }} // 行をクリック可能にするためにカーソルを変更
+              onClick={() => handleRowClick(item)}
+              style={{ cursor: "pointer" }}
             >
               <td style={{ border: "1px solid black", padding: "8px" }}>
-                {item.title} {/* タスクのタイトル */}
+                {item.title}
               </td>
               <td style={{ border: "1px solid black", padding: "8px" }}>
-                {item.assignee.user_name} {/* タスクの担当者 */}
+                {item.assignee.user_name}
               </td>
               <td
                 style={{
@@ -137,26 +128,25 @@ const Home = () => {
               >
                 <input
                   type="checkbox"
-                  checked={item.state} // stateがtrueの場合はチェックが入る
-                  onChange={() => toggleTaskState(item.id, item.state)} // 状態を切り替える関数を呼び出す
-                  onClick={(e) => e.stopPropagation()} // チェックボックスのクリックで行クリックイベントが発生しないようにする
+                  checked={item.state}
+                  onChange={() => toggleTaskState(item.id, item.state)}
+                  onClick={(e) => e.stopPropagation()}
                 />
               </td>
               <td style={{ border: "1px solid black", padding: "8px" }}>
-                {item.completer?.user_name || "未完了"} {/* タスクの完了者 */}
+                {item.completer?.user_name || "未完了"}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      {/* モーダルの表示 */}
       <Modal
-        isOpen={isModalOpen} // モーダルの表示状態
-        onClose={closeModal} // モーダルを閉じる処理
-        todoDetails={selectedTodoDetails} // モーダルに渡すTodoの詳細情報
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        todoDetails={selectedTodoDetails}
       />
     </div>
   );
 };
 
-export default Home; // Homeコンポーネントをエクスポートして他のファイルから使用可能にする
+export default Home;
