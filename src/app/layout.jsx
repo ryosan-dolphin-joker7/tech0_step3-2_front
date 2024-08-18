@@ -10,8 +10,8 @@ import { Inter } from "next/font/google";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 
 // アプリ全体で使用するヘッダー、フッター、テーマプロバイダー、アカウントプロバイダーをインポートします
-import Header from "@/app/components/header.jsx";
-import Footer from "@/app/components/footer.jsx";
+import Header from "@/app/components/header";
+import Footer from "@/app/components/footer";
 import ThemeProvider from "@/app/components/ThemeProvider";
 import { AccountProvider } from "@/app/components/AccountProvider";
 
