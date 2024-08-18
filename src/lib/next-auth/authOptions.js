@@ -4,9 +4,9 @@ import CredentialsProvider from "next-auth/providers/credentials";
 // ハッシュ化されたパスワードを持つユーザー情報を定義
 const users = [
   {
-    email: "test@test.com",
+    email: "test@black24h.com",
     // "test" というパスワードをハッシュ化して保存しています
-    password: await bcrypt.hash("test", 10), // 非同期でハッシュ化
+    password: await bcrypt.hash("onepush", 10), // 非同期でハッシュ化
   },
 ];
 

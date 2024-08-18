@@ -15,6 +15,9 @@ import Footer from "@/app/components/footer.jsx";
 import ThemeProvider from "@/app/components/ThemeProvider";
 import { AccountProvider } from "@/app/components/AccountProvider";
 
+// NextAuth.jsのセッションプロバイダーをインポートします
+import { SessionProvider } from "next-auth/react"; // NextAuth.jsのセッションプロバイダーをインポート
+
 // グローバルスタイル（CSS）をインポートします
 import "./globals.css";
 
@@ -47,23 +50,26 @@ export default function RootLayout({ children }) {
       <body className={inter.className}>
         {/* ThemeProviderでアプリ全体のテーマを管理します */}
         <ThemeProvider>
-          {/* AccountProviderでアカウントの状態を管理します */}
-          <AccountProvider>
-            {/* ヘッダーコンポーネントを表示します */}
-            <Header />
+          {/* SessionProviderでNextAuth.jsのセッションを管理します */}
+          <SessionProvider>
+            {/* AccountProviderでアカウントの状態を管理します */}
+            <AccountProvider>
+              {/* ヘッダーコンポーネントを表示します */}
+              <Header />
 
-            {/* AppRouterCacheProviderでページのキャッシュ管理を行います */}
-            <AppRouterCacheProvider>
-              {/* Suspenseを使用して非同期にロードされるコンポーネントの読み込み中にローディング画面を表示します */}
-              <Suspense fallback={<Loading />}>
-                {/* ページのメインコンテンツを表示します */}
-                {children}
-              </Suspense>
-            </AppRouterCacheProvider>
+              {/* AppRouterCacheProviderでページのキャッシュ管理を行います */}
+              <AppRouterCacheProvider>
+                {/* Suspenseを使用して非同期にロードされるコンポーネントの読み込み中にローディング画面を表示します */}
+                <Suspense fallback={<Loading />}>
+                  {/* ページのメインコンテンツを表示します */}
+                  {children}
+                </Suspense>
+              </AppRouterCacheProvider>
 
-            {/* フッターコンポーネントを表示します */}
-            <Footer />
-          </AccountProvider>
+              {/* フッターコンポーネントを表示します */}
+              <Footer />
+            </AccountProvider>
+          </SessionProvider>
         </ThemeProvider>
       </body>
     </html>

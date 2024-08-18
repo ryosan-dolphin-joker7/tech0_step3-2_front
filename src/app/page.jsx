@@ -1,74 +1,96 @@
-"use client"; // このファイルがクライアントサイドで実行されることを明示します。
+"use client"; // このファイルがクライアントサイドで実行されることを示します。
 
-// 必要なモジュールやコンポーネントをインポートします。
-import Link from "next/link"; // Next.jsのページ間のリンクを作成するためのコンポーネント。
-import { useEffect, useState, useContext } from "react"; // Reactのフック（useEffect, useState, useContext）をインポートします。
-import { supabase } from "@/app/supabaseClient"; // Supabaseクライアントをインポートします。これはデータベースにアクセスするために使用されます。
-import LoadingScreen from "@/app/components/LoadingScreen"; // ローディング中に表示される画面のコンポーネント。
-import { SwiperTab } from "@/app/components/swiper"; // スワイプ可能なタブを表示するコンポーネント。
-import "@/app/components/LoadingScreen.module.css"; // ローディング画面用のCSSファイルをインポート。
-import "./globals.css"; // 全体に適用されるグローバルなCSSスタイルをインポートします（Tailwind CSSを使用）。
+import { useEffect, useState, useContext } from "react";
+import { supabase } from "@/app/supabaseClient"; // Supabaseクライアントをインポートして、データベースとの通信を行います。
+import LoadingScreen from "@/app/components/LoadingScreen"; // ローディング画面を表示するためのコンポーネントをインポートします。
+import { SwiperTab } from "@/app/components/swiper"; // スワイプ可能なタブを表示するコンポーネントをインポートします。
+import "@/app/components/LoadingScreen.module.css"; // ローディング画面用のCSSスタイルをインポートします。
+import "./globals.css"; // グローバルなCSSスタイルをインポートします。
 
-// アカウントの情報を共有するためのコンテキストをインポートします。
-import { AccountContext } from "@/app/components/AccountProvider";
+import { AccountContext } from "@/app/components/AccountProvider"; // アカウント情報を共有するためのコンテキストをインポートします。
+import LoginPrompt from "@/app/components/LoginPrompt"; // ログインプロンプトを表示するためのコンポーネントをインポートします。
+import LogoutPrompt from "@/app/components/LogoutPrompt"; // ログアウトボタンを表示するためのコンポーネントをインポートします。
+import { useSession } from "next-auth/react"; // NextAuth.jsからセッション情報を取得するためのフックをインポートします。
 
-// Pageコンポーネントの定義
-export default function Page({}) {
+export default function Page() {
+  // useSessionフックを使って、現在のセッション情報とそのステータスを取得します。
+  const { data: session, status } = useSession();
+
   // AccountContextから現在選択されているアカウント情報を取得します。
   const { selectedAccount } = useContext(AccountContext);
 
-  // 状態を管理するための変数を宣言します。
-  const [items, setItems] = useState([]); // タスクのリストを保持するためのstate。初期値は空の配列です。
-  const [talks, setTalks] = useState([]); // トーク情報のリストを保持するためのstate。初期値は空の配列です。
-  const [isLoading, setIsLoading] = useState(true); // データが読み込まれているかどうかを示すstate。初期値はtrue（読み込み中）。
-  const [isContentVisible, setIsContentVisible] = useState(false); // コンテンツが表示されるかどうかを管理するstate。初期値はfalse（非表示）。
+  // 状態を管理するための変数を定義します。
+  const [items, setItems] = useState([]); // タスクのリストを保持するstate。
+  const [talks, setTalks] = useState([]); // トーク情報のリストを保持するstate。
+  const [isLoading, setIsLoading] = useState(true); // データが読み込まれているかどうかを示すstate。
+  const [isContentVisible, setIsContentVisible] = useState(false); // コンテンツが表示されるかどうかを管理するstate。
 
-  // コンポーネントが初めて表示されたときに実行される処理を定義します。
+  // セッション情報が変更されたときにログを出力します（デバッグ用）。
   useEffect(() => {
+    console.log("Session status:", status); // 現在のセッションステータスを表示
+    console.log("Session data:", session); // セッションデータを表示
+  }, [session, status]); // sessionとstatusが変更されるたびに実行されます。
+
+  // データのフェッチ処理を行うuseEffect
+  useEffect(() => {
+    // 非同期でデータを取得する関数を定義します。
     const fetchData = async () => {
       try {
-        // Supabaseを使ってタスクデータをデータベースから取得します。
+        // tasksテーブルからデータを取得します。
         const { data: tasksData, error: tasksError } = await supabase
           .from("tasks")
           .select("*");
-        if (tasksError) throw tasksError; // エラーが発生した場合は例外を投げます。
+        if (tasksError) throw tasksError; // エラーが発生した場合は例外をスローします。
 
-        // Supabaseを使ってトークデータをデータベースから取得します。
+        // talksテーブルからデータを取得します。
         const { data: talksData, error: talksError } = await supabase
           .from("talks")
           .select("*");
-        if (talksError) throw talksError; // エラーが発生した場合は例外を投げます。
+        if (talksError) throw talksError; // エラーが発生した場合は例外をスローします。
 
         // 取得したデータをstateに保存します。
-        setItems(tasksData || []); // タスクデータをstateにセットします。データが無い場合は空の配列をセットします。
-        setTalks(talksData || []); // トークデータをstateにセットします。データが無い場合は空の配列をセットします。
+        setItems(tasksData || []); // tasksDataがnullまたはundefinedの場合は空の配列をセットします。
+        setTalks(talksData || []); // talksDataがnullまたはundefinedの場合は空の配列をセットします。
       } catch (error) {
-        // データ取得中にエラーが発生した場合にコンソールにエラーメッセージを表示します。
+        // データ取得中にエラーが発生した場合にエラーメッセージをコンソールに出力します。
         console.error("データの取得に失敗しました: " + error.message);
       } finally {
-        // データの取得が完了したら、ローディング状態を終了し、コンテンツをフェードインで表示します。
+        // データ取得後にローディング状態を解除し、コンテンツを遅延表示します。
         setIsLoading(false); // ローディング状態を解除します。
-        setTimeout(() => setIsContentVisible(true), 500); // 500ミリ秒後にコンテンツを表示するように設定します。
+        setTimeout(() => setIsContentVisible(true), 500); // 500ms後にコンテンツを表示します。
       }
     };
 
-    // fetchData関数を実行します。
-    fetchData();
-  }, []); // 空の依存配列を渡すことで、コンポーネントが初回マウント時のみ実行されるようにします。
+    // ユーザーが認証されている場合のみ、データをフェッチします。
+    if (status === "authenticated") {
+      fetchData();
+    }
+  }, [status]); // 認証状態が変わるたびにデータをフェッチします。
 
-  // ローディング中であれば、ローディング画面を表示します。
-  if (isLoading) {
-    return <LoadingScreen minimumLoadingTime={10000} />; // ローディング画面を表示。最低でも10秒は表示します。
+  // 認証状態に応じて表示するコンテンツを切り替えます。
+
+  // ローディング中であればローディング画面を表示します。
+  if (status === "loading") {
+    return <LoadingScreen minimumLoadingTime={10000} />;
   }
 
-  // データのロードが完了した後、コンテンツを表示します。
-  return (
-    <div className={isContentVisible ? "fade-in" : "hidden"}>
-      {/* コンテンツ全体の外枠。上部と下部にパディング（余白）を設定 */}
-      <div className="pt-8 pb-16">
-        {/* スワイパータブコンポーネントを表示し、selectedAccountをプロパティとして渡します。 */}
-        <SwiperTab selectedAccount={selectedAccount} />
+  // 未認証状態の場合は、ログインプロンプトを表示します。
+  if (status === "unauthenticated") {
+    return <LoginPrompt />;
+  }
+
+  // 認証されており、データのロードが完了した後にコンテンツを表示します。
+  if (!isLoading && session) {
+    return (
+      <div className={isContentVisible ? "fade-in" : "hidden"}>
+        <div className="pt-8 pb-16">
+          <SwiperTab selectedAccount={selectedAccount} />
+        </div>
+        <LogoutPrompt />
       </div>
-    </div>
-  );
+    );
+  }
+
+  // ローディング中または認証状態が不明な場合は何も表示しません。
+  return null;
 }
