@@ -19,8 +19,8 @@ export default function Header() {
   const { theme, toggleTheme } = useContext(ThemeContext);
   // 選択されたアカウントとアカウント選択関数を取得
   const { selectedAccount, setSelectedAccount } = useContext(AccountContext);
-  // 認証ステータスを取得
-  const { status } = useSession();
+  // 認証ステータスとセッションデータを取得
+  const { data: session, status } = useSession();
 
   // メニューのアンカー要素とモーダルの状態を管理するためのステート
   const [anchorEl, setAnchorEl] = useState(null);
@@ -119,12 +119,22 @@ export default function Header() {
         {today || "Loading..."} {/* 日付が取得されるまで「Loading...」と表示 */}
       </Typography>
 
-      {/* 右側にアカウントアイコン、テーマ切り替えアイコン、ログアウトアイコンを表示 */}
+      {/* 右側にアカウントアイコン、ユーザーID、テーマ切り替えアイコン、ログアウトアイコンを表示 */}
       <Box sx={{ display: "flex", alignItems: "center" }}>
         {/* アカウントアイコンを表示。クリックでモーダルを開く */}
         <IconButton sx={iconButtonStyle} onClick={handleModalOpen}>
           <AccountCircleIcon />
         </IconButton>
+
+        {/* ログインしている場合にのみユーザーIDを表示 */}
+        {status === "authenticated" && session && (
+          <Typography
+            variant="body2"
+            sx={{ marginLeft: "8px", marginRight: "16px" }}
+          >
+            {session.family_id} {/* セッションから取得したファミリーIDを表示 */}
+          </Typography>
+        )}
 
         {/* アカウントモーダルを表示 */}
         <AccountModal

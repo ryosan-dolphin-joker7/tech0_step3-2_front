@@ -1,12 +1,28 @@
 import bcrypt from "bcryptjs"; // パスワードをハッシュ化して比較するためのbcryptライブラリをインポート
 import CredentialsProvider from "next-auth/providers/credentials";
 
-// ハッシュ化されたパスワードを持つユーザー情報を定義
+// ユーザー情報を定義します
+// ここではハードコーディングされたユーザー情報を使用していますが、実際にはデータベースから取得するのが一般的です
 const users = [
   {
-    email: "test@black24h.com",
-    // "test" というパスワードをハッシュ化して保存しています
-    password: await bcrypt.hash("onepush", 10), // 非同期でハッシュ化
+    email: "test1@wanpush.com",
+    password: "kokuyo", // プレーンテキストのパスワード（後でハッシュ化します）
+    family_id: 1,
+  },
+  {
+    email: "test2@wanpush.com",
+    password: "kokuyo", // プレーンテキストのパスワード（後でハッシュ化します）
+    family_id: 2,
+  },
+  {
+    email: "test3@wanpush.com",
+    password: "kokuyo", // プレーンテキストのパスワード（後でハッシュ化します）
+    family_id: 3,
+  },
+  {
+    email: "test4@wanpush.com",
+    password: "kokuyo", // プレーンテキストのパスワード（後でハッシュ化します）
+    family_id: 4,
   },
 ];
 
@@ -38,10 +54,13 @@ export const authOptions = {
           throw new Error("ユーザーが見つかりません");
         }
 
+        // プレーンテキストのパスワードをハッシュ化
+        const hashedPassword = await bcrypt.hash(user.password, 10); // 非同期でハッシュ化
+
         // 入力されたパスワードをハッシュ化されたパスワードと比較
         const isValidPassword = await bcrypt.compare(
           credentials.password,
-          user.password
+          hashedPassword
         ); // 非同期で比較
 
         if (!isValidPassword) {
@@ -49,8 +68,8 @@ export const authOptions = {
           throw new Error("パスワードが間違っています");
         }
 
-        // 認証が成功した場合は、ユーザー情報を返す
-        return { email: user.email };
+        // 認証が成功した場合は、ユーザー情報（emailとfamily_id）を返す
+        return { email: user.email, family_id: user.family_id };
       },
     }),
   ],
@@ -73,7 +92,24 @@ export const authOptions = {
   // サインインページのカスタム設定は削除し、デフォルトを使用します
   pages: {
     error: "/auth/error", // エラーページのパスを指定（必要に応じて）
-    // signInオプションは削除しています
+  },
+
+  // セッションやJWTにカスタムデータを含めるためのコールバック関数
+  callbacks: {
+    // JWTトークンにカスタムデータ（family_id）を含める
+    async jwt({ token, user }) {
+      if (user) {
+        token.family_id = user.family_id; // 初回ログイン時にfamily_idをJWTトークンに追加
+      }
+      return token;
+    },
+    // セッションにカスタムデータ（family_id）を含める
+    async session({ session, token }) {
+      if (token.family_id) {
+        session.family_id = token.family_id; // セッションにfamily_idを追加
+      }
+      return session;
+    },
   },
 };
 
