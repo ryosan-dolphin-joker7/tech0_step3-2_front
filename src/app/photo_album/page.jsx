@@ -1,6 +1,6 @@
 "use client"; // クライアント側で動作するコードであることを指定しています。
 import { useEffect, useState } from "react"; // Reactのフック（useEffectとuseState）をインポートしています。
-import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートしています。
+import { supabase } from "@/app/supabaseClient"; // Supabaseクライアントをインポートしています。
 import OnePostInfoCard from "@/components/one_post_info_card.jsx"; // 顧客情報カードコンポーネントをインポートしています。
 import Footer_Post from "@/components/footer_post.jsx"; // フッターコンポーネントをインポートしています。
 

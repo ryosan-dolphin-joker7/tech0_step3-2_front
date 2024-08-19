@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポート
+import { supabase } from "@/app/supabaseClient"; // Supabaseクライアントをインポート
 import Table_Todo from "@/components/table_todo";
 import Grid from "@mui/material/Grid";
 

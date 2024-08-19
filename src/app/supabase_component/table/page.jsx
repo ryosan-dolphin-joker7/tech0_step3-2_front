@@ -3,7 +3,7 @@
 
 // 必要なモジュールやコンポーネントをインポートします。
 import { useEffect, useState } from "react"; // Reactのフックをインポートします。
-import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートします。
+import { supabase } from "@/app/supabaseClient"; // Supabaseクライアントをインポートします。
 import BackButton from "@/components/back_button"; // カスタムバックボタンコンポーネントをインポートします。
 import Accordion from "@mui/material/Accordion"; // MUIのアコーディオンコンポーネントをインポートします。
 import AccordionSummary from "@mui/material/AccordionSummary"; // アコーディオンのサマリー部分をインポートします。
