@@ -2,8 +2,8 @@
 
 import React, { useState, useContext, useRef } from "react";
 import { Button } from "@mui/material"; // Material-UIのボタンコンポーネントをインポートします。
-import UploadTodoModal from "@/app/components/posts/post_todo_modal"; // Todo登録用のモーダルコンポーネントをインポートします。
-import { AccountContext } from "@/app/components/AccountProvider"; // アカウント情報を取得するためのコンテキストをインポートします。
+import UploadTodoModal from "@/components/posts/post_todo_modal"; // Todo登録用のモーダルコンポーネントをインポートします。
+import { AccountContext } from "@/components/AccountProvider"; // アカウント情報を取得するためのコンテキストをインポートします。
 
 export default function Post_Footer({ theme, refreshTodos }) {
   const [modalOpen, setModalOpen] = useState(false); // モーダルの開閉状態を管理するステートです。

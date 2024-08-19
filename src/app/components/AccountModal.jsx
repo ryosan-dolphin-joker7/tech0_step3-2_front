@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react"; // Reactの基本的なフックとコンテキストをインポート
 import { Modal, Box, Typography, Button } from "@mui/material"; // MUIからモーダルやボタンなどのコンポーネントをインポート
-import { AccountContext } from "./AccountProvider"; // アカウントコンテキストをインポート
+import { AccountContext } from "@/components/AccountProvider"; // アカウントコンテキストをインポート
 import { supabase } from "@/app/supabaseClient"; // Supabaseクライアントをインポート
 
 // モーダルのスタイルを定義するオブジェクト

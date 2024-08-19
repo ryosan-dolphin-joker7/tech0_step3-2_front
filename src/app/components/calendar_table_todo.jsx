@@ -2,8 +2,8 @@
 
 import { useEffect, useState, useContext } from "react";
 import { supabase } from "@/app/supabaseClient"; // Supabase クライアントをインポート
-import { AccountContext } from "@/app/components/AccountProvider"; // アカウント情報を提供するコンテキストをインポート
-import Modal from "@/app/components/posts/update_todo_modal"; // Todo 更新用のモーダルコンポーネントをインポート
+import { AccountContext } from "@/components/AccountProvider"; // アカウント情報を提供するコンテキストをインポート
+import Modal from "@/components/posts/update_todo_modal"; // Todo 更新用のモーダルコンポーネントをインポート
 
 const Home = () => {
   // useState フックで状態を管理

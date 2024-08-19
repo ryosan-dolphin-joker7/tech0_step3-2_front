@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect, useContext, useMemo } from "react"; // Reactの基本的なフックとコンテキストをインポート
 import { Box } from "@mui/material"; // MUIのBoxコンポーネントをインポート
-import Popup_Today_Dog from "@/app/components/posts/popup_today_dog"; // ポップアップ用のコンポーネントをインポート
-import OnePetTodoCard from "@/app/components/one_pet_todo_card"; // ペット情報カード用のコンポーネントをインポート
-import { AccountContext } from "@/app/components/AccountProvider"; // アカウントコンテキストをインポート
+import Popup_Today_Dog from "@/components/posts/popup_today_dog"; // ポップアップ用のコンポーネントをインポート
+import OnePetTodoCard from "@/components/one_pet_todo_card"; // ペット情報カード用のコンポーネントをインポート
+import { AccountContext } from "@/components/AccountProvider"; // アカウントコンテキストをインポート
 import { supabase } from "@/app/supabaseClient"; // Supabaseクライアントをインポート
 
 function Slide_Mydogs() {

@@ -1,7 +1,7 @@
 "use client"; // クライアント側で動作するコードであることを指定しています。
 
 import React from "react";
-import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートしています。
+import { supabase } from "@/app/supabaseClient"; // Supabaseクライアントをインポートしています。
 import {
   Dialog,
   DialogActions,

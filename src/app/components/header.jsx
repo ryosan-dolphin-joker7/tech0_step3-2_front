@@ -2,9 +2,9 @@
 
 import React, { useContext, useState, useEffect } from "react";
 import Link from "next/link"; // ルーティング用のリンクコンポーネントをインポート
-import { ThemeContext } from "@/app/components/ThemeProvider"; // テーマのコンテキストをインポート
-import { AccountContext } from "@/app/components/AccountProvider"; // アカウントのコンテキストをインポート
-import AccountModal from "@/app/components/AccountModal"; // アカウントモーダルをインポート
+import { ThemeContext } from "@/components/ThemeProvider"; // テーマのコンテキストをインポート
+import { AccountContext } from "@/components/AccountProvider"; // アカウントのコンテキストをインポート
+import AccountModal from "@/components/AccountModal"; // アカウントモーダルをインポート
 import { useSession, signOut } from "next-auth/react"; // 認証用フックとサインアウト機能をインポート
 
 import { IconButton, Box, Typography, Menu, MenuItem } from "@mui/material"; // UIコンポーネントをインポート

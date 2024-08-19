@@ -3,9 +3,9 @@
 import React, { useEffect, useState, useContext, useMemo } from "react";
 import { supabase } from "@/app/supabaseClient"; // Supabaseクライアントをインポート
 import { Box } from "@mui/material"; // MUIのBoxコンポーネントをインポート
-import { AccountContext } from "@/app/components/AccountProvider"; // アカウント情報を提供するコンテキストをインポート
-import OnePetInsuranceCard from "@/app/components/one_pet_insurance_card.jsx"; // ペット保険情報カード用のコンポーネントをインポート
-import OnePetInfoCard from "@/app/components/one_pet_info_card"; // ペット情報カード用のコンポーネントをインポート
+import { AccountContext } from "@/components/AccountProvider"; // アカウント情報を提供するコンテキストをインポート
+import OnePetInsuranceCard from "@/components/one_pet_insurance_card.jsx"; // ペット保険情報カード用のコンポーネントをインポート
+import OnePetInfoCard from "@/components/one_pet_info_card"; // ペット情報カード用のコンポーネントをインポート
 
 export default function Slide_pets() {
   const { selectedAccount } = useContext(AccountContext); // AccountContextから選択されたアカウントIDを取得します
