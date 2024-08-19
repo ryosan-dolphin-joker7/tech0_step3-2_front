@@ -1,7 +1,7 @@
 "use client"; // クライアント側（ブラウザ）で動作するコードであることを示しています。
 
 import { useEffect, useState, useContext } from "react"; // Reactのフックをインポートしています。
-import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートしています。Supabaseはバックエンドサービスで、データベースや認証などの機能を提供します。
+import { supabase } from "@/app/supabaseClient"; // Supabaseクライアントをインポートしています。Supabaseはバックエンドサービスで、データベースや認証などの機能を提供します。
 import { AccountContext } from "@/components/AccountProvider"; // アカウント情報を提供するコンテキストをインポートしています。
 import Modal from "@/components/posts/update_todo_modal"; // Todoの更新用モーダルコンポーネントをインポートしています。
 
