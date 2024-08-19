@@ -10,10 +10,10 @@ import { Inter } from "next/font/google";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 
 // アプリ全体で使用するヘッダー、フッター、テーマプロバイダー、アカウントプロバイダーをインポートします
-import Header from "@/app/components/header";
-import Footer from "@/app/components/footer";
-import ThemeProvider from "@/app/components/ThemeProvider";
-import { AccountProvider } from "@/app/components/AccountProvider";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
+import ThemeProvider from "@/components/ThemeProvider";
+import { AccountProvider } from "@/components/AccountProvider";
 
 // NextAuth.jsのセッションプロバイダーをインポートします
 import { SessionProvider } from "next-auth/react"; // NextAuth.jsのセッションプロバイダーをインポート

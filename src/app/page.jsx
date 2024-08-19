@@ -1,14 +1,14 @@
 "use client"; // このファイルがクライアントサイドで実行されることを示します。
 
 import { useEffect, useState, useContext } from "react";
-import { supabase } from "@/app/supabaseClient"; // Supabaseクライアントをインポートして、データベースとの通信を行います。
-import LoadingScreen from "@/app/components/LoadingScreen"; // ローディング画面を表示するためのコンポーネントをインポートします。
-import { SwiperTab } from "@/app/components/swiper"; // スワイプ可能なタブを表示するコンポーネントをインポートします。
-import "@/app/components/LoadingScreen.module.css"; // ローディング画面用のCSSスタイルをインポートします。
+import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートして、データベースとの通信を行います。
+import LoadingScreen from "@/components/LoadingScreen"; // ローディング画面を表示するためのコンポーネントをインポートします。
+import { SwiperTab } from "@/components/swiper"; // スワイプ可能なタブを表示するコンポーネントをインポートします。
+import "@/components/LoadingScreen.module.css"; // ローディング画面用のCSSスタイルをインポートします。
 import "./globals.css"; // グローバルなCSSスタイルをインポートします。
 
-import { AccountContext } from "@/app/components/AccountProvider"; // アカウント情報を共有するためのコンテキストをインポートします。
-import LoginPrompt from "@/app/components/LoginPrompt"; // ログインプロンプトを表示するためのコンポーネントをインポートします。
+import { AccountContext } from "@/components/AccountProvider"; // アカウント情報を共有するためのコンテキストをインポートします。
+import LoginPrompt from "@/components/LoginPrompt"; // ログインプロンプトを表示するためのコンポーネントをインポートします。
 import { useSession } from "next-auth/react"; // NextAuth.jsからセッション情報を取得するためのフックをインポートします。
 
 export default function Page() {
