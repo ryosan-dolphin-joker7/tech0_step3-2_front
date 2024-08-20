@@ -1,73 +1,37 @@
 "use client"; // このコンポーネントがクライアント側で動作することを示します
 
-import { getProviders, signIn } from "next-auth/react"; // next-authからサインインとプロバイダー取得の関数をインポート
-import { useEffect, useState } from "react"; // Reactのフックをインポート
+import { signIn } from "next-auth/react"; // next-authからサインインの関数をインポート
+import { useState } from "react"; // Reactのフックをインポート
 
 // 各プロバイダーに適用するボタンスタイルを定義します
 const authStyle = {
-  Discord: {
-    className: "bg-blue-600 text-white border border-blue-500",
+  Google: {
+    className: "bg-white text-black border border-gray-300",
+    color: "gray",
+  },
+  Facebook: {
+    className: "bg-blue-600 text-white border border-blue-600",
     color: "blue",
   },
-  GitHub: {
-    className: "bg-gray-700 text-white border border-gray-700",
-    color: "gray",
-  },
-  Google: {
-    className: "bg-white text-black border border-black",
-    color: "gray",
-  },
-  Apple: {
+  X: {
     className: "bg-black text-white border border-black",
-    color: "gray",
+    color: "black",
   },
 };
 
 export default function SignIn() {
-  const [providers, setProviders] = useState(null); // 認証プロバイダーの状態を管理するためのステート
   const [email, setEmail] = useState(""); // メールアドレスの入力状態を管理するためのステート
   const [password, setPassword] = useState(""); // パスワードの入力状態を管理するためのステート
-  const [loading, setLoading] = useState(true); // ローディング状態を管理するためのステート
 
-  // コンポーネントが初めて表示されたときに認証プロバイダーの情報を取得する
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await getProviders(); // 認証プロバイダー情報を取得
-        console.log("プロバイダー情報:", res); // プロバイダー情報をログに表示してデバッグ
-        setProviders(res); // プロバイダー情報をステートにセット
-      } catch (error) {
-        console.error("プロバイダーの取得に失敗しました", error); // エラーハンドリング
-      } finally {
-        setLoading(false); // ローディング状態を解除
-      }
-    })();
-  }, []); // 空の依存配列を渡すことで、このエフェクトは一度だけ実行されます
-
-  // ローディング中に表示するメッセージ
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  // プロバイダーが取得できなかった場合のエラーメッセージ
-  if (!providers) {
-    return (
-      <div>プロバイダー情報の取得に失敗しました。もう一度お試しください。</div>
-    );
-  }
-
-  // メールアドレスとパスワードでのログイン処理を行う関数
-  const handleSignIn = async (e) => {
+  // メールアドレスとパスワードでのログイン処理を行う関数（ダミーの動作）
+  const handleSignIn = (e) => {
     e.preventDefault(); // フォームのデフォルトの送信動作を防ぐ
-    try {
-      await signIn("user", {
-        email,
-        password,
-        callbackUrl: "/", // ログイン成功後にホーム画面にリダイレクト
-      });
-    } catch (error) {
-      console.error("ログインに失敗しました", error); // エラーハンドリング
-    }
+    alert("ダミーログイン：メールアドレスとパスワードでログインしました。");
+  };
+
+  // 各プロバイダーのログイン処理（ダミー）
+  const handleProviderSignIn = (providerName) => {
+    alert(`ダミーログイン：${providerName}でログインしました。`);
   };
 
   return (
@@ -117,26 +81,25 @@ export default function SignIn() {
               />
               <button
                 type="submit" // フォーム送信ボタン
-                className="w-72 rounded-lg bg-blue-600 px-4 py-2 font-bold text-white"
+                className="w-72 rounded-lg px-4 py-2 font-bold text-white"
+                style={{ backgroundColor: "#e66a63" }} // インラインスタイルで背景色を設定
               >
                 メールアドレスでログイン
               </button>
             </form>
 
-            {/* 他のプロバイダーを使ったログインボタンの表示 */}
+            {/* ダミーのプロバイダーログインボタンを表示 */}
             <div className="flex flex-col items-center pb-10">
-              {Object.values(providers).map((provider) => {
-                const style = authStyle[provider.name]; // 各プロバイダーに応じたスタイルを適用
+              {["Google", "Facebook", "X"].map((provider) => {
+                const style = authStyle[provider]; // 各プロバイダーに応じたスタイルを適用
 
                 return (
-                  <div key={provider.name}>
+                  <div key={provider}>
                     <button
                       className={`my-3 w-72 rounded-lg px-4 py-2 font-bold ${style?.className}`} // ボタンのスタイルを設定
-                      onClick={
-                        () => signIn(provider.id, { callbackUrl: "/" }) // ログイン成功後にホーム画面にリダイレクト
-                      }
+                      onClick={() => handleProviderSignIn(provider)} // ダミーのサインイン処理を実行
                     >
-                      {provider.name} でログイン
+                      {provider} でログイン
                     </button>
                   </div>
                 );
