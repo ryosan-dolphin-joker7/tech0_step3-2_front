@@ -23,10 +23,18 @@ export default function SignIn() {
   const [email, setEmail] = useState(""); // メールアドレスの入力状態を管理するためのステート
   const [password, setPassword] = useState(""); // パスワードの入力状態を管理するためのステート
 
-  // メールアドレスとパスワードでのログイン処理を行う関数（ダミーの動作）
-  const handleSignIn = (e) => {
+  // メールアドレスとパスワードでのログイン処理を行う関数
+  const handleSignIn = async (e) => {
     e.preventDefault(); // フォームのデフォルトの送信動作を防ぐ
-    alert("ダミーログイン：メールアドレスとパスワードでログインしました。");
+    try {
+      await signIn("user", {
+        email,
+        password,
+        callbackUrl: "/", // ログイン成功後にホーム画面にリダイレクト
+      });
+    } catch (error) {
+      console.error("ログインに失敗しました", error); // エラーハンドリング
+    }
   };
 
   // 各プロバイダーのログイン処理（ダミー）
