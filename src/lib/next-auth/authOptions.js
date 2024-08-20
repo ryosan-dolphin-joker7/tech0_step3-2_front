@@ -1,8 +1,7 @@
-import bcrypt from "bcryptjs"; // パスワードをハッシュ化して比較するためのbcryptライブラリをインポート
-import CredentialsProvider from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs"; // bcryptjsライブラリをインポートして、パスワードのハッシュ化と比較を行います
+import CredentialsProvider from "next-auth/providers/credentials"; // NextAuthのCredentialsプロバイダーをインポート
 
-// ユーザー情報を定義します
-// ここではハードコーディングされたユーザー情報を使用していますが、実際にはデータベースから取得するのが一般的です
+// 仮のユーザー情報を定義（通常はデータベースから取得します）
 const users = [
   {
     email: "test1@wanpush.com",
@@ -26,55 +25,50 @@ const users = [
   },
 ];
 
-// NextAuthの設定をエクスポートします
+// NextAuthの設定オプションをエクスポート
 export const authOptions = {
-  // 使用する認証プロバイダーを指定します
+  // 使用する認証プロバイダーを設定
   providers: [
     CredentialsProvider({
-      id: "user", // プロバイダーのIDを指定（任意）
-      name: "User", // プロバイダー名を指定（任意）
+      id: "user", // プロバイダーのIDを指定
+      name: "User", // プロバイダー名を指定
       credentials: {
         email: {
-          label: "メールアドレス", // フォームフィールドのラベル
-          type: "email", // フォームフィールドのタイプ
-          placeholder: "メールアドレス", // フォームフィールドのプレースホルダー
-        },
-        password: {
-          label: "パスワード", // フォームフィールドのラベル
-          type: "password", // フォームフィールドのタイプ
-        },
+          label: "メールアドレス",
+          type: "email",
+          placeholder: "メールアドレス",
+        }, // メールアドレスの入力フィールドを定義
+        password: { label: "パスワード", type: "password" }, // パスワードの入力フィールドを定義
       },
-      // ユーザーがログインフォームに入力した情報を元に認証を行います
       async authorize(credentials) {
-        // 入力されたメールアドレスでユーザーを検索
+        // 入力されたメールアドレスに一致するユーザーを検索
         const user = users.find((user) => user.email === credentials.email);
 
         if (!user) {
-          // ユーザーが見つからない場合はエラーを投げる
+          // ユーザーが見つからない場合、エラーを投げます
           throw new Error("ユーザーが見つかりません");
         }
-
         // プレーンテキストのパスワードをハッシュ化
         const hashedPassword = await bcrypt.hash(user.password, 10); // 非同期でハッシュ化
 
-        // 入力されたパスワードをハッシュ化されたパスワードと比較
+        // 入力されたパスワードをハッシュ化されたパスワードと比較します
         const isValidPassword = await bcrypt.compare(
           credentials.password,
           hashedPassword
         ); // 非同期で比較
 
         if (!isValidPassword) {
-          // パスワードが間違っている場合はエラーを投げる
+          // パスワードが一致しない場合、エラーを投げます
           throw new Error("パスワードが間違っています");
         }
 
-        // 認証が成功した場合は、ユーザー情報（emailとfamily_id）を返す
+        // 認証が成功した場合、ユーザー情報を返します
         return { email: user.email, family_id: user.family_id };
       },
     }),
   ],
 
-  // セキュリティのために必要なシークレットキーを設定
+  // セキュリティのためのシークレットキーを環境変数から取得
   secret: process.env.NEXTAUTH_SECRET,
 
   // JWT（JSON Web Token）の設定
@@ -88,30 +82,28 @@ export const authOptions = {
     updateAge: 24 * 60 * 60, // 24時間ごとにセッションを自動更新
   },
 
-  // カスタムエラーページの設定（任意）
-  // サインインページのカスタム設定は削除し、デフォルトを使用します
+  // カスタムログインページとエラーページのパスを指定
   pages: {
-    error: "/auth/error", // エラーページのパスを指定（必要に応じて）
+    signIn: "/auth/signin", // カスタムログインページ
+    error: "/auth/error", // カスタムエラーページ
   },
 
-  // セッションやJWTにカスタムデータを含めるためのコールバック関数
+  // JWTやセッションにカスタムデータを含めるためのコールバック関数
   callbacks: {
-    // JWTトークンにカスタムデータ（family_id）を含める
     async jwt({ token, user }) {
       if (user) {
-        token.family_id = user.family_id; // 初回ログイン時にfamily_idをJWTトークンに追加
+        token.family_id = user.family_id; // 初回ログイン時にfamily_idをJWTに追加
       }
-      return token;
+      return token; // トークンを返す
     },
-    // セッションにカスタムデータ（family_id）を含める
     async session({ session, token }) {
       if (token.family_id) {
         session.family_id = token.family_id; // セッションにfamily_idを追加
       }
-      return session;
+      return session; // セッションを返す
     },
   },
 };
 
-// NextAuthの設定をエクスポート
+// authOptionsをデフォルトエクスポート
 export default authOptions;
