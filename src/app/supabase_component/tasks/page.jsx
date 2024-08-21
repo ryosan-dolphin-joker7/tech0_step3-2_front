@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/supabaseClient";
+import { supabase } from "@/app/supabaseClient";
 import OneCustomerInfoCard from "@/components/one_task_info_card.jsx";
 import Header from "@/components/header.jsx"; // ヘッダーコンポーネントをインポートしています。
 import Footer from "@/components/footer.jsx"; // フッターコンポーネントをインポートしています。

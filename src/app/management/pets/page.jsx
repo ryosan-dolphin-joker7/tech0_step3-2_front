@@ -1,6 +1,6 @@
 "use client"; // クライアント側で動作するコードであることを指定しています。
 import { useEffect, useState } from "react";
-import { supabase } from "@/supabaseClient";
+import { supabase } from "@/app/supabaseClient";
 import Link from "next/link";
 import Header from "@/components/header.jsx";
 import Footer from "@/components/footer.jsx";

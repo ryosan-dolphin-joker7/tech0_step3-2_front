@@ -1,20 +1,21 @@
 import React, {
-  useRef,
   useEffect,
   useState,
-  useCallback,
   useContext,
+  useRef,
+  useCallback,
 } from "react";
+import Post_Todo from "@/components/posts/post_todo";
+import Calendar_Table_Todo from "@/components/calendar_table_todo";
+import { supabase } from "@/app/supabaseClient";
+import { AccountContext } from "@/components/AccountProvider"; // アカウント情報を提供するコンテキストをインポート
+
 import Grid from "@mui/material/Grid";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import Post_Todo from "@/components/posts/post_todo";
-import Table_Todo from "@/components/calendar_table_todo";
-import { supabase } from "@/supabaseClient";
 import PetsIcon from "@mui/icons-material/Pets";
-import { AccountContext } from "@/components/AccountProvider"; // アカウント情報を提供するコンテキストをインポート
 
 export default function Slide_Calendar() {
   const calendarRef = useRef(null);
@@ -25,12 +26,16 @@ export default function Slide_Calendar() {
   const fetchEvents = useCallback(async () => {
     try {
       // Supabaseから"todos"テーブルの全データを取得
-      const { data, error } = await supabase.from("todos").select("*");
+      const { data, error } = await supabase
+        .from("todos")
+        .select(
+          "*,assignee:userinformation!todos_assignee_user_id_fkey (user_name,family_id)"
+        );
       if (error) throw error;
 
       // selectedAccountに対応するイベントのみをフィルタリング
       const filteredData = data.filter(
-        (item) => item.userid === selectedAccount
+        (item) => item.assignee.family_id === selectedAccount
       );
 
       // フィルタリングしたデータをFullCalendarに適した形式にフォーマット
@@ -120,7 +125,7 @@ export default function Slide_Calendar() {
               padding: "10px",
             }}
           >
-            <Table_Todo /> {/* Todoリストを表示するコンポーネント */}
+            <Calendar_Table_Todo /> {/* Todoリストを表示するコンポーネント */}
           </div>
         </Grid>
       </Grid>

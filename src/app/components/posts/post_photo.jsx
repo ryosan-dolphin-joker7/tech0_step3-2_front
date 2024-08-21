@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../../supabaseClient";
+import { supabase } from "@/app/supabaseClient";
 
 // PostsPhotoコンポーネントの定義
 const PostsPhoto = () => {

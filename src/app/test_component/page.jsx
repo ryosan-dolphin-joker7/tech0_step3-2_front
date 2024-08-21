@@ -3,9 +3,9 @@
 
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
-import { supabase } from "@/supabaseClient";
+import { supabase } from "@/app/supabaseClient";
 import OneCustomerInfoCard from "@/components/one_customer_info_card.jsx"; // 顧客情報を表示するコンポーネントをインポートしています。
-import fetchCustomers from "@/fetchCustomers"; // 顧客データを取得する関数をインポートしています。
+import fetchCustomers from "@/app/fetchCustomers"; // 顧客データを取得する関数をインポートしています。
 
 export default function Page() {
   const [customerInfos, setCustomerInfos] = useState([]); // 顧客情報を格納するための状態を初期化しています。

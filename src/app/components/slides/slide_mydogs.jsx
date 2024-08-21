@@ -5,7 +5,7 @@ import { Box } from "@mui/material"; // MUIのBoxコンポーネントをイン�
 import Popup_Today_Dog from "@/components/posts/popup_today_dog"; // ポップアップ用のコンポーネントをインポート
 import OnePetTodoCard from "@/components/one_pet_todo_card"; // ペット情報カード用のコンポーネントをインポート
 import { AccountContext } from "@/components/AccountProvider"; // アカウントコンテキストをインポート
-import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポート
+import { supabase } from "@/app/supabaseClient"; // Supabaseクライアントをインポート
 
 function Slide_Mydogs() {
   // AccountContextからselectedAccountを取得します
@@ -41,7 +41,7 @@ function Slide_Mydogs() {
   // selectedAccountに対応するペット情報をメモ化して取得します
   const selectedPetInfo = useMemo(() => {
     // petInfoの中からselectedAccountに対応するuseridを持つペット情報を配列で返します
-    return pets.filter((pet) => pet.userid === selectedAccount);
+    return pets.filter((pet) => pet.family_id === selectedAccount);
   }, [selectedAccount, pets]); // selectedAccountまたはpetsが変更されたときに再計算されます
 
   return (
@@ -66,7 +66,7 @@ function Slide_Mydogs() {
         )}
       </Box>
 
-      {/* 「今日の犬」を表示するポップアップを追加 */}
+      {/* 「今日のわんこ名言」を表示するポップアップを追加 */}
       <Popup_Today_Dog />
     </Box>
   );

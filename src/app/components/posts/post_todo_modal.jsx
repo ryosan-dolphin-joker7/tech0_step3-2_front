@@ -1,7 +1,7 @@
 "use client"; // クライアントサイドで実行されるコードであることを指定しています。
 
 import React from "react";
-import { supabase } from "@/supabaseClient"; // Supabaseクライアントをインポートします。これを使ってデータベース操作を行います。
+import { supabase } from "@/app/supabaseClient"; // Supabaseクライアントをインポートします。これを使ってデータベース操作を行います。
 import {
   Dialog, // モーダル（ダイアログ）を表示するためのコンポーネントです。
   DialogActions, // モーダル内のボタンなどのアクションを配置する部分です。
