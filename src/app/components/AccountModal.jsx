@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react"; // Reactの基本的なフックとコンテキストをインポート
 import { Modal, Box, Typography, Button } from "@mui/material"; // MUIからモーダルやボタンなどのコンポーネントをインポート
 import { AccountContext } from "@/components/AccountProvider"; // アカウントコンテキストをインポート
+import { useSession } from "next-auth/react"; // 認証用フックをインポート
 import { supabase } from "@/app/supabaseClient"; // Supabaseクライアントをインポート
 
 // モーダルのスタイルを定義するオブジェクト
@@ -18,93 +19,79 @@ const modalStyle = {
 
 // AccountModalコンポーネントを定義
 export default function AccountModal({ open, handleClose }) {
-  // ファミリーとユーザーのアカウント選択関数を取得
+  const { data: session } = useSession(); // 認証ステータスとセッションデータを取得
   const { setSelectedAccount, setSelectedUserAccount } =
-    useContext(AccountContext);
+    useContext(AccountContext); // ファミリーとユーザーのアカウント選択関数を取得
   const [users, setUsers] = useState([]); // ユーザーデータを保存する状態を追加
 
-  // Supabaseからuserinformationテーブルのすべてのデータを取得する非同期関数
+  // Supabaseからuserinformationテーブルのデータをfamily_idでフィルタして取得する非同期関数
   const fetchData = async () => {
     try {
-      // Supabaseからuserinformationテーブルのデータを取得
+      if (!session?.family_id) return; // sessionまたはfamily_idがない場合は処理を終了
+
       const { data: usersData, error: usersError } = await supabase
         .from("userinformation")
-        .select("*"); // 全てのカラムを選択して取得
+        .select("*")
+        .eq("family_id", session.family_id); // family_idでフィルタリング
 
-      if (usersError) throw usersError; // エラーが発生した場合は例外をスローします
+      if (usersError) throw usersError; // エラーが発生した場合は例外をスロー
 
-      // useridの順にデータをソート
-      const sortedUsers = usersData.sort((a, b) => a.userid - b.userid);
+      const sortedUsers = usersData.sort((a, b) => a.userid - b.userid); // useridの順にデータをソート
 
-      setUsers(sortedUsers || []); // ソート後のデータをusers状態に保存します。データが空の場合は空の配列を設定します。
+      setUsers(sortedUsers || []); // ソート後のデータをusers状態に保存
     } catch (error) {
-      // データ取得に失敗した場合のエラーメッセージをコンソールに出力します。
-      console.error("アカウント情報の取得に失敗しました: " + error.message);
+      console.error("アカウント情報の取得に失敗しました: " + error.message); // エラーメッセージをコンソールに出力
     }
   };
 
-  // コンポーネントが最初に表示されるときに、fetchData関数を実行してデータを取得します。
   useEffect(() => {
-    fetchData();
-  }, []); // このuseEffectは、最初のマウント時にのみ実行されます。
+    fetchData(); // データ取得関数を実行
+  }, [session?.family_id]); // family_idが変更されたときに再度データを取得
 
-  // アカウントが選択されたときに呼び出される関数
   const handleAccountSelect = (user) => {
     setSelectedAccount(user.family_id); // 選択されたアカウントのIDをグローバル状態に設定
-    setSelectedUserAccount(user.userid); // 選択されたアカウントのIDをグローバル状態に設定
+    setSelectedUserAccount(user.userid); // 選択されたユーザーのIDをグローバル状態に設定
     handleClose(); // モーダルを閉じる
   };
 
-  // 取得したユーザーデータを基にボタンをレンダリングする関数
   const renderAccountButtons = () => {
-    // users配列の各ユーザーに対してボタンを生成
     return users.map((user) => (
       <Box mt={2} key={user.userid}>
         <Button
-          fullWidth // ボタンを横幅いっぱいに設定
-          variant="contained" // ボタンのスタイルを設定
+          fullWidth
+          variant="contained"
           sx={{
-            backgroundColor: "#e66a63 !important", // ホバーしていないときの背景色を強制的に設定
-            color: "#fff !important", // ボタンのテキストカラーを強制的に白色に設定
+            backgroundColor: "#e66a63 !important",
+            color: "#fff !important",
             "&:hover": {
-              backgroundColor: "#1565c0 !重要", // ホバー時に濃い青色に設定
-              border: "1px solid #fff", // ホバー時に白いボーダーを追加して視認性を向上
+              backgroundColor: "#1565c0 !important",
+              border: "1px solid #fff",
             },
           }}
-          onClick={() => handleAccountSelect(user)} // ボタンがクリックされたときにアカウントを選択
+          onClick={() => handleAccountSelect(user)}
         >
-          {user.user_name} {/* ボタンに表示するアカウント名 */}
+          {user.user_name}
         </Button>
       </Box>
     ));
   };
 
-  // モーダルウィンドウの描画内容を定義
   return (
     <Modal
-      open={open} // モーダルが開いているかどうかを指定
-      onClose={handleClose} // モーダルを閉じるためのイベントハンドラーを指定
-      aria-labelledby="account-modal-title" // アクセシビリティのためにタイトルを指定
-      aria-describedby="account-modal-description" // アクセシビリティのために説明文を指定
-      role="dialog" // アクセシビリティのためにダイアログロールを指定
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="account-modal-title"
+      aria-describedby="account-modal-description"
+      role="dialog"
     >
       <Box sx={modalStyle}>
-        <Typography
-          id="account-modal-title" // タイトルのIDを設定
-          variant="h6" // タイトルのスタイルを設定（h6レベル）
-          component="h2" // タイトルのHTMLタグをh2に設定
-        >
-          アカウントを選択 {/* モーダルのタイトル */}
+        <Typography id="account-modal-title" variant="h6" component="h2">
+          アカウントを選択
         </Typography>
-        <Typography
-          id="account-modal-description" // 説明文のIDを設定
-          variant="body1" // 説明文のスタイルを設定
-          mt={2} // 説明文の上にマージン（余白）を設定
-        >
-          ログインするアカウントを選んでください: {/* モーダル内の説明文 */}
+        <Typography id="account-modal-description" variant="body1" mt={2}>
+          ログインするアカウントを選んでください:
         </Typography>
         {renderAccountButtons()}
-        {/* Supabaseから取得したデータを使ってボタンを表示 */}
       </Box>
     </Modal>
   );

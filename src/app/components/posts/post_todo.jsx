@@ -7,7 +7,7 @@ import { AccountContext } from "@/components/AccountProvider"; // アカウン�
 
 export default function Post_Footer({ theme, refreshTodos }) {
   const [modalOpen, setModalOpen] = useState(false); // モーダルの開閉状態を管理するステートです。
-  const { selectedAccount } = useContext(AccountContext); // コンテキストから現在選択されているアカウントを取得します。
+  const { selectedAccount, selectedUserAccount } = useContext(AccountContext); // コンテキストから現在選択されているアカウントを取得します。
   const buttonRef = useRef(null); // ボタン要素へのリファレンスを作成します。
 
   // モーダルを開く関数です。
@@ -56,7 +56,8 @@ export default function Post_Footer({ theme, refreshTodos }) {
       <UploadTodoModal
         open={modalOpen} // モーダルの開閉状態を渡します。
         handleClose={closeModal} // モーダルを閉じるための関数を渡します。
-        userid={selectedAccount} // コンテキストから取得した選択されたアカウントIDをモーダルに渡します。
+        userid={selectedUserAccount} // コンテキストから取得した選択されたアカウントIDをモーダルに渡します。
+        family_id={selectedAccount} // コンテキストから取得した選択されたアカウントIDをモーダルに渡します。
         onTodoAdded={refreshTodos} // Todoが追加された際に呼ばれるコールバック関数を渡します。
       />
     </div>

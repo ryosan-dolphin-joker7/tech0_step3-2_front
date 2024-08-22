@@ -18,6 +18,7 @@ export default function UploadTodoModal({
   open, // モーダルが現在開いているかどうかを示すフラグ（true/false）。
   handleClose, // モーダルを閉じるための関数です。モーダルを閉じるときに呼び出します。
   userid, // 現在ログインしているユーザーのIDです。このIDを使ってデータベースにユーザーを関連付けます。
+  family_id, // 現在ログインしているファミリーのIDです。このIDを使ってデータベースにファミリーを関連付けます。
   onTodoAdded, // 新しいTodoが追加されたときに呼び出される関数です。画面の更新などに使用します。
 }) {
   // モーダル内のフォームの各フィールド（タイトル、内容、終了日）を管理するための状態を定義します。
@@ -42,7 +43,8 @@ export default function UploadTodoModal({
             contents: contents, // 入力された内容をデータベースに保存します。
             start_date: new Date().toISOString(), // 現在の日付をISOフォーマットで保存します（開始日として）。
             end_date: endDate, // 入力された終了日をデータベースに保存します。
-            userid: userid, // 現在ログインしているユーザーのIDを保存します（誰のTodoか識別するため）。
+            assignee_user_id: userid, // 現在ログインしているユーザーのIDを保存します（誰のTodoか識別するため）。
+            family_id: family_id, // 現在ログインしているファミリーのIDを保存します（誰のTodoか識別するため）。
           },
         ]);
 
