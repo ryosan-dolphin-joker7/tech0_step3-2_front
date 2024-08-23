@@ -11,9 +11,9 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday"; // カレン�
 import CreditCardIcon from "@mui/icons-material/CreditCard"; // カードのアイコンをインポート
 
 // カスタムスライドコンポーネントをインポート
-import Slide_Mydogs from "@/app/components/slides/slide_mydogs";
-import Slide_Calendar from "@/app/components/slides/slide_calendar";
-import Slide_Pets from "@/app/components/slides/slide_pets";
+import Slide_Mydogs from "@/components/slides/slide_mydogs";
+import Slide_Calendar from "@/components/slides/slide_calendar";
+import Slide_Pets from "@/components/slides/slide_pets";
 
 // SwiperTabコンポーネントの定義
 export const SwiperTab = () => {
@@ -71,7 +71,7 @@ export const SwiperTab = () => {
         slidesPerView={1} // 一度に表示するスライド数
       >
         <SwiperSlide>
-          <Slide_Mydogs />{" "}
+          <Slide_Mydogs />
           {/* Slide_MydogsにはselectedAccountがグローバルで渡される */}
         </SwiperSlide>
         <SwiperSlide>

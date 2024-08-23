@@ -5,7 +5,7 @@ import { supabase } from "@/app/supabaseClient"; // Supabase クライアント�
 import { AccountContext } from "@/components/AccountProvider"; // アカウント情報を提供するコンテキストをインポート
 import Modal from "@/components/posts/update_todo_modal"; // Todo 更新用のモーダルコンポーネントをインポート
 
-const Home = () => {
+const Home = ({ todos }) => {
   // useState フックで状態を管理
   const [items, setItems] = useState([]); // Todo リストの項目を保存する状態
   const [error, setError] = useState(null); // エラーメッセージを保存する状態
