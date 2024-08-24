@@ -1,11 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import Header from "@/components/header.jsx";
-import Footer from "@/components/footer.jsx";
 import { useState } from "react";
 import Image from "next/image";
 import classNames from "classnames";
+import { Box } from "@mui/material"; // MUIのBoxコンポーネントをインポート
 
 // カードコンポーネントの定義
 const Card = ({ href, src, alt, title, isLink = true, opacity = false }) => {
@@ -36,14 +35,13 @@ const Card = ({ href, src, alt, title, isLink = true, opacity = false }) => {
 export default function Page() {
   const [theme, setTheme] = useState("light");
 
-  // テーマを切り替える関数
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
-  };
-
   return (
-    <>
-      <Header theme={theme} toggleTheme={toggleTheme} />
+    <Box
+      sx={{
+        minHeight: "100vh", // 画面全体の高さを確保
+        textAlign: "center", // テキストを中央揃え
+      }}
+    >
       <div className="p-4">
         <h1 className="text-center text-2xl font-extrabold mb-8 mt-20">
           だいじなこと
@@ -105,7 +103,6 @@ export default function Page() {
           />
         </div>
       </div>
-      <Footer theme={theme} />
-    </>
+    </Box>
   );
 }

@@ -69,6 +69,7 @@ export default function Slide_pets() {
         display: "flex", // 子要素をフレックスボックスとして表示
         flexDirection: "column", // 子要素を縦に並べる
         alignItems: "center", // 子要素を中央に配置
+        minHeight: "100vh", // 画面全体の高さを確保
         textAlign: "center", // テキストを中央揃え
       }}
     >

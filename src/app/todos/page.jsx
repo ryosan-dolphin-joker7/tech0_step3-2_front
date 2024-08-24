@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/app/supabaseClient"; // Supabaseクライアントをインポート
 import Table_Todo from "@/components/table_todo";
 import Grid from "@mui/material/Grid";
+import { Box } from "@mui/material"; // MUIのBoxコンポーネントをインポート
 
 function TodoPage() {
   const [todos, setTodos] = useState([]);
@@ -102,7 +103,12 @@ function TodoPage() {
   };
 
   return (
-    <div>
+    <Box
+      sx={{
+        minHeight: "100vh", // 画面全体の高さを確保
+        textAlign: "center", // テキストを中央揃え
+      }}
+    >
       <div className="container mx-auto p-20 max-w-md">
         {/* ページのタイトル */}
         <div className="text-center mb-4">
@@ -190,7 +196,7 @@ function TodoPage() {
           </Grid>
         </Grid>
       </div>
-    </div>
+    </Box>
   );
 }
 

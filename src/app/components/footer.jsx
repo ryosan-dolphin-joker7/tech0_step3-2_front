@@ -67,9 +67,9 @@ export default function Footer() {
           </Link>
         </Grid>
 
-        {/* タスクボタン */}
+        {/* やることボタン */}
         <Grid item xs={2}>
-          <Link href="/todos" prefetch={false}>
+          <Link href="/todos" prefetch={true}>
             <Button
               sx={{
                 display: "flex",
@@ -89,7 +89,7 @@ export default function Footer() {
 
         {/* だいじなことボタン */}
         <Grid item xs={3}>
-          <Link href="/cards" prefetch={false}>
+          <Link href="/cards" prefetch={true}>
             <Button
               sx={{
                 display: "flex",

@@ -18,6 +18,15 @@ body {
   @apply bg-[var(--bg-color)] text-[var(--text-color)];
 }
 
+/* メインコンテンツの設定 */
+.main-content {
+  flex: 1; /* 残りの空間を占有 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* コンテンツを中央揃え */
+  align-items: center;
+}
+
 .icon {
   @apply text-[var(--icon-color)];
 }
