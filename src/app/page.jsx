@@ -3,7 +3,7 @@
 import { useEffect, useState, useContext } from "react";
 import { supabase } from "@/app/supabaseClient"; // Supabaseクライアントをインポートして、データベースとの通信を行います。
 import LoadingScreen from "@/components/LoadingScreen"; // ローディング画面を表示するためのコンポーネントをインポートします。
-import { SwiperTab } from "@/components/swiper"; // スワイプ可能なタブを表示するコンポーネントをインポートします。
+import { SwiperTab } from "@/components/slides/swiper"; // スワイプ可能なタブを表示するコンポーネントをインポートします。
 import "@/components/LoadingScreen.module.css"; // ローディング画面用のCSSスタイルをインポートします。
 import "./globals.css"; // グローバルなCSSスタイルをインポートします。
 
