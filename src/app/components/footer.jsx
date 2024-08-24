@@ -89,7 +89,7 @@ export default function Footer() {
 
         {/* だいじなことボタン */}
         <Grid item xs={3}>
-          <Link href="/cards" prefetch={false}>
+          <Link href="/cards" prefetch={true}>
             <Button
               sx={{
                 display: "flex",

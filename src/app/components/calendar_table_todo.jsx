@@ -1,47 +1,15 @@
+// components/calendar_table_todo.jsx
 "use client"; // このファイルはクライアントサイドでのみ実行されることを示す
 
-import { useEffect, useState, useContext } from "react";
-import { supabase } from "@/app/supabaseClient"; // Supabase クライアントをインポート
+import { useContext, useState } from "react";
 import { AccountContext } from "@/components/AccountProvider"; // アカウント情報を提供するコンテキストをインポート
 import Modal from "@/components/posts/update_todo_modal"; // Todo 更新用のモーダルコンポーネントをインポート
 
-const Home = ({ todos }) => {
-  // useState フックで状態を管理
-  const [items, setItems] = useState([]); // Todo リストの項目を保存する状態
-  const [error, setError] = useState(null); // エラーメッセージを保存する状態
-  const [loading, setLoading] = useState(true); // データ読み込み中かどうかを示す状態
+// Calendar_Table_Todoコンポーネント
+const Calendar_Table_Todo = ({ todos, loading, error }) => {
   const [selectedTodoDetails, setSelectedTodoDetails] = useState(null); // 選択された Todo の詳細を保存する状態
   const [isModalOpen, setIsModalOpen] = useState(false); // モーダルが開いているかどうかを示す状態
   const { selectedAccount, selectedUserAccount } = useContext(AccountContext); // アカウントコンテキストから選択されたアカウント情報を取得
-
-  // データを Supabase から非同期で取得する関数
-  const fetchData = async () => {
-    try {
-      // todos テーブルからデータを取得
-      const { data, error } = await supabase.from("todos").select(`
-        *,
-        assignee:userinformation!todos_assignee_user_id_fkey (user_name,family_id),
-        completer:userinformation!todos_completer_user_id_fkey (user_name,family_id)
-      `);
-
-      if (error) {
-        console.error("Error fetching data: ", error); // コンソールにエラーを表示
-        setError("データの取得に失敗しました"); // ユーザーにエラーメッセージを表示
-      } else {
-        setItems(data); // 取得したデータを状態に保存
-      }
-    } catch (fetchError) {
-      console.error("Fetch error: ", fetchError); // 取得時のエラーをコンソールに表示
-      setError("データの取得中にエラーが発生しました"); // ユーザーにエラーメッセージを表示
-    } finally {
-      setLoading(false); // データの取得が完了したので読み込み状態を解除
-    }
-  };
-
-  // コンポーネントがマウントされたときに fetchData を実行してデータを取得
-  useEffect(() => {
-    fetchData();
-  }, []); // 空の依存配列により、コンポーネントの初回レンダリング時のみ実行される
 
   // 今日の日付をフォーマットして取得
   const today = new Date().toLocaleDateString("en-CA", {
@@ -52,7 +20,7 @@ const Home = ({ todos }) => {
   });
 
   // 選択されたアカウントに属する、今日締め切りの Todo をフィルタリング
-  const selectedTodo = items.filter(
+  const selectedTodo = todos.filter(
     (item) =>
       item.assignee.family_id === selectedAccount && item.end_date === today
   );
@@ -100,7 +68,7 @@ const Home = ({ todos }) => {
     <div>
       <h1>今日のスケジュール</h1> {/* ページのタイトル */}
       {loading && <p>読み込み中...</p>} {/* データ読み込み中のメッセージ */}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}{" "}
       {/* エラーメッセージの表示 */}
       <table style={{ borderCollapse: "collapse", width: "100%" }}>
         {/* テーブルのスタイル設定 */}
@@ -160,4 +128,4 @@ const Home = ({ todos }) => {
   );
 };
 
-export default Home;
+export default Calendar_Table_Todo;
