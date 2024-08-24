@@ -67,9 +67,9 @@ export default function Footer() {
           </Link>
         </Grid>
 
-        {/* タスクボタン */}
+        {/* やることボタン */}
         <Grid item xs={2}>
-          <Link href="/todos" prefetch={false}>
+          <Link href="/todos" prefetch={true}>
             <Button
               sx={{
                 display: "flex",
