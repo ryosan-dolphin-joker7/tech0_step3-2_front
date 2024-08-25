@@ -40,7 +40,7 @@ export default function Footer() {
               }}
             >
               <HomeIcon className="icon" /> {/* ホームアイコンを表示 */}
-              <div style={{ fontSize: "0.75rem" }}>Home</div>{" "}
+              <div style={{ fontSize: "0.75rem" }}>Home</div>
               {/* ボタンラベルを表示 */}
             </Button>
           </Link>
@@ -59,9 +59,9 @@ export default function Footer() {
                 color: "var(--icon-color)",
               }}
             >
-              <PhotoLibraryIcon className="icon" />{" "}
+              <PhotoLibraryIcon className="icon" />
               {/* カレンダーアイコンを表示 */}
-              <div style={{ fontSize: "0.75rem" }}>アルバム</div>{" "}
+              <div style={{ fontSize: "0.75rem" }}>アルバム</div>
               {/* ボタンラベルを表示 */}
             </Button>
           </Link>
@@ -81,7 +81,7 @@ export default function Footer() {
               }}
             >
               <TaskIcon className="icon" /> {/* タスクアイコンを表示 */}
-              <div style={{ fontSize: "0.75rem" }}>やること</div>{" "}
+              <div style={{ fontSize: "0.75rem" }}>やること</div>
               {/* ボタンラベルを表示 */}
             </Button>
           </Link>
@@ -102,7 +102,7 @@ export default function Footer() {
             >
               <PaymentIcon className="icon" />
               {/* だいじなことアイコンを表示 */}
-              <div style={{ fontSize: "0.75rem" }}>だいじなこと</div>{" "}
+              <div style={{ fontSize: "0.75rem" }}>だいじなこと</div>
               {/* だいじなことラベルを表示 */}
             </Button>
           </Link>
@@ -122,7 +122,7 @@ export default function Footer() {
               }}
             >
               <BuildIcon className="icon" /> {/* タスクアイコンを表示 */}
-              <div style={{ fontSize: "0.75rem" }}>開発中</div>{" "}
+              <div style={{ fontSize: "0.75rem" }}>開発中</div>
               {/* ボタンラベルを表示 */}
             </Button>
           </Link>

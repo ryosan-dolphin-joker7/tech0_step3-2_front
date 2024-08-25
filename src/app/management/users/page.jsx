@@ -2,8 +2,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/app/supabaseClient";
 import Link from "next/link"; // ページ間リンクを作成するためのコンポーネントをインポートしています。
-import Header from "@/components/header.jsx"; // ヘッダーコンポーネントをインポートしています。
-import Footer from "@/components/footer.jsx"; // フッターコンポーネントをインポートしています。
 import {
   Box,
   Typography,
@@ -31,13 +29,6 @@ export default function UserManagementPage() {
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light")); // 現在のテーマに応じてテーマを切り替えます。
   };
-
-  const users = [
-    { name: "越智 梨子" },
-    { name: "越智 太郎" },
-    { name: "越智 舞依" },
-    { name: "越智 太志" },
-  ];
 
   // コンポーネントがマウントされたときにデータを取得するための副作用フックを設定します。
   useEffect(() => {
@@ -105,8 +96,7 @@ export default function UserManagementPage() {
   };
 
   return (
-    <>
-      <Header theme={theme} toggleTheme={toggleTheme} />
+    <div>
       {/* コンテンツ領域。ヘッダーとフッターのスペースを確保するためのパディングを追加 */}
       <div style={{ paddingTop: "60px" }}></div>
       <Box
@@ -114,7 +104,6 @@ export default function UserManagementPage() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          maxWidth: "600px", // フォームのスペースを確保
           margin: "0 auto",
           padding: "16px",
           backgroundColor: "#f9f9f9",
@@ -127,26 +116,10 @@ export default function UserManagementPage() {
         </Typography>
         <Divider sx={{ width: "100%", marginBottom: "16px" }} />
 
-        <List sx={{ width: "100%" }}>
-          {users.map((user, index) => (
-            <ListItem
-              key={index}
-              sx={{
-                padding: "12px",
-                backgroundColor: index % 2 === 0 ? "#fff" : "#f9f9f9",
-                borderRadius: "4px",
-                marginBottom: "8px",
-                boxShadow: "0 0 5px rgba(0,0,0,0.1)",
-              }}
-            >
-              {user.name}
-            </ListItem>
-          ))}
-        </List>
-
         <h1>Supabase User List</h1>
         {error && <p style={{ color: "red" }}>{error}</p>}
-        <table style={{ borderCollapse: "collapse", width: "100%" }}>
+
+        <table style={{ borderCollapse: "collapse" }}>
           <thead>
             <tr>
               <th style={{ border: "1px solid black", padding: "8px" }}>
@@ -277,8 +250,6 @@ export default function UserManagementPage() {
           </Button>
         </Link>
       </Box>
-
-      <Footer theme={theme} />
-    </>
+    </div>
   );
 }
