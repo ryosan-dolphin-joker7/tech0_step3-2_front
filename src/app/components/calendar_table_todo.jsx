@@ -6,7 +6,7 @@ import { AccountContext } from "@/components/AccountProvider"; // アカウン�
 import Modal from "@/components/posts/update_todo_modal"; // Todo 更新用のモーダルコンポーネントをインポート
 
 // Calendar_Table_Todoコンポーネント
-const Calendar_Table_Todo = ({ todos, loading, error }) => {
+const Calendar_Table_Todo = ({ todos = [], loading, error }) => {
   const [selectedTodoDetails, setSelectedTodoDetails] = useState(null); // 選択された Todo の詳細を保存する状態
   const [isModalOpen, setIsModalOpen] = useState(false); // モーダルが開いているかどうかを示す状態
   const { selectedAccount, selectedUserAccount } = useContext(AccountContext); // アカウントコンテキストから選択されたアカウント情報を取得
