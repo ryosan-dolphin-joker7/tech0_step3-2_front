@@ -2,8 +2,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/app/supabaseClient";
 import Link from "next/link";
-import Header from "@/components/header.jsx";
-import Footer from "@/components/footer.jsx";
 import { Box, Typography, Button, Divider, TextField } from "@mui/material";
 
 export default function PetManagementPage() {
@@ -85,7 +83,6 @@ export default function PetManagementPage() {
 
   return (
     <>
-      <Header theme={theme} toggleTheme={toggleTheme} />
       <div style={{ paddingTop: "60px" }}></div>
       <Box
         sx={{
@@ -228,8 +225,6 @@ export default function PetManagementPage() {
           </Button>
         </Link>
       </Box>
-
-      <Footer theme={theme} />
     </>
   );
 }
