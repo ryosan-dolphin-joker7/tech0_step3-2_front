@@ -1,13 +1,19 @@
-import { createServerSupabaseClient } from "@/app/supabaseServer"; // サーバーサイドのSupabaseクライアントをインポート
+import { createServerSupabaseClient } from "@/app/supabaseServer";
 import { NextResponse } from "next/server";
 
-// サーバーサイド専用のSupabaseクライアントを作成する関数
-const supabase = createServerSupabaseClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY // セキュアなサービスロールキーを使用
-);
-
 export async function GET(req) {
+  // クッキーとヘッダーをリクエストから取得
+  const cookies = req.cookies;
+  const headers = req.headers;
+
+  // サーバーサイド専用のSupabaseクライアントをリクエストごとに作成
+  const supabase = createServerSupabaseClient({
+    supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    supabaseKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    cookies, // クッキーを渡す
+    headers, // ヘッダーを渡す
+  });
+
   // クエリパラメータからselectedAccountを取得
   const { searchParams } = new URL(req.url);
   const selectedAccount = searchParams.get("selectedAccount");
